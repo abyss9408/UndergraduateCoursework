@@ -1,0 +1,32 @@
+REGISTER_CONTROLFLOW(C_ParallelSequencer, "C_ParallelSequencer")
+REGISTER_CONTROLFLOW(C_RandomSelector, "C_RandomSelector")
+REGISTER_CONTROLFLOW(C_Selector, "C_Selector")
+REGISTER_CONTROLFLOW(C_Sequencer, "C_Sequencer")
+
+// NEW CONTROL FLOW NODES
+REGISTER_CONTROLFLOW(C_PrioritySelector, "C_PrioritySelector")
+REGISTER_CONTROLFLOW(C_WeightedSelector, "C_WeightedSelector")
+
+REGISTER_DECORATOR(D_Delay, "D_Delay")
+REGISTER_DECORATOR(D_InvertedRepeater, "D_InvertedRepeater")
+REGISTER_DECORATOR(D_RepeatFourTimes, "D_RepeatFourTimes")
+
+// NEW DECORATOR NODES
+REGISTER_DECORATOR(D_Cooldown, "D_Cooldown")
+REGISTER_DECORATOR(D_ConditionalRepeater, "D_ConditionalRepeater")
+
+REGISTER_LEAF(L_CheckMouseClick, "L_CheckMouseClick")
+REGISTER_LEAF(L_Idle, "L_Idle")
+REGISTER_LEAF(L_MoveToFurthestAgent, "L_MoveToFurthestAgent")
+REGISTER_LEAF(L_MoveToMouseClick, "L_MoveToMouseClick")
+REGISTER_LEAF(L_MoveToRandomPosition, "L_MoveToRandomPosition")
+REGISTER_LEAF(L_PlaySound, "L_PlaySound")
+
+// NEW LEAF NODES
+REGISTER_LEAF(L_PatrolBetweenPoints, "L_PatrolBetweenPoints")
+REGISTER_LEAF(L_InteractWithTerminal, "L_InteractWithTerminal")
+REGISTER_LEAF(L_PrepareSample, "L_PrepareSample")
+REGISTER_LEAF(L_CheckContainment, "L_CheckContainment")
+REGISTER_LEAF(L_PerformMaintenance, "L_PerformMaintenance")
+REGISTER_LEAF(L_DropItem, "L_DropItem")
+REGISTER_LEAF(L_InteractWithNearbyAgent, "L_InteractWithNearbyAgent")
