@@ -1,0 +1,46 @@
+Total number of shapes in file         = 12
+Total number of ellipse shapes in file = 7
+Total number of polygon shapes in file = 5
+
+POLYGON SHAPE INFORMATION
+----------------------------
+Id = 2
+Border = grey
+Fill = none
+Type = Polygon Shape
+Vertices = 0,0 10,0 10,10 0,10 
+
+Id = 4
+Border = red
+Fill = green
+Type = Polygon Shape
+Vertices = 95,94 63,59 55,72 54,63 
+
+Id = 6
+Border = white
+Fill = none
+Type = Polygon Shape
+Vertices = 27,69 100,74 84,54 100,83 94,53 
+
+Id = 7
+Border = red
+Fill = yellow
+Type = Polygon Shape
+Vertices = 86,59 66,76 93,66 50,89 
+
+Id = 11
+Border = green
+Fill = grey
+Type = Polygon Shape
+Vertices = 65,47 72,96 57,55 40,96 
+
+POLYGON SHAPE STATISTICS
+--------------------------------
+Number of shapes = 5
+The mean of the areas = -129.2
+The sorted list of shapes (id,center,area) in ascending order of areas:
+6,81,66,-796.5
+4,66,72,-179
+2,5,5,100
+7,73,72,101.5
+11,58,73,128

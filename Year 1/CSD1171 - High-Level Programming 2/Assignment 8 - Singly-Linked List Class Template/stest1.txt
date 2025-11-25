@@ -1,0 +1,78 @@
+---------------------TestConstructorsAndSwap---------------------
+============================================
+Total number of Lists/Nodes in use: 0/0
+============================================
+
+testing default ctor, empty(), and size() ...
+list1 is empty
+Items in list1: 0
+============================================
+Total number of Lists/Nodes in use: 1/0
+============================================
+
+testing single-argument ctor, empty(), and size() ...
+list2: 4   7  12   5   9  23   7  11  15   2   
+list2 is not empty
+Items in list1/list2: 0/10
+============================================
+Total number of Lists/Nodes in use: 2/10
+============================================
+
+testing single-argument ctor, empty(), and size() ...
+list3: 11   
+list3 is not empty
+Items in list1/list2/list3: 0/10/1
+============================================
+Total number of Lists/Nodes in use: 3/11
+============================================
+
+testing copy ctor, empty(), and size() ...
+list4: 4   7  12   5   9  23   7  11  15   2   
+list4 is not empty
+Items in list1/list2/list3/list4: 0/10/1/10
+============================================
+Total number of Lists/Nodes in use: 4/21
+============================================
+
+testing member function swap ...
+Before swapping list3 and list4:
+list3: 11   
+list4: 4   7  12   5   9  23   7  11  15   2   
+Items in list1/list2/list3/list4: 0/10/1/10
+============================================
+Total number of Lists/Nodes in use: 4/21
+============================================
+
+After swapping list3 and list4:
+list3: 4   7  12   5   9  23   7  11  15   2   
+list4: 11   
+Items in list1/list2/list3/list4: 0/10/10/1
+============================================
+Total number of Lists/Nodes in use: 4/21
+============================================
+
+testing non-member function swap ...
+Before swapping list3 and list4:
+list3: 11   
+list4: 4   7  12   5   9  23   7  11  15   2   
+Items in list1/list2/list3/list4: 0/10/1/10
+============================================
+Total number of Lists/Nodes in use: 4/21
+============================================
+
+After swapping list3 and list4:
+list3: 4   7  12   5   9  23   7  11  15   2   
+list4: 11   
+Items in list1/list2/list3/list4: 0/10/10/1
+============================================
+Total number of Lists/Nodes in use: 4/21
+============================================
+
+testing array ctor, empty(), and size() ...
+list5: -1  -2  -3  -4  -5  -6  -7  -8  -9 -10   
+list5 is not empty
+Items in list1/list2/list3/list4/list5: 0/10/10/1/10
+============================================
+Total number of Lists/Nodes in use: 5/31
+============================================
+

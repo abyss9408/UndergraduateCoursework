@@ -1,0 +1,5 @@
+-Added background
+-Added textures for ship, asteroids, bullets and wall
+-Added sounds
+-Added explosion effect for ship-asteroid and bullet-asteroid collisions
+-Added 2 extra bullets per spacebar trigger

@@ -1,0 +1,71 @@
+
+********** TestPush **********
+Empty array:
+(size=0, capacity=0, allocs=0)
+add 5 integers:
+99 98 97 96 95 (size=5, capacity=5, allocs=1)
+push_back 5 integers:
+99 98 97 96 95 0 (size=6, capacity=10, allocs=2)
+99 98 97 96 95 0 1 (size=7, capacity=10, allocs=2)
+99 98 97 96 95 0 1 2 (size=8, capacity=10, allocs=2)
+99 98 97 96 95 0 1 2 3 (size=9, capacity=10, allocs=2)
+99 98 97 96 95 0 1 2 3 4 (size=10, capacity=10, allocs=2)
+push_back 5 more integers:
+99 98 97 96 95 0 1 2 3 4 0 (size=11, capacity=20, allocs=3)
+99 98 97 96 95 0 1 2 3 4 0 -1 (size=12, capacity=20, allocs=3)
+99 98 97 96 95 0 1 2 3 4 0 -1 -2 (size=13, capacity=20, allocs=3)
+99 98 97 96 95 0 1 2 3 4 0 -1 -2 -3 (size=14, capacity=20, allocs=3)
+99 98 97 96 95 0 1 2 3 4 0 -1 -2 -3 -4 (size=15, capacity=20, allocs=3)
+
+********** TestSubscripts **********
+22 24 26 28 30 (size=5, capacity=5, allocs=1)
+push_back 10 even integers:
+22 24 26 28 30 0 2 4 6 8 10 12 14 16 18 (size=15, capacity=20, allocs=3)
+multiply each value by 3:
+66 72 78 84 90 0 6 12 18 24 10 12 14 16 18 (size=15, capacity=20, allocs=3)
+use subscript with non-default constructed vector:
+0 3 6 9 12 15 18 21 24 27 (size=10, capacity=10, allocs=1)
+push back 10 odd ints:
+3 1 -1 -3 -5 -7 -9 -11 -13 -15 (size=10, capacity=16, allocs=5)
+using subscript: c[5]
+c[5] = -7
+subscript operator for const objects:
+2 0 -2 -4 -6 -8 -10 -12 -14 -16 (size=10, capacity=16, allocs=5)
+
+********** TestCopy **********
+push_back 10 even integers:
+Copy: b(a), print a,b
+0 2 4 6 8 10 12 14 16 18 (size=10, capacity=16, allocs=5)
+0 2 4 6 8 10 12 14 16 18 (size=10, capacity=10, allocs=1)
+Copy: c(b), print b,c
+0 2 4 6 8 10 12 14 16 18 (size=10, capacity=10, allocs=1)
+0 2 4 6 8 10 12 14 16 18 (size=10, capacity=10, allocs=1)
+
+********** TestAssign **********
+push_back 10 integers into a,b and 5 into c:
+0 2 4 6 8 10 12 14 16 18 (size=10, capacity=16, allocs=5)
+0 1 2 3 4 5 6 7 8 9 (size=10, capacity=16, allocs=5)
+3 9 15 21 27 (size=5, capacity=8, allocs=4)
+Assign: b = a, print a,b
+0 2 4 6 8 10 12 14 16 18 (size=10, capacity=16, allocs=5)
+0 2 4 6 8 10 12 14 16 18 (size=10, capacity=10, allocs=6)
+Assign: a = a, print a
+0 2 4 6 8 10 12 14 16 18 (size=10, capacity=10, allocs=6)
+Assign: a = c, print a,c
+3 9 15 21 27 (size=5, capacity=5, allocs=7)
+3 9 15 21 27 (size=5, capacity=8, allocs=4)
+Assign: c = b, print b,c
+0 2 4 6 8 10 12 14 16 18 (size=10, capacity=10, allocs=6)
+0 2 4 6 8 10 12 14 16 18 (size=10, capacity=10, allocs=5)
+
+********** TestALot1 **********
+push_back 10 even integers:
+0 2 4 6 8 10 12 14 16 18 (size=10, capacity=16, allocs=5)
+push_back 10 odd integers:
+0 2 4 6 8 10 12 14 16 18 1 3 5 7 9 11 13 15 17 19 (size=20, capacity=32, allocs=6)
+empty/fill with 10 ints 3 times:
+0 1 2 3 4 5 6 7 8 9 (size=10, capacity=32, allocs=6)
+remove all but 3 integers:
+0 1 2 (size=3, capacity=32, allocs=6)
+push_back 8 more integers:
+0 1 2 0 1 2 3 4 5 6 7 (size=11, capacity=32, allocs=6)

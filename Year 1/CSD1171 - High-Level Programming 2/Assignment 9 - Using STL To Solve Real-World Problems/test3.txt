@@ -1,0 +1,14 @@
+TestSpellcheck-----------------------------------------------------
+The word APPLE is spelled correctly.
+TestSpellcheck-----------------------------------------------------
+The word Apple is spelled correctly.
+TestSpellcheck-----------------------------------------------------
+The word apple is spelled correctly.
+TestSpellcheck-----------------------------------------------------
+The word appl is misspelled.
+TestSpellcheck-----------------------------------------------------
+The word abalone is spelled correctly.
+TestSpellcheck-----------------------------------------------------
+The word interdigitation is spelled correctly.
+TestSpellcheck-----------------------------------------------------
+The word interdigalizing is misspelled.

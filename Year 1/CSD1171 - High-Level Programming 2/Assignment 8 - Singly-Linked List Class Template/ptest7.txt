@@ -1,0 +1,58 @@
+---------------------TestPopFront---------------------
+list1:
+Key:   105001, Name:       Besser,          Joe    Salary:  40000, Years:  1
+Key:   104001, Name:    Shrimpton,         Mick    Salary:  50000, Years:  4
+Key:   103001, Name:       Savage,          Viv    Salary:  50000, Years:  4
+Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+   
+Items in list1: 5
+============================================
+Total number of Lists/Nodes in use: 1/5
+============================================
+
+First item in list1 was: Key:   105001, Name:       Besser,          Joe    Salary:  40000, Years:  1
+
+list1:
+Key:   104001, Name:    Shrimpton,         Mick    Salary:  50000, Years:  4
+Key:   103001, Name:       Savage,          Viv    Salary:  50000, Years:  4
+Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+   
+Items in list1: 4
+First item in list1 was: Key:   104001, Name:    Shrimpton,         Mick    Salary:  50000, Years:  4
+
+list1:
+Key:   103001, Name:       Savage,          Viv    Salary:  50000, Years:  4
+Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+   
+Items in list1: 3
+First item in list1 was: Key:   103001, Name:       Savage,          Viv    Salary:  50000, Years:  4
+
+list1:
+Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+   
+Items in list1: 2
+First item in list1 was: Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+
+list1:
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+   
+Items in list1: 1
+First item in list1 was: Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+
+list1:
+
+Items in list1: 0
+============================================
+Total number of Lists/Nodes in use: 1/0
+============================================
+
+clear list1:
+Items in list1: 0
+============================================
+Total number of Lists/Nodes in use: 1/0
+============================================
+

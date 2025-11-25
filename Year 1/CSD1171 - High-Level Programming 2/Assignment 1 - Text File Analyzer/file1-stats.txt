@@ -1,0 +1,53 @@
+Statistics for file: file1.txt
+---------------------------------------------------------------------
+
+Total # of characters in file: 20
+
+Category            How many in file             % of file
+---------------------------------------------------------------------
+Letters                           15               75.00 %
+White space                        4               20.00 %
+Digits                             0                0.00 %
+Other characters                   1                5.00 %
+
+
+LETTER STATISTICS
+
+Category            How many in file      % of all letters
+---------------------------------------------------------------------
+Uppercase                          0                0.00 %
+Lowercase                         15              100.00 %
+a                                  3               20.00 %
+b                                  0                0.00 %
+c                                  0                0.00 %
+d                                  3               20.00 %
+e                                  0                0.00 %
+f                                  0                0.00 %
+g                                  1                6.67 %
+h                                  0                0.00 %
+i                                  1                6.67 %
+j                                  0                0.00 %
+k                                  0                0.00 %
+l                                  0                0.00 %
+m                                  0                0.00 %
+n                                  0                0.00 %
+o                                  3               20.00 %
+p                                  0                0.00 %
+q                                  0                0.00 %
+r                                  0                0.00 %
+s                                  1                6.67 %
+t                                  1                6.67 %
+u                                  0                0.00 %
+v                                  0                0.00 %
+w                                  0                0.00 %
+x                                  0                0.00 %
+y                                  2               13.33 %
+z                                  0                0.00 %
+
+
+NUMBER ANALYSIS
+
+Number of integers in file:          0
+Sum of integers:                     0
+Average of integers:                 0.00
+_____________________________________________________________________

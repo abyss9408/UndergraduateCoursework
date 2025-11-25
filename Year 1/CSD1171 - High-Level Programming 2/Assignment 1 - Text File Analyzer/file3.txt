@@ -1,0 +1,7 @@
+Hello. How are you?
+I am 4 years old. My favorite color is blue.
+Next year I will be 5. My IP address is 128.4.0.46
+One year has gone by ...
+Hello. How are you this new year?
+I am now 5 years old. My favorite color is now red and not blue.
+Next year I will be 6. My IP address has changed to 128.7.3.47

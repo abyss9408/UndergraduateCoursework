@@ -1,0 +1,42 @@
+---------------------TestAssignments---------------------
+============================================
+Total number of Lists/Nodes in use: 0/0
+============================================
+
+testing copy assignment:
+list1: 20  18  16  14  12  10   8   6   4   2   
+list2: 
+Items in list1/list2: 10/0
+============================================
+Total number of Lists/Nodes in use: 2/10
+============================================
+
+After assignment [list2 = list1]:
+list1: 20  18  16  14  12  10   8   6   4   2   
+list2: 20  18  16  14  12  10   8   6   4   2   
+Items in list1/list2: 10/10
+============================================
+Total number of Lists/Nodes in use: 2/20
+============================================
+
+list3: 
+After assignment [list3 = list2 = list1]:
+list1: 20  18  16  14  12  10   8   6   4   2   
+list2: 20  18  16  14  12  10   8   6   4   2   
+list3: 20  18  16  14  12  10   8   6   4   2   
+Items in list1/list2/list3: 10/10/10
+============================================
+Total number of Lists/Nodes in use: 3/30
+============================================
+
+testing copy assignment with initializer_list [list3 = list2 = list1]:
+Assigning initializer list: {"4","7","12","5","9","23","7","11","15","2"}
+After assignment:
+list1: 4   7  12   5   9  23   7  11  15   2   
+list2: 4   7  12   5   9  23   7  11  15   2   
+list3: 4   7  12   5   9  23   7  11  15   2   
+Items in list1/list2/list3: 10/10/10
+============================================
+Total number of Lists/Nodes in use: 3/30
+============================================
+

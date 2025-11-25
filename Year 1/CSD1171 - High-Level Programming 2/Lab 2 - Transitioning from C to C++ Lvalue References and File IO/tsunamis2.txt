@@ -1,0 +1,10 @@
+12   26    2004   230000    50.59    Sumatra, Indonesia    
+03 11   2011  18550    40.54   Tohokue, Japan    
+11   01    1755    60000     20.47    Lisbon, Portugal   
+08     27     1883     40000     37.97     Krakatoa, Indonesia   
+09 20 1498 31000 19.12 Enshunada Sea, Japan   
+28    10    1707    30000    25.43       Nankaido, Japan   
+06 05   1896    22000    38.27     Sanriku, Japan   
+08    16     1868     25000    16.09              Arica, Chile  
+04 04            1771      12000     30.4 Ryuku Islands, Japan   
+01     18     1586    8000       6.19    Ise Bay, Japan   

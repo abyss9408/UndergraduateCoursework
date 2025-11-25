@@ -1,0 +1,96 @@
+---------------------TestSubscript---------------------
+============================================
+Total number of Lists/Nodes in use: 0/0
+============================================
+
+testing op[] const ...
+hlp2::Str::Str(hlp2::Str::const_pointer)-11
+hlp2::Str::Str(hlp2::Str::const_pointer)11
+hlp2::Str::Str(hlp2::Str::const_pointer)22
+hlp2::Str::Str(hlp2::Str::const_pointer)33
+hlp2::Str::Str(hlp2::Str::const_pointer)44
+hlp2::Str::Str(hlp2::Str::const_pointer)55
+hlp2::Str::Str(hlp2::Str::const_pointer)66
+hlp2::Str::Str(hlp2::Str::const_pointer)77
+hlp2::Str::Str(hlp2::Str::const_pointer)88
+hlp2::Str::Str(hlp2::Str::const_pointer)99
+hlp2::Str::Str(const hlp2::Str&)-11
+hlp2::Str::Str(const hlp2::Str&)11
+hlp2::Str::Str(const hlp2::Str&)22
+hlp2::Str::Str(const hlp2::Str&)33
+hlp2::Str::Str(const hlp2::Str&)44
+hlp2::Str::Str(const hlp2::Str&)55
+hlp2::Str::Str(const hlp2::Str&)66
+hlp2::Str::Str(const hlp2::Str&)77
+hlp2::Str::Str(const hlp2::Str&)88
+hlp2::Str::Str(const hlp2::Str&)99
+hlp2::Str::~Str()99
+hlp2::Str::~Str()88
+hlp2::Str::~Str()77
+hlp2::Str::~Str()66
+hlp2::Str::~Str()55
+hlp2::Str::~Str()44
+hlp2::Str::~Str()33
+hlp2::Str::~Str()22
+hlp2::Str::~Str()11
+hlp2::Str::~Str()-11
+list1: -11  11  22  33  44  55  66  77  88  99   
+list1[0] = -11
+list1[5] = 55
+list1[9] = 99
+
+Items in list1: 10
+============================================
+Total number of Lists/Nodes in use: 1/10
+============================================
+
+testing op[] ...
+hlp2::Str::Str(const hlp2::Str&)-11
+hlp2::Str::Str(const hlp2::Str&)11
+hlp2::Str::Str(const hlp2::Str&)22
+hlp2::Str::Str(const hlp2::Str&)33
+hlp2::Str::Str(const hlp2::Str&)44
+hlp2::Str::Str(const hlp2::Str&)55
+hlp2::Str::Str(const hlp2::Str&)66
+hlp2::Str::Str(const hlp2::Str&)77
+hlp2::Str::Str(const hlp2::Str&)88
+hlp2::Str::Str(const hlp2::Str&)99
+list2: -11  11  22  33  44  55  66  77  88  99   
+list2[0] = "10":   hlp2::Str::Str(hlp2::Str::const_pointer)10
+hlp2::Str::~Str()-11
+10
+list2[5] = "20":   hlp2::Str::Str(hlp2::Str::const_pointer)20
+hlp2::Str::~Str()55
+20
+list2[9] = "30":   hlp2::Str::Str(hlp2::Str::const_pointer)30
+hlp2::Str::~Str()99
+30
+list2[7] = list2[2]: hlp2::Str::Str(const hlp2::Str&)22
+hlp2::Str::~Str()77
+22
+list2: 10  11  22  33  44  20  66  22  88  30   
+Items in list1/list2: 10/10
+============================================
+Total number of Lists/Nodes in use: 2/20
+============================================
+
+hlp2::Str::~Str()10
+hlp2::Str::~Str()11
+hlp2::Str::~Str()22
+hlp2::Str::~Str()33
+hlp2::Str::~Str()44
+hlp2::Str::~Str()20
+hlp2::Str::~Str()66
+hlp2::Str::~Str()22
+hlp2::Str::~Str()88
+hlp2::Str::~Str()30
+hlp2::Str::~Str()-11
+hlp2::Str::~Str()11
+hlp2::Str::~Str()22
+hlp2::Str::~Str()33
+hlp2::Str::~Str()44
+hlp2::Str::~Str()55
+hlp2::Str::~Str()66
+hlp2::Str::~Str()77
+hlp2::Str::~Str()88
+hlp2::Str::~Str()99

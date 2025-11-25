@@ -1,0 +1,67 @@
+---------------------TestPushFrontBackAndPop---------------------
+============================================
+Total number of Lists created: 0
+============================================
+
+testing ListInt::push_front() ...
+   5   4   3   2   1
+Items in the list: 5
+
+============================================
+Total number of Lists created: 1
+============================================
+
+testing ListInt::push_back() ...
+   1   2   3   4   5
+Items in the list: 5
+
+============================================
+Total number of Lists created: 2
+============================================
+
+testing ListInt::push_front() and ListInt::push_back() ...
+  10   9   8   7   6   5   4   3   2   1   5  10  15  20  25  30  35  40  45  50
+Items in the list: 20
+
+============================================
+Total number of Lists created: 3
+============================================
+
+testing ListInt::pop_front() ...
+Original list:   10   9   8   7   6   5   4   3   2   1
+Items in the list: 10
+First item was: 10
+New list:    9   8   7   6   5   4   3   2   1
+Items in the list: 9
+First item was: 9
+New list:    8   7   6   5   4   3   2   1
+Items in the list: 8
+First item was: 8
+New list:    7   6   5   4   3   2   1
+Items in the list: 7
+First item was: 7
+New list:    6   5   4   3   2   1
+Items in the list: 6
+First item was: 6
+New list:    5   4   3   2   1
+Items in the list: 5
+First item was: 5
+New list:    4   3   2   1
+Items in the list: 4
+First item was: 4
+New list:    3   2   1
+Items in the list: 3
+First item was: 3
+New list:    2   1
+Items in the list: 2
+First item was: 2
+New list:    1
+Items in the list: 1
+First item was: 1
+New list: 
+Items in the list: 0
+
+============================================
+Total number of Lists created: 4
+============================================
+

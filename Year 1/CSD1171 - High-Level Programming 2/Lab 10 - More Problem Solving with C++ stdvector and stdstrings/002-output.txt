@@ -1,0 +1,15 @@
+aaabbbcccdddaaabbb
+aaabbbcccdddaaabbb
+aaabbbcccdddaaabbb
+bbbcccdddaaabbbccc
+bbbcccdddaaabbbccc
+bbbcccdddaaabbbccc
+cccdddaaabbbcccddd
+cccdddaaabbbcccddd
+cccdddaaabbbcccddd
+dddaaabbbcccdddaaa
+dddaaabbbcccdddaaa
+dddaaabbbcccdddaaa
+aaabbbcccdddaaabbb
+aaabbbcccdddaaabbb
+aaabbbcccdddaaabbb

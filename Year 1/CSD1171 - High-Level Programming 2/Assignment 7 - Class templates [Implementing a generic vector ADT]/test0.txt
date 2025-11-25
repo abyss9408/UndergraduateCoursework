@@ -1,0 +1,188 @@
+********** TestPushPop **********
+push/pop int
+a: [size=0, capacity=0, allocs=0]
+push_back 5 ints
+-1 [size=1, capacity=1, allocs=1]
+-1 1 [size=2, capacity=2, allocs=2]
+-1 1 -2 [size=3, capacity=4, allocs=3]
+-1 1 -2 2 [size=4, capacity=4, allocs=3]
+-1 1 -2 2 -3 [size=5, capacity=8, allocs=4]
+now push_back 5 more ints:
+-1 1 -2 2 -3 10 [size=6, capacity=8, allocs=4]
+-1 1 -2 2 -3 10 -10 [size=7, capacity=8, allocs=4]
+-1 1 -2 2 -3 10 -10 20 [size=8, capacity=8, allocs=4]
+-1 1 -2 2 -3 10 -10 20 -20 [size=9, capacity=16, allocs=5]
+-1 1 -2 2 -3 10 -10 20 -20 -30 [size=10, capacity=16, allocs=5]
+now pop_back ints until empty:
+-1 1 -2 2 -3 10 -10 20 -20 [size=9, capacity=16, allocs=5]
+-1 1 -2 2 -3 10 -10 20 [size=8, capacity=16, allocs=5]
+-1 1 -2 2 -3 10 -10 [size=7, capacity=16, allocs=5]
+-1 1 -2 2 -3 10 [size=6, capacity=16, allocs=5]
+-1 1 -2 2 -3 [size=5, capacity=16, allocs=5]
+-1 1 -2 2 [size=4, capacity=16, allocs=5]
+-1 1 -2 [size=3, capacity=16, allocs=5]
+-1 1 [size=2, capacity=16, allocs=5]
+-1 [size=1, capacity=16, allocs=5]
+[size=0, capacity=16, allocs=5]
+[size=0, capacity=16, allocs=5]
+
+push/pop char
+s i n g a p o r e [size=9, capacity=10, allocs=2]
+pop_back chars until empty:
+s i n g a p o r [size=8, capacity=10, allocs=2]
+s i n g a p o [size=7, capacity=10, allocs=2]
+s i n g a p [size=6, capacity=10, allocs=2]
+s i n g a [size=5, capacity=10, allocs=2]
+s i n g [size=4, capacity=10, allocs=2]
+s i n [size=3, capacity=10, allocs=2]
+s i [size=2, capacity=10, allocs=2]
+s [size=1, capacity=10, allocs=2]
+[size=0, capacity=10, allocs=2]
+[size=0, capacity=10, allocs=2]
+
+push/pop hlp2::Str
+Namaste Hello Bonjour Hola Annyeonghaseyo Nin Hao Konnichiwa Guten Tag [size=8, capacity=10, allocs=2]
+pop_back strings until empty:
+Namaste Hello Bonjour Hola Annyeonghaseyo Nin Hao Konnichiwa [size=7, capacity=10, allocs=2]
+Namaste Hello Bonjour Hola Annyeonghaseyo Nin Hao [size=6, capacity=10, allocs=2]
+Namaste Hello Bonjour Hola Annyeonghaseyo [size=5, capacity=10, allocs=2]
+Namaste Hello Bonjour Hola [size=4, capacity=10, allocs=2]
+Namaste Hello Bonjour [size=3, capacity=10, allocs=2]
+Namaste Hello [size=2, capacity=10, allocs=2]
+Namaste [size=1, capacity=10, allocs=2]
+[size=0, capacity=10, allocs=2]
+[size=0, capacity=10, allocs=2]
+
+push/pop double
+2.1 -3.2 4.3 -5.4 5.5 -6.6 7.7 -8.8 9.9 10 [size=10, capacity=16, allocs=2]
+pop_back doubles until empty:
+2.1 -3.2 4.3 -5.4 5.5 -6.6 7.7 -8.8 9.9 [size=9, capacity=16, allocs=2]
+2.1 -3.2 4.3 -5.4 5.5 -6.6 7.7 -8.8 [size=8, capacity=16, allocs=2]
+2.1 -3.2 4.3 -5.4 5.5 -6.6 7.7 [size=7, capacity=16, allocs=2]
+2.1 -3.2 4.3 -5.4 5.5 -6.6 [size=6, capacity=16, allocs=2]
+2.1 -3.2 4.3 -5.4 5.5 [size=5, capacity=16, allocs=2]
+2.1 -3.2 4.3 -5.4 [size=4, capacity=16, allocs=2]
+2.1 -3.2 4.3 [size=3, capacity=16, allocs=2]
+2.1 -3.2 [size=2, capacity=16, allocs=2]
+2.1 [size=1, capacity=16, allocs=2]
+[size=0, capacity=16, allocs=2]
+[size=0, capacity=16, allocs=2]
+
+push/pop pair<hlp2::Str, std::string>
+<Seattle, WA> <Portland, OR> <Vancouver, BC> <Santa Barbara, CA> <Toronto, ON> <Montreal, PQ> [size=6, capacity=8, allocs=2]
+pop_back pair<hlp2::Str, std::string> until empty:
+<Seattle, WA> <Portland, OR> <Vancouver, BC> <Santa Barbara, CA> <Toronto, ON> [size=5, capacity=8, allocs=2]
+<Seattle, WA> <Portland, OR> <Vancouver, BC> <Santa Barbara, CA> [size=4, capacity=8, allocs=2]
+<Seattle, WA> <Portland, OR> <Vancouver, BC> [size=3, capacity=8, allocs=2]
+<Seattle, WA> <Portland, OR> [size=2, capacity=8, allocs=2]
+<Seattle, WA> [size=1, capacity=8, allocs=2]
+[size=0, capacity=8, allocs=2]
+[size=0, capacity=8, allocs=2]
+
+********** TestSubscripts **********
+a     : 0 2 4 6 8 10 12 14 16 18 [size=10, capacity=10, allocs=1]
+a[i]*2: 0 6 12 18 24 30 36 42 48 54 [size=10, capacity=10, allocs=1]
+
+b[lower case]: < h + e ? l & l * o > [size=11, capacity=11, allocs=1]
+b[upper case]: < H + E ? L & L * O > [size=11, capacity=11, allocs=1]
+
+c[lower case]: Hello Bonjour Hola Nin hao Konnichiwa Guten Tag [size=6, capacity=6, allocs=1]
+c[upper case]: HELLO BONJOUR HOLA NIN HAO KONNICHIWA GUTEN TAG [size=6, capacity=6, allocs=1]
+
+d   : 1 2 3 4 5 [size=5, capacity=5, allocs=1]
+d*pi: 3.14159 6.28318 9.42477 12.5664 15.708 [size=5, capacity=5, allocs=1]
+
+e[AB]: <Seattle, WA> <Portland, OR> <Vancouver, BC> <Santa Barbara, CA> <Toronto, ON> <Montreal, PQ> [size=6, capacity=6, allocs=1]
+e[ab]: <Seattle, wa> <Portland, or> <Vancouver, bc> <Santa Barbara, ca> <Toronto, on> <Montreal, pq> [size=6, capacity=6, allocs=1]
+
+********** TestCopyAssign **********
+before vector<T>::swap
+a1: 0 2 4 6 8 10 12 14 16 18 [size=10, capacity=10, allocs=1]
+a2: 1 3 5 7 [size=4, capacity=4, allocs=3]
+after vector<T>::swap
+a1: 1 3 5 7 [size=4, capacity=4, allocs=3]
+a2: 0 2 4 6 8 10 12 14 16 18 [size=10, capacity=10, allocs=1]
+
+before ::swap
+a1: 0 2 4 6 8 10 12 14 16 18 [size=10, capacity=10, allocs=1]
+a2: 1 3 5 7 [size=4, capacity=4, allocs=1]
+after ::swap
+a1: 1 3 5 7 [size=4, capacity=4, allocs=2]
+a2: 0 2 4 6 8 10 12 14 16 18 [size=10, capacity=10, allocs=2]
+
+before hlp2::vector<T>::swap
+b1: < ~ @ ! + e ? # & % [size=10, capacity=10, allocs=1]
+b2: * ^ ( ) > [size=5, capacity=8, allocs=4]
+after hlp2::vector<T>::swap
+b1: * ^ ( ) > [size=5, capacity=8, allocs=4]
+b2: < ~ @ ! + e ? # & % [size=10, capacity=10, allocs=1]
+
+before ::swap
+b1: < ~ @ ! + e ? # & % * ^ ( ) > [size=15, capacity=15, allocs=1]
+b2: [size=0, capacity=0, allocs=0]
+after ::swap
+b1: [size=0, capacity=0, allocs=2]
+b2: < ~ @ ! + e ? # & % * ^ ( ) > [size=15, capacity=15, allocs=1]
+
+before hlp2::vector<T>::swap
+c1: Hello Bonjour Hola Nin hao Konnichiwa [size=5, capacity=5, allocs=1]
+c2: Guten Tag Namaste [size=2, capacity=2, allocs=2]
+after hlp2::vector<T>::swap
+c1: Guten Tag Namaste [size=2, capacity=2, allocs=2]
+c2: Hello Bonjour Hola Nin hao Konnichiwa [size=5, capacity=5, allocs=1]
+
+before ::swap
+c1: Hello Bonjour Hola Nin hao Konnichiwa [size=5, capacity=5, allocs=1]
+c2: Guten Tag Namaste [size=2, capacity=2, allocs=2]
+after ::swap
+c1: Guten Tag Namaste [size=2, capacity=2, allocs=2]
+c2: Hello Bonjour Hola Nin hao Konnichiwa [size=5, capacity=5, allocs=3]
+
+before hlp2::vector<T>::swap
+d1: 2.05 4.05 6.05 8.05 10.05 12.05 [size=6, capacity=6, allocs=1]
+d2: -12.1 -12.2 12.3 -12.4 12.5 -12.6 [size=6, capacity=6, allocs=2]
+after hlp2::vector<T>::swap
+d1: -12.1 -12.2 12.3 -12.4 12.5 -12.6 [size=6, capacity=6, allocs=2]
+d2: 2.05 4.05 6.05 8.05 10.05 12.05 [size=6, capacity=6, allocs=1]
+
+before ::swap
+d1: 2.05 4.05 6.05 8.05 10.05 12.05 [size=6, capacity=6, allocs=1]
+d2: -12.1 -12.2 12.3 -12.4 12.5 -12.6 [size=6, capacity=6, allocs=2]
+after ::swap
+d1: -12.1 -12.2 12.3 -12.4 12.5 -12.6 [size=6, capacity=6, allocs=2]
+d2: 2.05 4.05 6.05 8.05 10.05 12.05 [size=6, capacity=6, allocs=3]
+
+before hlp2::vector<T>::swap
+e1: <Seattle, WA> <Portland, OR> [size=2, capacity=2, allocs=1]
+e2: <Vancouver, BC> <Santa Barbara, CA> <Toronto, ON> <Montreal, PQ> [size=4, capacity=4, allocs=3]
+after hlp2::vector<T>::swap
+e1: <Vancouver, BC> <Santa Barbara, CA> <Toronto, ON> <Montreal, PQ> [size=4, capacity=4, allocs=3]
+e2: <Seattle, WA> <Portland, OR> [size=2, capacity=2, allocs=1]
+
+before ::swap
+e1: <Seattle, WA> <Portland, OR> [size=2, capacity=2, allocs=1]
+e2: <Vancouver, BC> <Santa Barbara, CA> <Toronto, ON> <Montreal, PQ> [size=4, capacity=4, allocs=3]
+after ::swap
+e1: <Vancouver, BC> <Santa Barbara, CA> <Toronto, ON> <Montreal, PQ> [size=4, capacity=4, allocs=2]
+e2: <Seattle, WA> <Portland, OR> [size=2, capacity=2, allocs=4]
+
+********** TestResize **********
+a before resize to 0: 0 2 4 6 8 10 12 14 16 18 [size=10, capacity=10, allocs=1]
+a after  resize to 0: [size=0, capacity=10, allocs=1]
+
+b before resize to 1: < ~ @ ! + e ? # & % * ^ ( ) > [size=15, capacity=15, allocs=1]
+b after  resize to 1: < [size=1, capacity=15, allocs=1]
+
+c before resize to 2: Hello Bonjour Hola Nin hao Konnichiwa Guten Tag [size=6, capacity=6, allocs=1]
+c after  resize to 2: Hello Bonjour [size=2, capacity=6, allocs=1]
+
+d before resize to 3: 2.05 4 6 6 8 10 6 12 -6 14 16 6 6 [size=13, capacity=13, allocs=1]
+d after  resize to 3: 2.05 4 6 [size=3, capacity=13, allocs=1]
+
+e before resize to 4: <Seattle, WA> <Portland, OR> <Vancouver, BC> <Santa Barbara, CA> <Toronto, ON> <Montreal, PQ> [size=6, capacity=6, allocs=1]
+e after  resize to 4: <Seattle, WA> <Portland, OR> <Vancouver, BC> <Santa Barbara, CA> [size=4, capacity=6, allocs=1]
+
+f before resize to 5: Seattle Singapore [size=2, capacity=2, allocs=1]
+f after resize to 5: Seattle Singapore    [size=5, capacity=5, allocs=2]
+f after push: Seattle Singapore Sydney San Jose San Antonio Santiago [size=6, capacity=10, allocs=3]
+

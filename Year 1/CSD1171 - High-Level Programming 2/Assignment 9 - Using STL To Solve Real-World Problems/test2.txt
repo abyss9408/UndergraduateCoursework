@@ -1,0 +1,24 @@
+TestWordsstartingwith-----------------------------------------------------
+Lexicon: ./input/lexicon.txt
+Number of words starting with a: 1
+TestWordsstartingwith-----------------------------------------------------
+Lexicon: ./input/lexicon.txt
+Number of words starting with A: 1
+TestWordsstartingwith-----------------------------------------------------
+Lexicon: ./input/lexicon.txt
+Number of words starting with l: 2
+TestWordsstartingwith-----------------------------------------------------
+Lexicon: ./input/lexicon.txt
+Number of words starting with $: 0
+TestWordsstartingwith-----------------------------------------------------
+Lexicon: ./input/lexicon.txt
+Number of words starting with e: 0
+TestWordsstartingwith-----------------------------------------------------
+Lexicon: ./input/allwords.txt
+Number of words starting with M: 9330
+TestWordsstartingwith-----------------------------------------------------
+Lexicon: ./input/allwords.txt
+Number of words starting with q: 804
+TestWordsstartingwith-----------------------------------------------------
+Lexicon: ./input/allwords.txt
+Number of words starting with 5: 0

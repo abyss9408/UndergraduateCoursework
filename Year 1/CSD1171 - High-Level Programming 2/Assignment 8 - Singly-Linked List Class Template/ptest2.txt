@@ -1,0 +1,24 @@
+---------------------TestArrayCtor---------------------
+list1:
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+Key:   103001, Name:       Savage,          Viv    Salary:  50000, Years:  4
+Key:   104001, Name:    Shrimpton,         Mick    Salary:  50000, Years:  4
+Key:   105001, Name:       Besser,          Joe    Salary:  40000, Years:  1
+Key:   106001, Name:       Smalls,        Derek    Salary:  80000, Years: 10
+Key:   107001, Name:   St.Hubbins,        David    Salary:  90000, Years: 12
+Key:   108001, Name:     Fleckman,        Bobbi    Salary: 120000, Years:  8
+Key:   109001, Name:    Eton-Hogg,        Denis    Salary: 250000, Years: 22
+Key:   110001, Name:        Upham,        Danny    Salary:  60000, Years:  5
+   
+Items in list1: 10
+============================================
+Total number of Lists/Nodes in use: 1/10
+============================================
+
+clear list1:
+Items in list1: 0
+============================================
+Total number of Lists/Nodes in use: 1/0
+============================================
+

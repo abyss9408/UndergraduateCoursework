@@ -1,0 +1,16 @@
+
+********** TestSubscripts **********
+a     : 0 2 4 6 8 10 12 14 16 18 [size=10, capacity=10, allocs=1]
+a[i]*2: 0 6 12 18 24 30 36 42 48 54 [size=10, capacity=10, allocs=1]
+
+b[lower case]: < h + e ? l & l * o > [size=11, capacity=11, allocs=1]
+b[upper case]: < H + E ? L & L * O > [size=11, capacity=11, allocs=1]
+
+c[lower case]: Hello Bonjour Hola Nin hao Konnichiwa Guten Tag [size=6, capacity=6, allocs=1]
+c[upper case]: HELLO BONJOUR HOLA NIN HAO KONNICHIWA GUTEN TAG [size=6, capacity=6, allocs=1]
+
+d   : 1 2 3 4 5 [size=5, capacity=5, allocs=1]
+d*pi: 3.14159 6.28318 9.42477 12.5664 15.708 [size=5, capacity=5, allocs=1]
+
+e[AB]: <Seattle, WA> <Portland, OR> <Vancouver, BC> <Santa Barbara, CA> <Toronto, ON> <Montreal, PQ> [size=6, capacity=6, allocs=1]
+e[ab]: <Seattle, wa> <Portland, or> <Vancouver, bc> <Santa Barbara, ca> <Toronto, on> <Montreal, pq> [size=6, capacity=6, allocs=1]

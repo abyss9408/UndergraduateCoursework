@@ -1,0 +1,21 @@
+
+********** TestResize **********
+a before resize to 0: 0 2 4 6 8 10 12 14 16 18 [size=10, capacity=10, allocs=1]
+a after  resize to 0: [size=0, capacity=10, allocs=1]
+
+b before resize to 1: < ~ @ ! + e ? # & % * ^ ( ) > [size=15, capacity=15, allocs=1]
+b after  resize to 1: < [size=1, capacity=15, allocs=1]
+
+c before resize to 2: Hello Bonjour Hola Nin hao Konnichiwa Guten Tag [size=6, capacity=6, allocs=1]
+c after  resize to 2: Hello Bonjour [size=2, capacity=6, allocs=1]
+
+d before resize to 3: 2.05 4 6 6 8 10 6 12 -6 14 16 6 6 [size=13, capacity=13, allocs=1]
+d after  resize to 3: 2.05 4 6 [size=3, capacity=13, allocs=1]
+
+e before resize to 4: <Seattle, WA> <Portland, OR> <Vancouver, BC> <Santa Barbara, CA> <Toronto, ON> <Montreal, PQ> [size=6, capacity=6, allocs=1]
+e after  resize to 4: <Seattle, WA> <Portland, OR> <Vancouver, BC> <Santa Barbara, CA> [size=4, capacity=6, allocs=1]
+
+f before resize to 5: Seattle Singapore [size=2, capacity=2, allocs=1]
+f after resize to 5: Seattle Singapore    [size=5, capacity=5, allocs=2]
+f after push: Seattle Singapore Sydney San Jose San Antonio Santiago [size=6, capacity=10, allocs=3]
+

@@ -1,0 +1,239 @@
+	Mexico	      120,286,655
+	Kosovo	        1,859,203
+	Rwanda	       12,337,138
+	Greece	       10,775,557
+	Turks and Caicos Islands	          49,070
+	Hungary	        9,919,128
+  	Sierra Leone	        5,743,725
+	Aruba	         110,663
+	Samoa	         196,628
+	Pitcairn Islands	             48
+	Macedonia	        2,091,719
+	British Virgin Islands	          32,680
+	Luxembourg	         520,672
+	Bahamas, The	         321,834
+  	Australia	       22,507,617
+	Bhutan	         733,643
+	South Sudan	       11,562,695
+	Iran	       80,840,713
+	Togo	        7,351,374
+	Vanuatu	         266,937
+	Curacao	         146,836
+	Guinea-Bissau	        1,693,398
+	Switzerland	        8,061,516
+  	Saint Barthelemy	           7,267
+	Tokelau	           1,337
+	Antigua and Barbuda	          91,295
+	Chile	       17,363,894
+	Peru	       30,147,935
+	Isle of Man	          86,866
+	Niue	           1,190
+	Grenada	         110,152
+	Saudi Arabia	       27,345,986
+	Costa Rica	        4,755,234
+	Saint Helena, Ascension, and Tristan da Cunha	           7,776
+	Canada	       34,834,841
+	Guernsey	          65,849
+	France	       66,259,012
+  	Thailand	       67,741,401
+	Afghanistan	       31,822,848
+	Saint Pierre and Miquelon	           5,716
+	Iceland	         317,351
+	Western Sahara	         554,795
+	Uzbekistan	       28,929,716
+	Ukraine	       44,291,413
+	Azerbaijan	        9,686,210
+	Latvia	        2,165,165
+	Kiribati	         104,488
+	Equatorial Guinea	         722,254
+	United Kingdom	       63,742,977
+  	Montenegro	         650,036
+    	Mauritius	        1,331,155
+Liechtenstein	          37,313
+	Anguilla	          16,086
+	Estonia	        1,257,921
+	Monaco	          30,508
+	Cook Islands	          10,134
+	Central African Republic	        5,277,959
+    	Bosnia and Herzegovina	        3,871,643
+	Israel	        7,821,850
+	Benin	       10,160,556
+	Sri Lanka	       21,866,445
+	Argentina	       43,024,374
+	Ecuador	       15,654,411
+	Cayman Islands	          54,914
+	Akrotiri	          15,700
+	Iraq	       32,585,692
+    	Eritrea	        6,380,803
+    	Djibouti	         810,179
+  	Colombia	       46,245,297
+	Chad	       11,412,107
+  	Trinidad and Tobago	        1,223,916
+  	Kyrgyzstan	        5,604,212
+    	Comoros	         766,865
+	Saint Martin	          31,530
+	Belarus	        9,608,058
+	Tajikistan	        8,051,512
+  	Mauritania	        3,516,806
+	Micronesia, Federated States of	         105,681
+	Tonga	         106,440
+	Burundi	       10,395,931
+	Nepal	       30,986,975
+	Malaysia	       30,073,353
+	Norfolk Island	           2,210
+	Faroe Islands	          49,947
+  	South Africa	       48,375,645
+	Bermuda	          69,839
+  	Kazakhstan	       17,948,816
+  	Lithuania	        3,505,738
+  	Fiji	         903,207
+	New Zealand	        4,401,916
+  	Angola	       19,088,106
+	Malawi	       17,377,468
+	Portugal	       10,813,834
+	Maldives	         393,595
+	Somalia	       10,428,043
+  	Italy	       61,680,122
+  	Paraguay	        6,703,860
+Brazil	      202,656,788
+	Dominican Republic	       10,349,741
+    	Korea, South	       49,039,986
+	Puerto Rico	        3,620,897
+India	     1,236,344,631
+	Andorra	          85,458
+	Netherlands	       16,877,351
+	Qatar	        2,123,160
+	Cabo Verde	         538,535
+Japan	      127,103,388
+	Sao Tome and Principe	         190,428
+	Belgium	       10,449,361
+	Nicaragua	        5,848,641
+	Nauru	           9,488
+    	Cote d'Ivoire	       22,848,945
+  	Libya	        6,244,174
+	United Arab Emirates	        5,628,805
+  	Romania	       21,729,871
+	Turkey	       81,619,392
+	Northern Mariana Islands	          51,483
+  	Georgia	        4,935,880
+	Ghana	       25,758,108
+	Turkmenistan	        5,171,943
+	Brunei	         422,675
+	Ireland	        4,832,765
+European Union	      511,434,812
+	Cuba	       11,047,251
+	Uganda	       35,918,915
+	Zambia	       14,638,505
+	Croatia	        4,470,534
+	Kenya	       45,010,056
+  	Serbia	        7,209,764
+  	Niger	       17,466,172
+  	Timor-Leste	        1,201,542
+	Guinea	       11,474,383
+  	Denmark	        5,569,077
+	Korea, North	       24,851,627
+    	Kuwait	        2,742,711
+	New Caledonia	         267,840
+  	Oman	        3,219,775
+	Zimbabwe	       13,771,721
+	Germany	       80,996,685
+	Suriname	         573,311
+	Mozambique	       24,692,144
+  	Madagascar	       23,201,926
+	Mali	       16,455,903
+	Namibia	        2,198,406
+	Marshall Islands	          70,983
+  	Lesotho	        1,942,008
+	Cocos (Keeling) Islands	            596
+Russia	      142,470,272
+	Congo, Democratic Republic of the	       77,433,744
+	Cambodia	       15,458,332
+	Barbados	         289,680
+	Yemen	       26,052,966
+	Montserrat	           5,215
+	Saint Vincent and the Grenadines	         102,918
+	Slovakia	        5,443,583
+	Algeria	       38,813,722
+  	Gaza Strip	        1,816,379
+	Guam	         161,001
+	Burma	       55,746,253
+	Malta	         412,655
+	Haiti	        9,996,731
+	Mongolia	        2,953,190
+	Falkland Islands (Islas Malvinas)	           2,840
+	Bolivia	       10,631,486
+	Czech Republic	       10,627,448
+	Dominica	          73,449
+    	Singapore	        5,567,301
+	American Samoa	          54,517
+  Pakistan	      196,174,380
+	Sweden	        9,723,809
+	Cyprus	        1,172,458
+    	Spain	       47,737,941
+  	Armenia	        3,060,631
+	Guatemala	       14,647,083
+	Seychelles	          91,650
+    	Burkina Faso	       18,365,123
+Nigeria	      177,155,754
+	Saint Maarten	          39,689
+	Syria	       17,951,639
+	Guyana	         735,554
+	San Marino	          32,742
+	Greenland	          57,728
+  	Papua New Guinea	        6,552,730
+  	Congo, Republic of the	        4,662,446
+	French Polynesia	         280,026
+	Bahrain	        1,314,089
+	Vietnam	       93,421,835
+	Honduras	        8,598,561
+  	Gabon	        1,672,597
+  	Finland	        5,268,799
+  	Jamaica	        2,930,050
+	Botswana	        2,155,784
+	Venezuela	       28,868,486
+	Jordan	        7,930,491
+	Slovenia	        1,988,292
+	Palau	          21,186
+  	Cameroon	       23,130,708
+	Saint Lucia	         163,362
+	Svalbard	           1,872
+  	Hong Kong	        7,112,688
+	Egypt	       86,895,099
+    	Bulgaria	        6,924,716
+	Holy See (Vatican City)	            842
+	Christmas Island	           1,530
+	Wallis and Futuna	          15,561
+	Laos	        6,803,699
+Bangladesh	      166,280,712
+  	Uruguay	        3,332,972
+	Tuvalu	          10,782
+	Macau	         587,914
+	Jersey	          96,513
+	Philippines	      107,668,231
+Indonesia	      253,609,643
+	Gambia, The	        1,925,527
+China	     1,355,692,576
+United States	      318,892,103
+	El Salvador	        6,125,512
+	Gibraltar	          29,185
+  	Liberia	        4,092,310
+	Lebanon	        5,882,562
+  	Panama	        3,608,431
+  	Swaziland	        1,419,623
+  	Norway	        5,147,792
+	West Bank	        2,731,052
+	Albania	        3,020,209
+	Austria	        8,223,062
+	Moldova	        3,583,288
+	Saint Kitts and Nevis	          51,538
+  	Solomon Islands	         609,883
+	Morocco	       32,987,206
+	Poland	       38,346,279
+	Sudan	       35,482,233
+	Tunisia	       10,937,521
+  	Tanzania	       49,639,138
+	Virgin Islands	         104,170
+	Ethiopia	       96,633,458
+	Senegal	       13,635,927
+	Belize	         340,844
+  	Taiwan	       23,359,928

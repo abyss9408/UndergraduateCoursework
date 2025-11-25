@@ -1,0 +1,65 @@
+******************** Push ********************
+List1 ( 1 nodes): 12   
+List2 ( 1 nodes): 12   
+List1 ( 2 nodes): 12   34   
+List2 ( 2 nodes): 34   12   
+List1 ( 3 nodes): 12   34   21   
+List2 ( 3 nodes): 21   34   12   
+List1 ( 4 nodes): 12   34   21   56   
+List2 ( 4 nodes): 56   21   34   12   
+List1 ( 5 nodes): 12   34   21   56   38   
+List2 ( 5 nodes): 38   56   21   34   12   
+List1 ( 6 nodes): 12   34   21   56   38   94   
+List2 ( 6 nodes): 94   38   56   21   34   12   
+List1 ( 7 nodes): 12   34   21   56   38   94   23   
+List2 ( 7 nodes): 23   94   38   56   21   34   12   
+List1 ( 8 nodes): 12   34   21   56   38   94   23   22   
+List2 ( 8 nodes): 22   23   94   38   56   21   34   12   
+List1 ( 9 nodes): 12   34   21   56   38   94   23   22   67   
+List2 ( 9 nodes): 67   22   23   94   38   56   21   34   12   
+List1 (10 nodes): 12   34   21   56   38   94   23   22   67   56   
+List2 (10 nodes): 56   67   22   23   94   38   56   21   34   12   
+List1 (11 nodes): 12   34   21   56   38   94   23   22   67   56   88   
+List2 (11 nodes): 88   56   67   22   23   94   38   56   21   34   12   
+List1 (12 nodes): 12   34   21   56   38   94   23   22   67   56   88   19   
+List2 (12 nodes): 19   88   56   67   22   23   94   38   56   21   34   12   
+List1 (13 nodes): 12   34   21   56   38   94   23   22   67   56   88   19   59   
+List2 (13 nodes): 59   19   88   56   67   22   23   94   38   56   21   34   12   
+List1 (14 nodes): 12   34   21   56   38   94   23   22   67   56   88   19   59   10   
+List2 (14 nodes): 10   59   19   88   56   67   22   23   94   38   56   21   34   12   
+List1 (15 nodes): 12   34   21   56   38   94   23   22   67   56   88   19   59   10   17   
+List2 (15 nodes): 17   10   59   19   88   56   67   22   23   94   38   56   21   34   12   
+List1 (15 nodes): 17   39   26   61   43   99   28   27   72   61   93   24   64   15   22   
+List2 (15 nodes): 20   13   62   22   91   59   70   25   26   97   41   59   24   37   15   
+******************** Find ********************
+List (12 nodes): 22   23   38   94   56   34   67   56   88   19   10   59   
+Value 56 found.
+Value 22 found.
+Value 59 found.
+Value 123 not found.
+******************** Insert ********************
+List ( 5 nodes): 12   34   21   56   38   
+inserting... 91 at position 3
+List ( 6 nodes): 12   34   21   91   56   38   
+inserting... 92 at position 0
+List ( 7 nodes): 92   12   34   21   91   56   38   
+inserting... 93 at position 50
+List ( 8 nodes): 92   12   34   21   91   56   38   93   
+inserting... 94 at position 99
+List ( 9 nodes): 92   12   34   21   91   56   38   93   94   
+******************** Remove ********************
+List (12 nodes): 22   23   38   94   56   34   67   56   88   19   10   59   
+Deleting: 56 (11 nodes): 22   23   38   94   34   67   56   88   19   10   59   
+Deleting: 22 (10 nodes): 23   38   94   34   67   56   88   19   10   59   
+Deleting: 59 ( 9 nodes): 23   38   94   34   67   56   88   19   10   
+Deleting: 99 ( 9 nodes): 23   38   94   34   67   56   88   19   10   
+Deleting: 23 ( 8 nodes): 38   94   34   67   56   88   19   10   
+Deleting: 38 ( 7 nodes): 94   34   67   56   88   19   10   
+Deleting: 94 ( 6 nodes): 34   67   56   88   19   10   
+Deleting: 34 ( 5 nodes): 67   56   88   19   10   
+Deleting: 67 ( 4 nodes): 56   88   19   10   
+Deleting: 56 ( 3 nodes): 88   19   10   
+Deleting: 88 ( 2 nodes): 19   10   
+Deleting: 19 ( 1 nodes): 10   
+Deleting: 10 ( 0 nodes): 
+Deleting: 99 ( 0 nodes): 

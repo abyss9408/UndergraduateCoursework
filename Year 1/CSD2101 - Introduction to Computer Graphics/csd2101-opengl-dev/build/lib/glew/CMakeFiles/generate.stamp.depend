@@ -1,0 +1,6 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-3.29/Modules/FindOpenGL.cmake
+C:/Program Files/CMake/share/cmake-3.29/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-3.29/Modules/FindPackageMessage.cmake
+D:/SIT-Digipen/Year 1/Trimester 3/CSD2101 - Introduction to Computer Graphics/csd2101-opengl-dev/lib/glew/CMakeLists.txt
+D:/SIT-Digipen/Year 1/Trimester 3/CSD2101 - Introduction to Computer Graphics/csd2101-opengl-dev/lib/glew/GeneratePkgConfig.cmake

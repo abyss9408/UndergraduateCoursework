@@ -1,0 +1,230 @@
+---------------------TestConstructorsAndSwap---------------------
+============================================
+Total number of Lists/Nodes in use: 0/0
+============================================
+
+testing default ctor, empty(), and size() ...
+list1 is empty
+Items in list1: 0
+============================================
+Total number of Lists/Nodes in use: 1/0
+============================================
+
+testing single-argument ctor, empty(), and size() ...
+hlp2::Str::Str(hlp2::Str::const_pointer)4
+hlp2::Str::Str(hlp2::Str::const_pointer)7
+hlp2::Str::Str(hlp2::Str::const_pointer)12
+hlp2::Str::Str(hlp2::Str::const_pointer)5
+hlp2::Str::Str(hlp2::Str::const_pointer)9
+hlp2::Str::Str(hlp2::Str::const_pointer)23
+hlp2::Str::Str(hlp2::Str::const_pointer)7
+hlp2::Str::Str(hlp2::Str::const_pointer)11
+hlp2::Str::Str(hlp2::Str::const_pointer)15
+hlp2::Str::Str(hlp2::Str::const_pointer)2
+hlp2::Str::Str(const hlp2::Str&)4
+hlp2::Str::Str(const hlp2::Str&)7
+hlp2::Str::Str(const hlp2::Str&)12
+hlp2::Str::Str(const hlp2::Str&)5
+hlp2::Str::Str(const hlp2::Str&)9
+hlp2::Str::Str(const hlp2::Str&)23
+hlp2::Str::Str(const hlp2::Str&)7
+hlp2::Str::Str(const hlp2::Str&)11
+hlp2::Str::Str(const hlp2::Str&)15
+hlp2::Str::Str(const hlp2::Str&)2
+hlp2::Str::~Str()2
+hlp2::Str::~Str()15
+hlp2::Str::~Str()11
+hlp2::Str::~Str()7
+hlp2::Str::~Str()23
+hlp2::Str::~Str()9
+hlp2::Str::~Str()5
+hlp2::Str::~Str()12
+hlp2::Str::~Str()7
+hlp2::Str::~Str()4
+list2: 4   7  12   5   9  23   7  11  15   2   
+list2 is not empty
+Items in list1/list2: 0/10
+============================================
+Total number of Lists/Nodes in use: 2/10
+============================================
+
+testing single-argument ctor, empty(), and size() ...
+hlp2::Str::Str(hlp2::Str::const_pointer)11
+hlp2::Str::Str(const hlp2::Str&)11
+hlp2::Str::~Str()11
+list3: 11   
+list3 is not empty
+Items in list1/list2/list3: 0/10/1
+============================================
+Total number of Lists/Nodes in use: 3/11
+============================================
+
+testing copy ctor, empty(), and size() ...
+hlp2::Str::Str(const hlp2::Str&)4
+hlp2::Str::Str(const hlp2::Str&)7
+hlp2::Str::Str(const hlp2::Str&)12
+hlp2::Str::Str(const hlp2::Str&)5
+hlp2::Str::Str(const hlp2::Str&)9
+hlp2::Str::Str(const hlp2::Str&)23
+hlp2::Str::Str(const hlp2::Str&)7
+hlp2::Str::Str(const hlp2::Str&)11
+hlp2::Str::Str(const hlp2::Str&)15
+hlp2::Str::Str(const hlp2::Str&)2
+list4: 4   7  12   5   9  23   7  11  15   2   
+list4 is not empty
+Items in list1/list2/list3/list4: 0/10/1/10
+============================================
+Total number of Lists/Nodes in use: 4/21
+============================================
+
+testing member function swap ...
+Before swapping list3 and list4:
+list3: 11   
+list4: 4   7  12   5   9  23   7  11  15   2   
+Items in list1/list2/list3/list4: 0/10/1/10
+============================================
+Total number of Lists/Nodes in use: 4/21
+============================================
+
+After swapping list3 and list4:
+list3: 4   7  12   5   9  23   7  11  15   2   
+list4: 11   
+Items in list1/list2/list3/list4: 0/10/10/1
+============================================
+Total number of Lists/Nodes in use: 4/21
+============================================
+
+testing non-member function swap ...
+hlp2::Str::Str(hlp2::Str::const_pointer)11
+hlp2::Str::Str(const hlp2::Str&)11
+hlp2::Str::~Str()4
+hlp2::Str::~Str()7
+hlp2::Str::~Str()12
+hlp2::Str::~Str()5
+hlp2::Str::~Str()9
+hlp2::Str::~Str()23
+hlp2::Str::~Str()7
+hlp2::Str::~Str()11
+hlp2::Str::~Str()15
+hlp2::Str::~Str()2
+hlp2::Str::~Str()11
+hlp2::Str::Str(const hlp2::Str&)4
+hlp2::Str::Str(const hlp2::Str&)7
+hlp2::Str::Str(const hlp2::Str&)12
+hlp2::Str::Str(const hlp2::Str&)5
+hlp2::Str::Str(const hlp2::Str&)9
+hlp2::Str::Str(const hlp2::Str&)23
+hlp2::Str::Str(const hlp2::Str&)7
+hlp2::Str::Str(const hlp2::Str&)11
+hlp2::Str::Str(const hlp2::Str&)15
+hlp2::Str::Str(const hlp2::Str&)2
+hlp2::Str::~Str()11
+Before swapping list3 and list4:
+list3: 11   
+list4: 4   7  12   5   9  23   7  11  15   2   
+Items in list1/list2/list3/list4: 0/10/1/10
+============================================
+Total number of Lists/Nodes in use: 4/21
+============================================
+
+hlp2::Str::Str(const hlp2::Str&)11
+hlp2::Str::Str(const hlp2::Str&)4
+hlp2::Str::Str(const hlp2::Str&)7
+hlp2::Str::Str(const hlp2::Str&)12
+hlp2::Str::Str(const hlp2::Str&)5
+hlp2::Str::Str(const hlp2::Str&)9
+hlp2::Str::Str(const hlp2::Str&)23
+hlp2::Str::Str(const hlp2::Str&)7
+hlp2::Str::Str(const hlp2::Str&)11
+hlp2::Str::Str(const hlp2::Str&)15
+hlp2::Str::Str(const hlp2::Str&)2
+hlp2::Str::~Str()11
+hlp2::Str::Str(const hlp2::Str&)11
+hlp2::Str::~Str()4
+hlp2::Str::~Str()7
+hlp2::Str::~Str()12
+hlp2::Str::~Str()5
+hlp2::Str::~Str()9
+hlp2::Str::~Str()23
+hlp2::Str::~Str()7
+hlp2::Str::~Str()11
+hlp2::Str::~Str()15
+hlp2::Str::~Str()2
+hlp2::Str::~Str()11
+After swapping list3 and list4:
+list3: 4   7  12   5   9  23   7  11  15   2   
+list4: 11   
+Items in list1/list2/list3/list4: 0/10/10/1
+============================================
+Total number of Lists/Nodes in use: 4/21
+============================================
+
+testing array ctor, empty(), and size() ...
+hlp2::Str::Str(hlp2::Str::const_pointer)-1
+hlp2::Str::Str(hlp2::Str::const_pointer)-2
+hlp2::Str::Str(hlp2::Str::const_pointer)-3
+hlp2::Str::Str(hlp2::Str::const_pointer)-4
+hlp2::Str::Str(hlp2::Str::const_pointer)-5
+hlp2::Str::Str(hlp2::Str::const_pointer)-6
+hlp2::Str::Str(hlp2::Str::const_pointer)-7
+hlp2::Str::Str(hlp2::Str::const_pointer)-8
+hlp2::Str::Str(hlp2::Str::const_pointer)-9
+hlp2::Str::Str(hlp2::Str::const_pointer)-10
+hlp2::Str::Str(const hlp2::Str&)-1
+hlp2::Str::Str(const hlp2::Str&)-2
+hlp2::Str::Str(const hlp2::Str&)-3
+hlp2::Str::Str(const hlp2::Str&)-4
+hlp2::Str::Str(const hlp2::Str&)-5
+hlp2::Str::Str(const hlp2::Str&)-6
+hlp2::Str::Str(const hlp2::Str&)-7
+hlp2::Str::Str(const hlp2::Str&)-8
+hlp2::Str::Str(const hlp2::Str&)-9
+hlp2::Str::Str(const hlp2::Str&)-10
+list5: -1  -2  -3  -4  -5  -6  -7  -8  -9 -10   
+list5 is not empty
+Items in list1/list2/list3/list4/list5: 0/10/10/1/10
+============================================
+Total number of Lists/Nodes in use: 5/31
+============================================
+
+hlp2::Str::~Str()-1
+hlp2::Str::~Str()-2
+hlp2::Str::~Str()-3
+hlp2::Str::~Str()-4
+hlp2::Str::~Str()-5
+hlp2::Str::~Str()-6
+hlp2::Str::~Str()-7
+hlp2::Str::~Str()-8
+hlp2::Str::~Str()-9
+hlp2::Str::~Str()-10
+hlp2::Str::~Str()-10
+hlp2::Str::~Str()-9
+hlp2::Str::~Str()-8
+hlp2::Str::~Str()-7
+hlp2::Str::~Str()-6
+hlp2::Str::~Str()-5
+hlp2::Str::~Str()-4
+hlp2::Str::~Str()-3
+hlp2::Str::~Str()-2
+hlp2::Str::~Str()-1
+hlp2::Str::~Str()11
+hlp2::Str::~Str()4
+hlp2::Str::~Str()7
+hlp2::Str::~Str()12
+hlp2::Str::~Str()5
+hlp2::Str::~Str()9
+hlp2::Str::~Str()23
+hlp2::Str::~Str()7
+hlp2::Str::~Str()11
+hlp2::Str::~Str()15
+hlp2::Str::~Str()2
+hlp2::Str::~Str()4
+hlp2::Str::~Str()7
+hlp2::Str::~Str()12
+hlp2::Str::~Str()5
+hlp2::Str::~Str()9
+hlp2::Str::~Str()23
+hlp2::Str::~Str()7
+hlp2::Str::~Str()11
+hlp2::Str::~Str()15
+hlp2::Str::~Str()2

@@ -1,0 +1,1 @@
+Usage: ./program-name rows cols start cycle width

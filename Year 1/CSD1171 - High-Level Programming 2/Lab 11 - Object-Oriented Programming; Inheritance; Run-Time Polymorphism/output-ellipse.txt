@@ -1,0 +1,74 @@
+Total number of shapes in file         = 12
+Total number of ellipse shapes in file = 7
+Total number of polygon shapes in file = 5
+
+ELLIPSE SHAPE INFORMATION
+---------------------------------
+Id = 1
+Border = black
+Fill = white
+Type = Ellipse Shape
+Center = 89,65
+a-length = 31
+b-length = 45
+
+Id = 3
+Border = black
+Fill = white
+Type = Ellipse Shape
+Center = 19,67
+a-length = 66
+b-length = 33
+
+Id = 5
+Border = black
+Fill = white
+Type = Ellipse Shape
+Center = 39,65
+a-length = 31
+b-length = 43
+
+Id = 8
+Border = none
+Fill = white
+Type = Ellipse Shape
+Center = 86,65
+a-length = 71
+b-length = 43
+
+Id = 9
+Border = black
+Fill = red
+Type = Ellipse Shape
+Center = 49,65
+a-length = 33
+b-length = 95
+
+Id = 10
+Border = black
+Fill = grey
+Type = Ellipse Shape
+Center = 81,65
+a-length = 64
+b-length = 41
+
+Id = 12
+Border = black
+Fill = white
+Type = Ellipse Shape
+Center = 80,61
+a-length = 30
+b-length = 65
+
+ELLIPSE SHAPE STATISTICS
+--------------------------------
+Number of shapes = 7
+The mean of the areas = 7031.78
+The sorted list of shapes (id,center,area) in ascending order of areas:
+5,39,65,4187.74
+1,89,65,4382.52
+12,80,61,6126.11
+3,19,67,6842.39
+10,81,65,8243.54
+8,86,65,9591.28
+9,49,65,9848.89

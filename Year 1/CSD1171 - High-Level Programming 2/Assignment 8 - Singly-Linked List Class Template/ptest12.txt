@@ -1,0 +1,60 @@
+---------------------TestAdd---------------------
+Before addition:
+list 1:
+Key:   105001, Name:       Besser,          Joe    Salary:  40000, Years:  1
+Key:   104001, Name:    Shrimpton,         Mick    Salary:  50000, Years:  4
+Key:   103001, Name:       Savage,          Viv    Salary:  50000, Years:  4
+Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+   
+list 2:
+Key:   115001, Name:         Fame,         Duke    Salary:  95000, Years:  8
+Key:   114001, Name:    Pettibone,      Jeanine    Salary:  85000, Years:  3
+Key:   113001, Name:    Schindler,        Danny    Salary:  60000, Years:  3
+Key:   112001, Name:      Pudding,       Ronnie    Salary:  50000, Years:  2
+Key:   111001, Name:   McLochness,         Ross    Salary:  60000, Years:  5
+   
+Items in list1/list2: 5/5
+============================================
+Total number of Lists/Nodes in use: 2/10
+============================================
+
+After addition:
+ist 1:
+Key:   105001, Name:       Besser,          Joe    Salary:  40000, Years:  1
+Key:   104001, Name:    Shrimpton,         Mick    Salary:  50000, Years:  4
+Key:   103001, Name:       Savage,          Viv    Salary:  50000, Years:  4
+Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+   
+list 2:
+Key:   115001, Name:         Fame,         Duke    Salary:  95000, Years:  8
+Key:   114001, Name:    Pettibone,      Jeanine    Salary:  85000, Years:  3
+Key:   113001, Name:    Schindler,        Danny    Salary:  60000, Years:  3
+Key:   112001, Name:      Pudding,       Ronnie    Salary:  50000, Years:  2
+Key:   111001, Name:   McLochness,         Ross    Salary:  60000, Years:  5
+   
+list 3:
+Key:   105001, Name:       Besser,          Joe    Salary:  40000, Years:  1
+Key:   104001, Name:    Shrimpton,         Mick    Salary:  50000, Years:  4
+Key:   103001, Name:       Savage,          Viv    Salary:  50000, Years:  4
+Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+Key:   115001, Name:         Fame,         Duke    Salary:  95000, Years:  8
+Key:   114001, Name:    Pettibone,      Jeanine    Salary:  85000, Years:  3
+Key:   113001, Name:    Schindler,        Danny    Salary:  60000, Years:  3
+Key:   112001, Name:      Pudding,       Ronnie    Salary:  50000, Years:  2
+Key:   111001, Name:   McLochness,         Ross    Salary:  60000, Years:  5
+   
+
+Items in list1/list2/list3: 5/5/10
+============================================
+Total number of Lists/Nodes in use: 3/20
+============================================
+
+clear list1:
+Items in list1/list2/list3: 0/5/10
+============================================
+Total number of Lists/Nodes in use: 3/15
+============================================
+

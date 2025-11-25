@@ -1,0 +1,53 @@
+Statistics for file: file2.txt
+---------------------------------------------------------------------
+
+Total # of characters in file: 116
+
+Category            How many in file             % of file
+---------------------------------------------------------------------
+Letters                           74               63.79 %
+White space                       25               21.55 %
+Digits                             9                7.76 %
+Other characters                   8                6.90 %
+
+
+LETTER STATISTICS
+
+Category            How many in file      % of all letters
+---------------------------------------------------------------------
+Uppercase                          9               12.16 %
+Lowercase                         65               87.84 %
+a                                  6                8.11 %
+b                                  2                2.70 %
+c                                  1                1.35 %
+d                                  3                4.05 %
+e                                  9               12.16 %
+f                                  1                1.35 %
+g                                  0                0.00 %
+h                                  2                2.70 %
+i                                  7                9.46 %
+j                                  0                0.00 %
+k                                  0                0.00 %
+l                                  7                9.46 %
+m                                  3                4.05 %
+n                                  1                1.35 %
+o                                  7                9.46 %
+p                                  1                1.35 %
+q                                  0                0.00 %
+r                                  6                8.11 %
+s                                  5                6.76 %
+t                                  2                2.70 %
+u                                  2                2.70 %
+v                                  1                1.35 %
+w                                  2                2.70 %
+x                                  1                1.35 %
+y                                  5                6.76 %
+z                                  0                0.00 %
+
+
+NUMBER ANALYSIS
+
+Number of integers in file:          6
+Sum of integers:                     187
+Average of integers:                 31.17
+_____________________________________________________________________

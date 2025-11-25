@@ -1,0 +1,161 @@
+---------------------TestAddAssign---------------------
+Before addition:
+list 1:
+Key:   105001, Name:       Besser,          Joe    Salary:  40000, Years:  1
+Key:   104001, Name:    Shrimpton,         Mick    Salary:  50000, Years:  4
+Key:   103001, Name:       Savage,          Viv    Salary:  50000, Years:  4
+Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+   
+list 2:
+Key:   110001, Name:        Upham,        Danny    Salary:  60000, Years:  5
+Key:   109001, Name:    Eton-Hogg,        Denis    Salary: 250000, Years: 22
+Key:   108001, Name:     Fleckman,        Bobbi    Salary: 120000, Years:  8
+Key:   107001, Name:   St.Hubbins,        David    Salary:  90000, Years: 12
+Key:   106001, Name:       Smalls,        Derek    Salary:  80000, Years: 10
+   
+Items in list1/list2: 5/5
+============================================
+Total number of Lists/Nodes in use: 2/10
+============================================
+
+After addition:
+list 1:
+Key:   105001, Name:       Besser,          Joe    Salary:  40000, Years:  1
+Key:   104001, Name:    Shrimpton,         Mick    Salary:  50000, Years:  4
+Key:   103001, Name:       Savage,          Viv    Salary:  50000, Years:  4
+Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+Key:   110001, Name:        Upham,        Danny    Salary:  60000, Years:  5
+Key:   109001, Name:    Eton-Hogg,        Denis    Salary: 250000, Years: 22
+Key:   108001, Name:     Fleckman,        Bobbi    Salary: 120000, Years:  8
+Key:   107001, Name:   St.Hubbins,        David    Salary:  90000, Years: 12
+Key:   106001, Name:       Smalls,        Derek    Salary:  80000, Years: 10
+   
+list 2:
+Key:   110001, Name:        Upham,        Danny    Salary:  60000, Years:  5
+Key:   109001, Name:    Eton-Hogg,        Denis    Salary: 250000, Years: 22
+Key:   108001, Name:     Fleckman,        Bobbi    Salary: 120000, Years:  8
+Key:   107001, Name:   St.Hubbins,        David    Salary:  90000, Years: 12
+Key:   106001, Name:       Smalls,        Derek    Salary:  80000, Years: 10
+   
+Items in list1/list2: 10/5
+============================================
+Total number of Lists/Nodes in use: 2/15
+============================================
+
+Items in list1/list2: 0/0
+============================================
+Total number of Lists/Nodes in use: 2/0
+============================================
+
+Before addition:
+list 1:
+
+list 2:
+Key:   105001, Name:       Besser,          Joe    Salary:  40000, Years:  1
+Key:   104001, Name:    Shrimpton,         Mick    Salary:  50000, Years:  4
+Key:   103001, Name:       Savage,          Viv    Salary:  50000, Years:  4
+Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+   
+Items in list1/list2: 0/5
+============================================
+Total number of Lists/Nodes in use: 2/5
+============================================
+
+After addition:
+list 1:
+
+list 2:
+Key:   105001, Name:       Besser,          Joe    Salary:  40000, Years:  1
+Key:   104001, Name:    Shrimpton,         Mick    Salary:  50000, Years:  4
+Key:   103001, Name:       Savage,          Viv    Salary:  50000, Years:  4
+Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+   
+Items in list1/list2: 0/5
+============================================
+Total number of Lists/Nodes in use: 2/5
+============================================
+
+Items in list1/list2: 0/0
+============================================
+Total number of Lists/Nodes in use: 2/0
+============================================
+
+Before addition:
+list 1:
+Key:   105001, Name:       Besser,          Joe    Salary:  40000, Years:  1
+Key:   104001, Name:    Shrimpton,         Mick    Salary:  50000, Years:  4
+Key:   103001, Name:       Savage,          Viv    Salary:  50000, Years:  4
+Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+   
+list 2:
+Key:   113001, Name:    Schindler,        Danny    Salary:  60000, Years:  3
+Key:   112001, Name:      Pudding,       Ronnie    Salary:  50000, Years:  2
+Key:   111001, Name:   McLochness,         Ross    Salary:  60000, Years:  5
+Key:   110001, Name:        Upham,        Danny    Salary:  60000, Years:  5
+Key:   109001, Name:    Eton-Hogg,        Denis    Salary: 250000, Years: 22
+   
+list 3:
+Key:   120001, Name:        Mason,         Nick    Salary:  15000, Years:  7
+Key:   119001, Name:     Zeppelin,          Led    Salary:  35000, Years:  3
+Key:   118001, Name:        Floyd,         Pink    Salary:  25000, Years:  6
+Key:   117001, Name:      DiBergi,        Marty    Salary:  15000, Years:  7
+Key:   116001, Name:       Fufkin,        Artie    Salary:  45000, Years:  1
+   
+Items in list1/list2/list3: 5/5/5
+============================================
+Total number of Lists/Nodes in use: 3/15
+============================================
+
+After addition:
+list 1:
+Key:   105001, Name:       Besser,          Joe    Salary:  40000, Years:  1
+Key:   104001, Name:    Shrimpton,         Mick    Salary:  50000, Years:  4
+Key:   103001, Name:       Savage,          Viv    Salary:  50000, Years:  4
+Key:   102001, Name:       Tufnel,        Nigel    Salary:  90000, Years: 12
+Key:   101001, Name:        Faith,          Ian    Salary:  80000, Years: 10
+Key:   113001, Name:    Schindler,        Danny    Salary:  60000, Years:  3
+Key:   112001, Name:      Pudding,       Ronnie    Salary:  50000, Years:  2
+Key:   111001, Name:   McLochness,         Ross    Salary:  60000, Years:  5
+Key:   110001, Name:        Upham,        Danny    Salary:  60000, Years:  5
+Key:   109001, Name:    Eton-Hogg,        Denis    Salary: 250000, Years: 22
+Key:   120001, Name:        Mason,         Nick    Salary:  15000, Years:  7
+Key:   119001, Name:     Zeppelin,          Led    Salary:  35000, Years:  3
+Key:   118001, Name:        Floyd,         Pink    Salary:  25000, Years:  6
+Key:   117001, Name:      DiBergi,        Marty    Salary:  15000, Years:  7
+Key:   116001, Name:       Fufkin,        Artie    Salary:  45000, Years:  1
+   
+list 2:
+Key:   113001, Name:    Schindler,        Danny    Salary:  60000, Years:  3
+Key:   112001, Name:      Pudding,       Ronnie    Salary:  50000, Years:  2
+Key:   111001, Name:   McLochness,         Ross    Salary:  60000, Years:  5
+Key:   110001, Name:        Upham,        Danny    Salary:  60000, Years:  5
+Key:   109001, Name:    Eton-Hogg,        Denis    Salary: 250000, Years: 22
+Key:   120001, Name:        Mason,         Nick    Salary:  15000, Years:  7
+Key:   119001, Name:     Zeppelin,          Led    Salary:  35000, Years:  3
+Key:   118001, Name:        Floyd,         Pink    Salary:  25000, Years:  6
+Key:   117001, Name:      DiBergi,        Marty    Salary:  15000, Years:  7
+Key:   116001, Name:       Fufkin,        Artie    Salary:  45000, Years:  1
+   
+list 3:
+Key:   120001, Name:        Mason,         Nick    Salary:  15000, Years:  7
+Key:   119001, Name:     Zeppelin,          Led    Salary:  35000, Years:  3
+Key:   118001, Name:        Floyd,         Pink    Salary:  25000, Years:  6
+Key:   117001, Name:      DiBergi,        Marty    Salary:  15000, Years:  7
+Key:   116001, Name:       Fufkin,        Artie    Salary:  45000, Years:  1
+   
+Items in list1/list2/list3: 15/10/5
+============================================
+Total number of Lists/Nodes in use: 3/30
+============================================
+
+clear list1:
+Items in list1/list2/list3: 0/10/5
+============================================
+Total number of Lists/Nodes in use: 3/15
+============================================
+

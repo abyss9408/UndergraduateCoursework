@@ -1,0 +1,222 @@
+---------------------TestAssignments---------------------
+============================================
+Total number of Lists/Nodes in use: 0/0
+============================================
+
+hlp2::Str::Str(hlp2::Str::const_pointer)2
+hlp2::Str::Str(const hlp2::Str&)2
+hlp2::Str::~Str()2
+hlp2::Str::Str(hlp2::Str::const_pointer)4
+hlp2::Str::Str(const hlp2::Str&)4
+hlp2::Str::~Str()4
+hlp2::Str::Str(hlp2::Str::const_pointer)6
+hlp2::Str::Str(const hlp2::Str&)6
+hlp2::Str::~Str()6
+hlp2::Str::Str(hlp2::Str::const_pointer)8
+hlp2::Str::Str(const hlp2::Str&)8
+hlp2::Str::~Str()8
+hlp2::Str::Str(hlp2::Str::const_pointer)10
+hlp2::Str::Str(const hlp2::Str&)10
+hlp2::Str::~Str()10
+hlp2::Str::Str(hlp2::Str::const_pointer)12
+hlp2::Str::Str(const hlp2::Str&)12
+hlp2::Str::~Str()12
+hlp2::Str::Str(hlp2::Str::const_pointer)14
+hlp2::Str::Str(const hlp2::Str&)14
+hlp2::Str::~Str()14
+hlp2::Str::Str(hlp2::Str::const_pointer)16
+hlp2::Str::Str(const hlp2::Str&)16
+hlp2::Str::~Str()16
+hlp2::Str::Str(hlp2::Str::const_pointer)18
+hlp2::Str::Str(const hlp2::Str&)18
+hlp2::Str::~Str()18
+hlp2::Str::Str(hlp2::Str::const_pointer)20
+hlp2::Str::Str(const hlp2::Str&)20
+hlp2::Str::~Str()20
+testing copy assignment:
+list1: 20  18  16  14  12  10   8   6   4   2   
+list2: 
+Items in list1/list2: 10/0
+============================================
+Total number of Lists/Nodes in use: 2/10
+============================================
+
+hlp2::Str::Str(const hlp2::Str&)20
+hlp2::Str::Str(const hlp2::Str&)18
+hlp2::Str::Str(const hlp2::Str&)16
+hlp2::Str::Str(const hlp2::Str&)14
+hlp2::Str::Str(const hlp2::Str&)12
+hlp2::Str::Str(const hlp2::Str&)10
+hlp2::Str::Str(const hlp2::Str&)8
+hlp2::Str::Str(const hlp2::Str&)6
+hlp2::Str::Str(const hlp2::Str&)4
+hlp2::Str::Str(const hlp2::Str&)2
+After assignment [list2 = list1]:
+list1: 20  18  16  14  12  10   8   6   4   2   
+list2: 20  18  16  14  12  10   8   6   4   2   
+Items in list1/list2: 10/10
+============================================
+Total number of Lists/Nodes in use: 2/20
+============================================
+
+list3: 
+hlp2::Str::Str(const hlp2::Str&)20
+hlp2::Str::Str(const hlp2::Str&)18
+hlp2::Str::Str(const hlp2::Str&)16
+hlp2::Str::Str(const hlp2::Str&)14
+hlp2::Str::Str(const hlp2::Str&)12
+hlp2::Str::Str(const hlp2::Str&)10
+hlp2::Str::Str(const hlp2::Str&)8
+hlp2::Str::Str(const hlp2::Str&)6
+hlp2::Str::Str(const hlp2::Str&)4
+hlp2::Str::Str(const hlp2::Str&)2
+hlp2::Str::~Str()20
+hlp2::Str::~Str()18
+hlp2::Str::~Str()16
+hlp2::Str::~Str()14
+hlp2::Str::~Str()12
+hlp2::Str::~Str()10
+hlp2::Str::~Str()8
+hlp2::Str::~Str()6
+hlp2::Str::~Str()4
+hlp2::Str::~Str()2
+hlp2::Str::Str(const hlp2::Str&)20
+hlp2::Str::Str(const hlp2::Str&)18
+hlp2::Str::Str(const hlp2::Str&)16
+hlp2::Str::Str(const hlp2::Str&)14
+hlp2::Str::Str(const hlp2::Str&)12
+hlp2::Str::Str(const hlp2::Str&)10
+hlp2::Str::Str(const hlp2::Str&)8
+hlp2::Str::Str(const hlp2::Str&)6
+hlp2::Str::Str(const hlp2::Str&)4
+hlp2::Str::Str(const hlp2::Str&)2
+After assignment [list3 = list2 = list1]:
+list1: 20  18  16  14  12  10   8   6   4   2   
+list2: 20  18  16  14  12  10   8   6   4   2   
+list3: 20  18  16  14  12  10   8   6   4   2   
+Items in list1/list2/list3: 10/10/10
+============================================
+Total number of Lists/Nodes in use: 3/30
+============================================
+
+testing copy assignment with initializer_list [list3 = list2 = list1]:
+Assigning initializer list: {"4","7","12","5","9","23","7","11","15","2"}
+hlp2::Str::Str(hlp2::Str::const_pointer)4
+hlp2::Str::Str(hlp2::Str::const_pointer)7
+hlp2::Str::Str(hlp2::Str::const_pointer)12
+hlp2::Str::Str(hlp2::Str::const_pointer)5
+hlp2::Str::Str(hlp2::Str::const_pointer)9
+hlp2::Str::Str(hlp2::Str::const_pointer)23
+hlp2::Str::Str(hlp2::Str::const_pointer)7
+hlp2::Str::Str(hlp2::Str::const_pointer)11
+hlp2::Str::Str(hlp2::Str::const_pointer)15
+hlp2::Str::Str(hlp2::Str::const_pointer)2
+hlp2::Str::Str(const hlp2::Str&)4
+hlp2::Str::Str(const hlp2::Str&)7
+hlp2::Str::Str(const hlp2::Str&)12
+hlp2::Str::Str(const hlp2::Str&)5
+hlp2::Str::Str(const hlp2::Str&)9
+hlp2::Str::Str(const hlp2::Str&)23
+hlp2::Str::Str(const hlp2::Str&)7
+hlp2::Str::Str(const hlp2::Str&)11
+hlp2::Str::Str(const hlp2::Str&)15
+hlp2::Str::Str(const hlp2::Str&)2
+hlp2::Str::~Str()20
+hlp2::Str::~Str()18
+hlp2::Str::~Str()16
+hlp2::Str::~Str()14
+hlp2::Str::~Str()12
+hlp2::Str::~Str()10
+hlp2::Str::~Str()8
+hlp2::Str::~Str()6
+hlp2::Str::~Str()4
+hlp2::Str::~Str()2
+hlp2::Str::Str(const hlp2::Str&)4
+hlp2::Str::Str(const hlp2::Str&)7
+hlp2::Str::Str(const hlp2::Str&)12
+hlp2::Str::Str(const hlp2::Str&)5
+hlp2::Str::Str(const hlp2::Str&)9
+hlp2::Str::Str(const hlp2::Str&)23
+hlp2::Str::Str(const hlp2::Str&)7
+hlp2::Str::Str(const hlp2::Str&)11
+hlp2::Str::Str(const hlp2::Str&)15
+hlp2::Str::Str(const hlp2::Str&)2
+hlp2::Str::~Str()20
+hlp2::Str::~Str()18
+hlp2::Str::~Str()16
+hlp2::Str::~Str()14
+hlp2::Str::~Str()12
+hlp2::Str::~Str()10
+hlp2::Str::~Str()8
+hlp2::Str::~Str()6
+hlp2::Str::~Str()4
+hlp2::Str::~Str()2
+hlp2::Str::Str(const hlp2::Str&)4
+hlp2::Str::Str(const hlp2::Str&)7
+hlp2::Str::Str(const hlp2::Str&)12
+hlp2::Str::Str(const hlp2::Str&)5
+hlp2::Str::Str(const hlp2::Str&)9
+hlp2::Str::Str(const hlp2::Str&)23
+hlp2::Str::Str(const hlp2::Str&)7
+hlp2::Str::Str(const hlp2::Str&)11
+hlp2::Str::Str(const hlp2::Str&)15
+hlp2::Str::Str(const hlp2::Str&)2
+hlp2::Str::~Str()20
+hlp2::Str::~Str()18
+hlp2::Str::~Str()16
+hlp2::Str::~Str()14
+hlp2::Str::~Str()12
+hlp2::Str::~Str()10
+hlp2::Str::~Str()8
+hlp2::Str::~Str()6
+hlp2::Str::~Str()4
+hlp2::Str::~Str()2
+hlp2::Str::~Str()2
+hlp2::Str::~Str()15
+hlp2::Str::~Str()11
+hlp2::Str::~Str()7
+hlp2::Str::~Str()23
+hlp2::Str::~Str()9
+hlp2::Str::~Str()5
+hlp2::Str::~Str()12
+hlp2::Str::~Str()7
+hlp2::Str::~Str()4
+After assignment:
+list1: 4   7  12   5   9  23   7  11  15   2   
+list2: 4   7  12   5   9  23   7  11  15   2   
+list3: 4   7  12   5   9  23   7  11  15   2   
+Items in list1/list2/list3: 10/10/10
+============================================
+Total number of Lists/Nodes in use: 3/30
+============================================
+
+hlp2::Str::~Str()4
+hlp2::Str::~Str()7
+hlp2::Str::~Str()12
+hlp2::Str::~Str()5
+hlp2::Str::~Str()9
+hlp2::Str::~Str()23
+hlp2::Str::~Str()7
+hlp2::Str::~Str()11
+hlp2::Str::~Str()15
+hlp2::Str::~Str()2
+hlp2::Str::~Str()4
+hlp2::Str::~Str()7
+hlp2::Str::~Str()12
+hlp2::Str::~Str()5
+hlp2::Str::~Str()9
+hlp2::Str::~Str()23
+hlp2::Str::~Str()7
+hlp2::Str::~Str()11
+hlp2::Str::~Str()15
+hlp2::Str::~Str()2
+hlp2::Str::~Str()4
+hlp2::Str::~Str()7
+hlp2::Str::~Str()12
+hlp2::Str::~Str()5
+hlp2::Str::~Str()9
+hlp2::Str::~Str()23
+hlp2::Str::~Str()7
+hlp2::Str::~Str()11
+hlp2::Str::~Str()15
+hlp2::Str::~Str()2

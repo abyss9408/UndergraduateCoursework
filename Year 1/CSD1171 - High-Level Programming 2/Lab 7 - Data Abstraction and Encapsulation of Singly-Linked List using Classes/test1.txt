@@ -1,0 +1,39 @@
+---------------------TestConstructors---------------------
+============================================
+Total number of Lists created: 0
+============================================
+
+testing default sctor ...
+list1 is empty
+Items in list1: 0
+use push_front to add 10 elements to list1
+list1:   30  27  24  21  18  15  12   9   6   3
+Items in list1: 10
+============================================
+Total number of Lists created: 1
+============================================
+
+testing copy ctor ...
+list2:   30  27  24  21  18  15  12   9   6   3
+list2 is not empty
+Items in list2: 10
+============================================
+Total number of Lists created: 2
+============================================
+
+testing single-argument ctor ...
+list3:    4   7  12   5   9  23   7  11  15   2
+list3 is not empty
+Items in list3: 10
+============================================
+Total number of Lists created: 3
+============================================
+
+testing single-argument ctor ...
+list4:   11
+list4 is not empty
+Items in list4: 1
+============================================
+Total number of Lists created: 4
+============================================
+

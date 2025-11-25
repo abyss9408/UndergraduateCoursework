@@ -1,0 +1,71 @@
+
+********** TestCopyAssign **********
+before vector<T>::swap
+a1: 0 2 4 6 8 10 12 14 16 18 [size=10, capacity=10, allocs=1]
+a2: 1 3 5 7 [size=4, capacity=4, allocs=3]
+after vector<T>::swap
+a1: 1 3 5 7 [size=4, capacity=4, allocs=3]
+a2: 0 2 4 6 8 10 12 14 16 18 [size=10, capacity=10, allocs=1]
+
+before ::swap
+a1: 0 2 4 6 8 10 12 14 16 18 [size=10, capacity=10, allocs=1]
+a2: 1 3 5 7 [size=4, capacity=4, allocs=1]
+after ::swap
+a1: 1 3 5 7 [size=4, capacity=4, allocs=2]
+a2: 0 2 4 6 8 10 12 14 16 18 [size=10, capacity=10, allocs=2]
+
+before hlp2::vector<T>::swap
+b1: < ~ @ ! + e ? # & % [size=10, capacity=10, allocs=1]
+b2: * ^ ( ) > [size=5, capacity=8, allocs=4]
+after hlp2::vector<T>::swap
+b1: * ^ ( ) > [size=5, capacity=8, allocs=4]
+b2: < ~ @ ! + e ? # & % [size=10, capacity=10, allocs=1]
+
+before ::swap
+b1: < ~ @ ! + e ? # & % * ^ ( ) > [size=15, capacity=15, allocs=1]
+b2: [size=0, capacity=0, allocs=0]
+after ::swap
+b1: [size=0, capacity=0, allocs=2]
+b2: < ~ @ ! + e ? # & % * ^ ( ) > [size=15, capacity=15, allocs=1]
+
+before hlp2::vector<T>::swap
+c1: Hello Bonjour Hola Nin hao Konnichiwa [size=5, capacity=5, allocs=1]
+c2: Guten Tag Namaste [size=2, capacity=2, allocs=2]
+after hlp2::vector<T>::swap
+c1: Guten Tag Namaste [size=2, capacity=2, allocs=2]
+c2: Hello Bonjour Hola Nin hao Konnichiwa [size=5, capacity=5, allocs=1]
+
+before ::swap
+c1: Hello Bonjour Hola Nin hao Konnichiwa [size=5, capacity=5, allocs=1]
+c2: Guten Tag Namaste [size=2, capacity=2, allocs=2]
+after ::swap
+c1: Guten Tag Namaste [size=2, capacity=2, allocs=2]
+c2: Hello Bonjour Hola Nin hao Konnichiwa [size=5, capacity=5, allocs=3]
+
+before hlp2::vector<T>::swap
+d1: 2.05 4.05 6.05 8.05 10.05 12.05 [size=6, capacity=6, allocs=1]
+d2: -12.1 -12.2 12.3 -12.4 12.5 -12.6 [size=6, capacity=6, allocs=2]
+after hlp2::vector<T>::swap
+d1: -12.1 -12.2 12.3 -12.4 12.5 -12.6 [size=6, capacity=6, allocs=2]
+d2: 2.05 4.05 6.05 8.05 10.05 12.05 [size=6, capacity=6, allocs=1]
+
+before ::swap
+d1: 2.05 4.05 6.05 8.05 10.05 12.05 [size=6, capacity=6, allocs=1]
+d2: -12.1 -12.2 12.3 -12.4 12.5 -12.6 [size=6, capacity=6, allocs=2]
+after ::swap
+d1: -12.1 -12.2 12.3 -12.4 12.5 -12.6 [size=6, capacity=6, allocs=2]
+d2: 2.05 4.05 6.05 8.05 10.05 12.05 [size=6, capacity=6, allocs=3]
+
+before hlp2::vector<T>::swap
+e1: <Seattle, WA> <Portland, OR> [size=2, capacity=2, allocs=1]
+e2: <Vancouver, BC> <Santa Barbara, CA> <Toronto, ON> <Montreal, PQ> [size=4, capacity=4, allocs=3]
+after hlp2::vector<T>::swap
+e1: <Vancouver, BC> <Santa Barbara, CA> <Toronto, ON> <Montreal, PQ> [size=4, capacity=4, allocs=3]
+e2: <Seattle, WA> <Portland, OR> [size=2, capacity=2, allocs=1]
+
+before ::swap
+e1: <Seattle, WA> <Portland, OR> [size=2, capacity=2, allocs=1]
+e2: <Vancouver, BC> <Santa Barbara, CA> <Toronto, ON> <Montreal, PQ> [size=4, capacity=4, allocs=3]
+after ::swap
+e1: <Vancouver, BC> <Santa Barbara, CA> <Toronto, ON> <Montreal, PQ> [size=4, capacity=4, allocs=2]
+e2: <Seattle, WA> <Portland, OR> [size=2, capacity=2, allocs=4]

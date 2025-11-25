@@ -1,0 +1,186 @@
+***** TestSwap1 *****
+a = 5, b = 8
+a = 8, b = 5
+***** TestSwap2 *****
+s1: (login) jdoe, (age) 20, (year) 3, (GPA) 3.82
+s2: (login) fbar, (age) 22, (year) 1, (GPA) 1.28
+s1: (login) fbar, (age) 22, (year) 1, (GPA) 1.28
+s2: (login) jdoe, (age) 20, (year) 3, (GPA) 3.82
+***** SwapRanges *****
+-1, 2, 6, -1, 9, 5, 7, -1, -1, 8, -1
+3, 6, 8, 0, -1, 5, -3, -9, 3, 5, 8
+3, 6, 8, 0, -1, 5, -3, -9, 3, 5, 8
+-1, 2, 6, -1, 9, 5, 7, -1, -1, 8, -1
+a, b, c, d, e, f
+g, h, i, j, k, l, m, n, o, p
+g, h, i, j, k, l
+a, b, c, d, e, f, m, n, o, p
+(login) jdoe, (age) 20, (year) 3, (GPA) 3.82
+(login) fbar, (age) 22, (year) 1, (GPA) 1.28
+(login) wxyz, (age) 19, (year) 3, (GPA) 1.59
+(login) abcd, (age) 20, (year) 1, (GPA) 1.99
+(login) jbar, (age) 22, (year) 2, (GPA) 3.38
+
+(login) eodj, (age) 21, (year) 3, (GPA) 2.38
+(login) rabf, (age) 20, (year) 2, (GPA) 2.81
+(login) zyxw, (age) 19, (year) 2, (GPA) 2.95
+(login) dcba, (age) 17, (year) 1, (GPA) 2.91
+(login) rabj, (age) 22, (year) 3, (GPA) 2.5
+
+
+(login) eodj, (age) 21, (year) 3, (GPA) 2.38
+(login) rabf, (age) 20, (year) 2, (GPA) 2.81
+(login) zyxw, (age) 19, (year) 2, (GPA) 2.95
+(login) dcba, (age) 17, (year) 1, (GPA) 2.91
+(login) rabj, (age) 22, (year) 3, (GPA) 2.5
+
+(login) jdoe, (age) 20, (year) 3, (GPA) 3.82
+(login) fbar, (age) 22, (year) 1, (GPA) 1.28
+(login) wxyz, (age) 19, (year) 3, (GPA) 1.59
+(login) abcd, (age) 20, (year) 1, (GPA) 1.99
+(login) jbar, (age) 22, (year) 2, (GPA) 3.38
+
+
+***** Remove1 *****
+5, -7, 4, 10, -21, 15, 9
+remove -1, new list: 5, -7, 4, 10, -21, 15, 9
+***** Remove2 *****
+5, -7, 4, 10, -7, 15, 9
+remove -7, new list: 5, 4, 10, 15, 9
+***** Remove3 *****
+-1, -1, -1, -1, -1, -1, -1
+remove -1, new list: 
+***** Remove4 *****
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, p, l, a, t, e, s
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, t, e, m, p, l, a, t, e, s
+l, a, r, n, i, n, g, a, b, o, u, t, c, t, m, p, l, a, t, s
+l, a, r, n, i, n, g, a, b, o, u, c, m, p, l, a, s
+l, r, n, i, n, g, b, o, u, c, m, p, l, s
+l, r, n, i, n, g, b, o, u, c, m, p, l
+r, n, i, n, g, b, o, u, c, m, p
+***** Count1 *****
+-1, 2, 6, -1, 9, 5, 7, -1, -1, 8, -1
+Count of -1 is 5
+***** Count2 *****
+-1, 2, 6, -1, 9, 5, 7, -1, -1, 8, -1
+Count of 50 is 0
+***** Count3 *****
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, p, l, a, t, e, s
+Count of + is 2
+Count of n is 1
+***** Count4 *****
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, p, l, a, t, e, s
+Count of l is 2
+Count of e is 2
+***** Find1 *****
+-1, 2, 6, -1, 9, 5, 7, -1, -1, 8, -1
+Item 9 is at index 4
+***** Find2 *****
+-1, 2, 6, -1, 9, 5, 7, -1, -1, 8, -1
+Changing 9 to 100
+-1, 2, 6, -1, 100, 5, 7, -1, -1, 8, -1
+***** Find3 *****
+-1, 2, 6, -1, 9, 5, 7, -1, -1, 8, -1
+Item 19 was not found
+***** Find4 *****
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, p, l, a, t, e, s
+Item n is at index 4
+Changing n to Z
+l, e, a, r, Z, i, n, g, a, b, o, u, t, c, +, +, t, e, m, p, l, a, t, e, s
+***** Find5 *****
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, p, l, a, t, e, s
+Item m is at index 18
+Changing m to Montreal
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, Montreal, p, l, a, t, e, s
+***** Copy1 *****
+-1, 2, 6, -1, 9, 5, 7, -1, -1, 8, -1
+-1, 2, 6, -1, 9, 5, 7, -1, -1, 8, -1
+***** Copy2 *****
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, p, l, a, t, e, s
+o, u, t, c, +, +, t, e, m, p
+***** Copy3 *****
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, p, l, a, t, e, s
+
+***** Fill1 *****
+12, 12, 12, 12, 12, 12, 12, 12, 12, 12
+***** Fill2 *****
+*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *
+***** Fill3 *****
+*, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *, *
+***** Replace1 *****
+-1, 2, 6, -1, 9, 5, 7, -1, -1, 8, -1
+Replacing -1 with -8
+-8, 2, 6, -8, 9, 5, 7, -8, -8, 8, -8
+***** Replace2 *****
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, p, l, a, t, e, s
+Replacing p with P
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, P, l, a, t, e, s
+***** Replace3 *****
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, p, l, a, t, e, s
+Replacing p with P
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, P, l, a, t, e, s
+***** Min1 *****
+-1, 2, 6, -31, 9, 5, 7, -21, -1, 8, -10
+The min element is: -31
+***** Min2 *****
+-1.1, 2.2, 6.3, -31.4, 9.5, 5.6, 7.7, -21.8, -1.9, 8.1, -10.2
+The min element is: -31.4
+***** Min3 *****
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, p, l, a, t, e, s
+The min element is: +
+***** Min4 *****
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, p, l, a, t, e, s
+The min element is: +
+***** Min5 *****
+(login) jdoe, (age) 20, (year) 3, (GPA) 3.82
+(login) fbar, (age) 22, (year) 1, (GPA) 1.28
+(login) wxyz, (age) 19, (year) 3, (GPA) 1.59
+(login) abcd, (age) 20, (year) 1, (GPA) 1.99
+(login) jbar, (age) 22, (year) 2, (GPA) 3.38
+The min element is: (login) fbar, (age) 22, (year) 1, (GPA) 1.28
+***** Max1 *****
+-1, 2, 6, -31, 9, 5, 7, -21, -1, 8, -10
+The max element is: 9
+***** Max2 *****
+-1.1, 2.2, 6.3, -31.4, 9.5, 5.6, 7.7, -21.8, -1.9, 8.1, -10.2
+The max element is: 9.5
+***** Max3 *****
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, p, l, a, t, e, s
+The max element is: u
+***** Max4 *****
+l, e, a, r, n, i, n, g, a, b, o, u, t, c, +, +, t, e, m, p, l, a, t, e, s
+The max element is: u
+***** Max5 *****
+(login) jdoe, (age) 20, (year) 3, (GPA) 3.82
+(login) fbar, (age) 22, (year) 1, (GPA) 1.28
+(login) wxyz, (age) 19, (year) 3, (GPA) 1.59
+(login) abcd, (age) 20, (year) 1, (GPA) 1.99
+(login) jbar, (age) 22, (year) 2, (GPA) 3.38
+The max element is: (login) jdoe, (age) 20, (year) 3, (GPA) 3.82
+***** Equal1 *****
+-1, 2, 6, -1, 9, 5, 7, -1, -1, 8, -1
+-1, 2, 6, -1, 9, 5, 7, -1, -1, 8, -1
+Arrays are equal
+***** Equal2 *****
+-1, 2, 6, -1, 9, 5, 7
+-1, 2, 6, -1, 9, 5, 7, -1, -1, 8, -1
+Arrays are equal
+***** Equal3 *****
+-1, 2, 6, -1, 9, 5, 7
+-1, 2, 6, -1, 9, 6, 7
+Arrays are not equal
+***** Sum1 *****
+3, 6, 8, 0, -1, 5, -3, -9, 3, 5, 8, -20, -5
+Sum in ai[0,1)  is: 3
+Sum in ai[0,2)  is: 9
+Sum in ai[5,7)  is: 2
+Sum in ai[0,13) is: 0
+3.3, 6.4, 8.5, 0.6, -1.7, 5.8, -3.9, -9, 3.1, 5.2, 8.3, -20.4, -5.5
+Sum in ad[0,1) is:  3.3
+Sum in ad[0,2) is:  9.7
+Sum in ad[5,7) is:  1.9
+Sum in ad[0,13) is: 0.7
+Concatenation in as1[0,1) is:   learningaboutc++templates
+Concatenation in as2[0,2) is:   learning about C++ templates
+Concatenation in as3[0,25) is:  abcdefghijklmnopqrstuwxyz
+Concatenation in as3[24,25) is: z

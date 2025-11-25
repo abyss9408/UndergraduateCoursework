@@ -1,0 +1,37 @@
+TestUppercase-----------------------------------------------------
+Word: Four (FOUR)
+Word: score (SCORE)
+Word: and (AND)
+Word: seven (SEVEN)
+Word: years (YEARS)
+Word: ago (AGO)
+Word: our (OUR)
+Word: fathers (FATHERS)
+Word: brought (BROUGHT)
+Word: forth (FORTH)
+Word: on (ON)
+Word: this (THIS)
+Word: continent (CONTINENT)
+Word: a (A)
+Word: new (NEW)
+Word: NATION (NATION)
+Word: fast123 (FAST123)
+Word: 123  abc (123  ABC)
+Word: Hello!! (HELLO!!)
+Word:  ()
+Word: *&^%$#8UPPERlower (*&^%$#8UPPERLOWER)
+TestGetinfo-----------------------------------------------------
+Lexicon: ./input/lexicon.txt
+Number of words: 12
+Shortest word: 4 letters
+Longest word: 10 letters
+TestGetinfo-----------------------------------------------------
+Lexicon: ./input/small.txt
+Number of words: 35
+Shortest word: 2 letters
+Longest word: 12 letters
+TestGetinfo-----------------------------------------------------
+Lexicon: ./input/allwords.txt
+Number of words: 168093
+Shortest word: 1 letters
+Longest word: 15 letters

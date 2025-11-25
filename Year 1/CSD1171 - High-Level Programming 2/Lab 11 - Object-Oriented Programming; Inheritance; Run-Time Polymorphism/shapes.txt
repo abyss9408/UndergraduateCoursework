@@ -1,0 +1,12 @@
+E black white 89,65 31 45
+P grey none 0,0 10,0 10,10 0,10
+E black white 19,67 66 33
+P red green 95,94 63,59 55,72 54,63
+E black white 39,65 31 43
+P white none 27,69 100,74 84,54 100,83 94,53
+P red yellow 86,59 66,76 93,66 50,89
+E none white 86,65 71 43
+E black red 49,65 33 95
+E black grey 81,65 64 41
+P green grey 65,47 72,96 57,55 40,96
+E black white 80,61 30 65

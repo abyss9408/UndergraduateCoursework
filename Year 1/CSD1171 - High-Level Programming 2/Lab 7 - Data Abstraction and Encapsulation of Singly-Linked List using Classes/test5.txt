@@ -1,0 +1,15 @@
+---------------------TestSubscript---------------------
+============================================
+Total number of Lists created: 0
+============================================
+
+testing operator[](size_type) const
+list1:  -11  11  22  33  44  55  66  77  88  99
+list[0] = -11
+list[5] = 55
+list[9] = 99
+
+testing operator[](size_type) 
+Original list2:  -11  11  22  33  44  55  66  77  88  99
+Modified list2:   10  11  22  33  44  20  66  22  88  30
+

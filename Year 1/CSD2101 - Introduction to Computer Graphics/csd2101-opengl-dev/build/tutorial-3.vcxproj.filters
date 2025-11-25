@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\SIT-Digipen\Year 1\Trimester 3\CSD2101 - Introduction to Computer Graphics\csd2101-opengl-dev\projects\tutorial-3\src\glapp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\SIT-Digipen\Year 1\Trimester 3\CSD2101 - Introduction to Computer Graphics\csd2101-opengl-dev\projects\tutorial-3\src\glhelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\SIT-Digipen\Year 1\Trimester 3\CSD2101 - Introduction to Computer Graphics\csd2101-opengl-dev\projects\tutorial-3\src\glslshader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\SIT-Digipen\Year 1\Trimester 3\CSD2101 - Introduction to Computer Graphics\csd2101-opengl-dev\projects\tutorial-3\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\SIT-Digipen\Year 1\Trimester 3\CSD2101 - Introduction to Computer Graphics\csd2101-opengl-dev\projects\tutorial-3\include\glapp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\SIT-Digipen\Year 1\Trimester 3\CSD2101 - Introduction to Computer Graphics\csd2101-opengl-dev\projects\tutorial-3\include\glhelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\SIT-Digipen\Year 1\Trimester 3\CSD2101 - Introduction to Computer Graphics\csd2101-opengl-dev\projects\tutorial-3\include\glslshader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\SIT-Digipen\Year 1\Trimester 3\CSD2101 - Introduction to Computer Graphics\csd2101-opengl-dev\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{8425D884-8818-326C-9BF9-46AADEF471F4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{0AF836C5-EBF2-3787-B1D4-4324FA5A1FE2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,21 @@
+List of tsunamis:
+-----------------
+12 22 2018    426      13.40     Sunda Strait, Indonesia
+11 14 2016      2       7.80     Kaikoura, New Zealand
+02 27 2010    150      15.00     Constitucion, Chile
+02 06 2013      9       1.50     Santa Cruz Island, Solomon Islands
+06 23 2001    145       7.20     Camana, Peru
+07 17 2006    668       7.60     Pangandaran, Indonesia
+09 29 2009    189      14.40     Samoa
+
+Summary information for tsunamis
+--------------------------------
+
+Maximum wave height (in meters): 15.00
+
+Average wave height (in meters):  9.56
+
+Tsunamis with greater than average height 9.56:
+13.40     Sunda Strait, Indonesia
+15.00     Constitucion, Chile
+14.40     Samoa

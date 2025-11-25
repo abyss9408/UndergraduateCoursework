@@ -1,0 +1,37 @@
+------------------TEST_WITH_PAIR-----------------------------
+a: <Seattle, WA> <Portland, OR> <Vancouver, BC> <Toronto, ON> 
+sizeof(a) == 256
+a: <Montreal, PQ> <Montreal, PQ> <Montreal, PQ> <Montreal, PQ> 
+b: <San Jose, PR> <San Antonio, TX> <San Luis Obispo, CA> <San Carlos, AZ> 
+a: <San Jose, PR> <San Antonio, TX> <San Luis Obispo, CA> <San Carlos, AZ> 
+b: <Montreal, PQ> <Montreal, PQ> <Montreal, PQ> <Montreal, PQ> 
+false
+b: <Santa Barbara, CA> <Montreal, PQ> <Montreal, PQ> <Santa Rosa, CA> 
+cb: <Santa Barbara, CA> <Montreal, PQ> <Montreal, PQ> <Santa Rosa, CA> 
+a1: <Seattle, WA> <Portland, OR> <Vancouver, BC> <Toronto, ON> 
+a2: <San Jose, PR> <San Antonio, TX> <San Luis Obispo, CA> <San Carlos, AZ> 
+Testing non-member swap:
+a1: <San Jose, PR> <San Antonio, TX> <San Luis Obispo, CA> <San Carlos, AZ> 
+a2: <Seattle, WA> <Portland, OR> <Vancouver, BC> <Toronto, ON> 
+Testing non-member swap:
+a1: <Seattle, WA> <Portland, OR> <Vancouver, BC> <Toronto, ON> 
+a2: <San Jose, PR> <San Antonio, TX> <San Luis Obispo, CA> <San Carlos, AZ> 
+a3: <San Jose, PR> <San Antonio, TX> <San Luis Obispo, CA> <San Carlos, AZ> 
+Testing non-member relational operators:
+a1 > a2
+a1 > a3
+a1 != a2
+a1 != a3
+a2 < a1
+a2 == a3
+a2 != a1
+a2 == a3
+a3 < a1
+a3 == a2
+a3 != a1
+a3 == a2
+Testing non-member relational operators:
+a1: <San Jose, PR> <San Antonio, TX> <San Luis Obispo, CA> <Toronto, ON> 
+a2: <San Jose, PR> <San Antonio, TX> <San Luis Obispo, CA> <San Carlos, AZ> 
+a1 > a2
+a1 > a3

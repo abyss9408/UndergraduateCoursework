@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\SIT-Digipen\Year 1\Trimester 3\CSD2101 - Introduction to Computer Graphics\csd2101-opengl-dev\build\CMakeFiles\108125e2408af8a0184914fc2452c0c8\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{D5AE1B7B-BA98-3EEE-BD63-A91AB7727507}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,51 @@
+------------------TEST_WITH_STRING---------------------------
+a[0]: 1
+a has size: 5
+a[0]: 111
+ca[4]: 5
+a[4]: 555
+ca[4]: 5
+a: 1111 2 3 4 5555 
+sizeof(a) == 160
+a: 111 2 3 4 5 
+sizeof(a) == 160
+ca: 111 2 3 4 5 
+sizeof(ca) == 160
+a: 111 222 333 444 555 
+a: a a a a a 
+b: z z z z z 
+sizeof(b) == 160
+a: z z z z z 
+b: a a a a a 
+a: today is a good day 
+b: Tomorrow will be much better 
+false
+b: front will be much back 
+cb: front will be much back 
+Testing non-member swap:
+a1: a b c d e 
+a2: a b c d d 
+a1: a b c d d 
+a2: a b c d e 
+Testing non-member swap:
+a1: a b c d e 
+a2: a b c d d 
+a3: a b c d d 
+Testing non-member relational operators:
+a1 > a2
+a1 > a3
+a1 != a2
+a1 != a3
+a2 < a1
+a2 == a3
+a2 != a1
+a2 == a3
+a3 < a1
+a3 == a2
+a3 != a1
+a3 == a2
+Testing non-member relational operators:
+a1: a b c d a 
+a2: a b c d d 
+a1 < a2
+a1 < a3

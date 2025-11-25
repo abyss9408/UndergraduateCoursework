@@ -1,0 +1,69 @@
+---------------------TestAdditions---------------------
+============================================
+Total number of Lists/Nodes in use: 0/0
+============================================
+
+testing op+ and op+= [thro' op+] ...
+list1: 5   4   3   2   1   
+list2: 50  40  30  20  10   
+Items in list1/list2: 5/5
+============================================
+Total number of Lists/Nodes in use: 2/10
+============================================
+
+testing list1 + list2:
+list1: 5   4   3   2   1   
+list2: 50  40  30  20  10   
+list3: 5   4   3   2   1  50  40  30  20  10   
+Items in list1/list2/list3: 5/5/10
+============================================
+Total number of Lists/Nodes in use: 3/20
+============================================
+
+testing list1 + list2 + list3:
+list4: 5   4   3   2   1  50  40  30  20  10   5   4   3   2   1  50  40  30  20  10   
+Items in list1/list2/list3/list4: 5/5/10/20
+============================================
+Total number of Lists/Nodes in use: 4/40
+============================================
+
+testing list4 += {"-1","4","-5","6","-7"}+list1+list2+list3+{"31","41","51","61","71"}:
+list4: 5   4   3   2   1  50  40  30  20  10   5   4   3   2   1  50  40  30  20  10  -1   4  -5   6  -7   5   4   3   2   1  50  40  30  20  10  31  41  51  61  71   
+Items in list1/list2/list3/list4: 5/5/10/40
+============================================
+Total number of Lists/Nodes in use: 4/60
+============================================
+
+testing list1 += list2 ...
+list1: 5   4   3   2   1   
+list2: 50  40  30  20  10   
+After addition list1 += list2:
+list1: 5   4   3   2   1  50  40  30  20  10   
+Items in list1/list2/list3/list4: 10/5/10/40
+============================================
+Total number of Lists/Nodes in use: 4/65
+============================================
+
+testing list1 += list5 [empty list] ...
+list1: 5   4   3   2   1  50  40  30  20  10   
+list5: 
+After addition list1 += list5 [empty list] ...
+list1: 5   4   3   2   1  50  40  30  20  10   
+Items in list1/list2/list3/list4/list5: 10/5/10/40/0
+============================================
+Total number of Lists/Nodes in use: 5/65
+============================================
+
+testing list6 += list7 += list8 ...
+list6: 5   4   3   2   1   
+list7: 10   8   6   4   2   
+list8: 25  20  15  10   5   
+After addition list6 += list7 += list8 ...
+list6: 5   4   3   2   1  10   8   6   4   2  25  20  15  10   5   
+list7: 10   8   6   4   2  25  20  15  10   5   
+list8: 25  20  15  10   5   
+Items in list1/list2/list3/list4/list5/list6/list7/list8: 10/5/10/40/0/15/10/5
+============================================
+Total number of Lists/Nodes in use: 8/95
+============================================
+

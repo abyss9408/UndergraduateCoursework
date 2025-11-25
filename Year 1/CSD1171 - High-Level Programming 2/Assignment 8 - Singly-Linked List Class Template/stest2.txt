@@ -1,0 +1,78 @@
+---------------------TestPushFrontBackAndPop---------------------
+============================================
+Total number of Lists/Nodes in use: 0/0
+============================================
+
+testing push_front() and size() ...
+list1: -20 -18 -16 -14 -12 -10  -8  -6  -4  -2   
+Items in list1: 10
+============================================
+Total number of Lists/Nodes in use: 1/10
+============================================
+
+testing push_back() and size() ...
+list2: 1   2   3   4   5   6   7   8   9  10   
+Items in list1/list2: 10/10
+============================================
+Total number of Lists/Nodes in use: 2/20
+============================================
+
+testing front() and size() ...
+testing front() const ...
+front value: -10
+list2: -10   2   3   4   5   6   7   8   9  10   
+Items in list1/list2: 10/10
+============================================
+Total number of Lists/Nodes in use: 2/20
+============================================
+
+testing both push_front(), push_back(), and size() ...
+list3: 10   9   8   7   6   5   4   3   2   1   5  10  15  20  25  30  35  40  45  50   
+Items in list1/list2/list3: 10/10/20
+============================================
+Total number of Lists/Nodes in use: 3/40
+============================================
+
+testing pop_front(), push_front(), front(), empty(), size() ...
+Original list4: 10   9   8   7   6   5   4   3   2   1   
+Items in list1/list2/list3/list4: 10/10/20/10
+============================================
+Total number of Lists/Nodes in use: 4/50
+============================================
+
+First item was: 10
+New list4: 9   8   7   6   5   4   3   2   1   
+Items in list4: 9
+First item was: 9
+New list4: 8   7   6   5   4   3   2   1   
+Items in list4: 8
+First item was: 8
+New list4: 7   6   5   4   3   2   1   
+Items in list4: 7
+First item was: 7
+New list4: 6   5   4   3   2   1   
+Items in list4: 6
+First item was: 6
+New list4: 5   4   3   2   1   
+Items in list4: 5
+First item was: 5
+New list4: 4   3   2   1   
+Items in list4: 4
+First item was: 4
+New list4: 3   2   1   
+Items in list4: 3
+First item was: 3
+New list4: 2   1   
+Items in list4: 2
+First item was: 2
+New list4: 1   
+Items in list4: 1
+First item was: 1
+New list4: 
+Items in list4: 0
+
+Items in list1/list2/list3/list4: 10/10/20/0
+============================================
+Total number of Lists/Nodes in use: 4/40
+============================================
+
