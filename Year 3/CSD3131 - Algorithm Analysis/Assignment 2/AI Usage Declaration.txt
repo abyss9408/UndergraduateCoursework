@@ -1,0 +1,10 @@
+Code Generation Prompts:
+“Could you help me create a usable UI that has custom fields for carving rows and columns?”
+“Could you help me display the carve line in the preview image?”
+“Could you help me separate the DP and greedy implementations into different modules?”
+“How do I handle texture cleanup when updating images in DearPyGui?”
+“Could you help me add a small delay between seam removals so users can see the progress?”
+
+Report Generation Prompts:
+“Could you help me write this formula with scientific symbols?”
+“Could you help me write down the time and space complexities for dynamic programming and greedy algorithm?”
