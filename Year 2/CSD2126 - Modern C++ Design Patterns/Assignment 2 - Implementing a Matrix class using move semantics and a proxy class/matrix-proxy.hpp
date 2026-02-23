@@ -1,4 +1,21 @@
-// Don't forget file-header and function-level Doxygen documentation blocks!!!
+/*!************************************************************************
+  \file matrix-proxy.hpp
+
+  \author Bryan Ang Wei Ze
+
+  \par DP email: bryanweize.ang\@digipen.edu
+
+  \par Course: CSD2126 Modern C++ Design Patterns
+
+  \par Programming Assignment #2
+
+  \date 25-09-2024
+  
+  \brief
+  This header file containing definition of class template Matrix,
+  declarations of non-member functions, definitions of member functions
+  outside definition class Matrix, and definitions of non-member functions.
+**************************************************************************/
 
 // First, define the class template. Then, define the member functions of the class template
 // OUTSIDE the class definition. The automatic grader will not be able to check for this - 
@@ -20,6 +37,7 @@ namespace HLP3
     class Matrix
     {
     public:
+        // provide common standard library container type definitions
         using size_type = size_t;
         using value_type = T;
         using pointer = value_type*;
@@ -30,36 +48,157 @@ namespace HLP3
         class RowProxy
         {
         public:
-            RowProxy(pointer row, size_type cols);
+            RowProxy(Matrix& matrix, size_type row);
             reference operator[](size_type col);
         private:
-            pointer row_;
-            size_type cols_;
+            Matrix& matrix_;
+            size_type row_;
         };
 
         class ConstRowProxy
         {
         public:
-            ConstRowProxy(const_pointer row, size_type cols);
+            ConstRowProxy(const Matrix& matrix, size_type row);
             const_reference operator[](size_type col) const;
         private:
-            const_pointer row_;
-            size_type cols_;
+            const Matrix& matrix_;
+            size_type row_;
         };
 
     public:
+        /***************************************************************************/
+        /*!
+        \brief
+        Constructor that creates nr x nc matrix
+
+        \param nr
+        Number of rows
+
+        \param nc
+        Number of columns
+
+        */
+        /**************************************************************************/
         Matrix(size_type nr, size_type nc);
+
+        /***************************************************************************/
+        /*!
+        \brief
+        Copy constructor that creates a matrix that is a deep copy of matrix rhs
+
+        \param rhs
+        Matrix to copy construct from
+        */
+        /**************************************************************************/
         Matrix(Matrix const& rhs);
+
+        /***************************************************************************/
+        /*!
+        \brief
+        Move constructor that move constructs a matrix from matrix rhs
+
+        \param rhs
+        Matrix to move construct from
+        */
+        /**************************************************************************/
         Matrix(Matrix&& rhs) noexcept;
+
+        /***************************************************************************/
+        /*!
+        \brief
+        Constructor that creates nr x nc matrix from an initializer list that has
+        nr rows and nc columns
+
+        \param list
+        Initializer list to construct matrix from
+        */
+        /**************************************************************************/
         Matrix(std::initializer_list<std::initializer_list<value_type>> list);
+
+        /***************************************************************************/
+        /*!
+        \brief
+        Destructor that destroys the matrix by explicitly returning storage to free store.
+        */
+        /**************************************************************************/
         ~Matrix() noexcept;
+
+        /***************************************************************************/
+        /*!
+        \brief
+        Copy assignment operator that replaces the matrix with a deep copy of rhs
+
+        \param rhs
+        Matrix to deep copy from
+
+        \return
+        New matrix
+        */
+        /**************************************************************************/
         Matrix& operator=(Matrix const& rhs);
+
+        /***************************************************************************/
+        /*!
+        \brief
+        Move assignment operator that replaces the matrix with a move of rhs
+
+        \param rhs
+        Matrix to move from
+
+        \return
+        New matrix
+        */
+        /**************************************************************************/
         Matrix& operator=(Matrix&& rhs) noexcept;
+        
+        /***************************************************************************/
+        /*!
+        \brief
+        Returns the number of rows in matrix
 
+        \return
+        Number of rows
+        */
+        /**************************************************************************/
         size_type get_rows() const noexcept;
-        size_type get_cols() const noexcept;
 
+        /***************************************************************************/
+        /*!
+        \brief
+        Returns the number of columns in matrix
+
+        \return
+        Number of columns
+        */
+        /**************************************************************************/
+        size_type get_cols() const noexcept;
+        
+        /***************************************************************************/
+        /*!
+        \brief
+        Subscipting operator that returns index where rth row of matrix data
+
+        \param r
+        Row index
+
+        \return
+        An object of nested RowProxy class
+        */
+        /**************************************************************************/
         RowProxy operator[](size_type r);
+
+        /***************************************************************************/
+        /*!
+        \brief
+        Subscipting operator that returns index where rth row of matrix data
+
+        \param r
+        Row index
+
+        \return
+        An object of nested ConstRowProxy class
+        */
+        /**************************************************************************/
         ConstRowProxy operator[](size_type r) const;
 
     private:
@@ -70,32 +209,32 @@ namespace HLP3
     
     // RowProxy member functions
     template <typename T>
-    Matrix<T>::RowProxy::RowProxy(pointer row, size_type cols)
-        : row_(row), cols_(cols) {}
+    Matrix<T>::RowProxy::RowProxy(Matrix& matrix, size_type row)
+        : matrix_(matrix), row_(row) {}
 
     template <typename T>
-    typename Matrix<T>::reference Matrix<T>::RowProxy::operator[](size_type c)
+    typename Matrix<T>::reference Matrix<T>::RowProxy::operator[](size_type col)
     {
-        if (c >= cols_)
+        if (col >= matrix_.cols)
         {
             throw std::out_of_range("Column index out of range");
         }
-        return row_[c];
+        return matrix_.data[row_ * matrix_.cols + col];
     }
 
     // ConstRowProxy member functions
     template <typename T>
-    Matrix<T>::ConstRowProxy::ConstRowProxy(const_pointer row, size_type cols)
-        : row_(row), cols_(cols) {}
+    Matrix<T>::ConstRowProxy::ConstRowProxy(const Matrix& matrix, size_type row)
+        : matrix_(matrix), row_(row) {}
 
     template <typename T>
-    typename Matrix<T>::const_reference Matrix<T>::ConstRowProxy::operator[](size_type c) const
+    typename Matrix<T>::const_reference Matrix<T>::ConstRowProxy::operator[](size_type col) const
     {
-        if (c >= cols_)
+        if (col >= matrix_.cols)
         {
             throw std::out_of_range("Column index out of range");
         }
-        return row_[c];
+        return matrix_.data[row_ * matrix_.cols + col];
     }
 
     // Matrix member functions
@@ -187,7 +326,7 @@ namespace HLP3
             throw std::out_of_range("Row index out of range");
         }
         
-        return RowProxy(data + r * cols, cols);
+        return RowProxy(*this, r);
     }
 
     template <typename T>
@@ -198,7 +337,7 @@ namespace HLP3
             throw std::out_of_range("Row index out of range");
         }
         
-        return ConstRowProxy(data + r * cols, cols);
+        return ConstRowProxy(*this, r);
     }
 
     // Global functions of Matrix API

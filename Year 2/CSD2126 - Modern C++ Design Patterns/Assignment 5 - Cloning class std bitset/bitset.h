@@ -141,6 +141,7 @@ namespace HLP3
 
             \return
             A string representing the bits in the bitset.
+            */
         /**************************************************************************/
         std::string to_string(char zero = '0', char one = '1') const;
 
@@ -155,6 +156,7 @@ namespace HLP3
 
             \return
             true if the bit at position pos is set, and false if it is not set.
+            */
         /**************************************************************************/
         bool test(size_t pos) const;
 
@@ -165,6 +167,7 @@ namespace HLP3
 
             \return
             The number of bits in the bitset.
+            */
         /**************************************************************************/
         constexpr size_t size() noexcept;
 
@@ -179,6 +182,7 @@ namespace HLP3
 
             \return
             The bit at position pos.
+            */
         /**************************************************************************/
         bool operator[] (size_t pos) const;
 
@@ -189,6 +193,7 @@ namespace HLP3
 
             \return
             The number of bits set.
+            */
         /**************************************************************************/
         size_t count() const noexcept;
     private:

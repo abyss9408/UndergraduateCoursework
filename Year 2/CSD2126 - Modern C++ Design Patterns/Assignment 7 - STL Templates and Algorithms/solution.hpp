@@ -1,5 +1,19 @@
-// Don't forget file-header and function-level Doxygen
-// documentation blocks!!!
+/*!************************************************************************
+  \file solution.hpp
+
+  \author Bryan Ang Wei Ze
+
+  \par DP email: bryanweize.ang\@digipen.edu
+
+  \par Course: CSD2126 Modern C++ Design Patterns
+
+  \par Programming Assignment #7
+
+  \date 12-11-2024
+  
+  \brief
+  This header file contains definitions of functions that process file records stats
+**************************************************************************/
 void print_file_names(const file_records& map)
 {
     std::for_each(std::cbegin(map), std::cend(map), std::bind(print_file_name, 

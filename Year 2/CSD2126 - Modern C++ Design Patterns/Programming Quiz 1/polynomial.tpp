@@ -1,5 +1,20 @@
-// Provide file documentation header
-// Don't include any library headers!!!
+/*!************************************************************************
+  \file polynomial.tpp
+
+  \author Bryan Ang Wei Ze
+
+  \par DP email: bryanweize.ang\@digipen.edu
+
+  \par Course: CSD2126 Modern C++ Design Patterns
+
+  \par Programming Quiz #1
+
+  \date 17-09-2024
+  
+  \brief
+  This source file defines the member functions of the class template
+  Polynomial
+**************************************************************************/
 
 namespace HLP3 {
 
@@ -48,14 +63,14 @@ const T& Polynomial<T, N>::operator[](int index) const
 }
 
 template <typename T, int N>
-template <int J>
-Polynomial<T, N + J> Polynomial<T, N>::operator*(const Polynomial<T, J>& rhs)
+template <int M>
+Polynomial<T, N + M> Polynomial<T, N>::operator*(const Polynomial<T, M>& rhs)
 {
-  Polynomial<T, N + J> tmp;
+  Polynomial<T, N + M> tmp;
 
   for (int i = 0; i < N + 1; ++i)
   {
-    for (int j = 0; j < J + 1; ++j)
+    for (int j = 0; j < M + 1; ++j)
     {
       tmp[i + j] += data[i] * rhs[j];
     }
