@@ -1,199 +1,210 @@
 /******************************************************************************/
 /*!
-\file		StandaloneServer.h
-\author 	Low Yue Jun
-\par    	email: yuejun.low\@digipen.edu
-\date   	March 29, 2025
-\brief		This header file declares the StandaloneServer class.
-
-Copyright (C) 2025 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- */
- /******************************************************************************/
-
-#ifndef STANDALONE_SERVER_H_
-#define STANDALONE_SERVER_H_
+\file   StandaloneServer.h
+\brief  Authoritative game server for Asteroids multiplayer
+*/
+/******************************************************************************/
+#pragma once
 
 #include "UDPSocket.h"
 #include "NetworkMessage.h"
-#include <map>
-#include <vector>
-#include <string>
-#include <random>
-#include <chrono>
-#include <unordered_map>
-#include <memory>
-#include <atomic>
+
 #include <thread>
 #include <mutex>
+#include <condition_variable>
+#include <queue>
+#include <atomic>
+#include <string>
+#include <vector>
 
-// Forward declarations
-struct ServerGameObj;
-struct ServerPlayer;
-struct AABB;
+// ---------------------------------------------------------------------------
+// Server-side constants
+static constexpr int   MAX_PLAYERS       = 4;
+static constexpr int   MAX_ASTEROIDS     = 256;
+static constexpr int   MAX_BULLETS       = 512;
+static constexpr float WIN_SCORE         = 5000.f;
+static constexpr float WIN_MIN_X         = -400.f;
+static constexpr float WIN_MAX_X         =  400.f;
+static constexpr float WIN_MIN_Y         = -300.f;
+static constexpr float WIN_MAX_Y         =  300.f;
 
-// Structure to represent a point in 2D space for the server
-struct Vec2 {
-    float x, y;
+static constexpr float SHIP_SCALE        = 16.f;
+static constexpr float SHIP_ACCEL        = 100.f;
+static constexpr float SHIP_ROT_SPEED    = 6.2831853f; // 2*PI
+static constexpr float BULLET_SPEED      = 400.f;
+static constexpr float BULLET_SCALE_X    = 20.f;
+static constexpr float BULLET_SCALE_Y    = 3.f;
+static constexpr float AST_MIN_SCALE     = 10.f;
+static constexpr float AST_MAX_SCALE     = 60.f;
 
-    Vec2() : x(0.0f), y(0.0f) {}
-    Vec2(float _x, float _y) : x(_x), y(_y) {}
+static constexpr double ACK_TIMEOUT_SEC  = 0.5;   // force-ACK after 500 ms
+static constexpr double HB_TIMEOUT_SEC  = 3.0;    // kick player after 3 s silence
+static constexpr double CONFIRM_INTERVAL = 0.2;   // retransmit CONFIRM every 200 ms
+static constexpr int   CONFIRM_RETRIES   = 3;
 
-    // Convert to NetVector2
-    NetVector2 ToNetVector2() const {
-        return NetVector2(x, y);
-    }
-
-    // Convert from NetVector2
-    static Vec2 FromNetVector2(const NetVector2& netVec) {
-        return Vec2(netVec.x, netVec.y);
-    }
+// ---------------------------------------------------------------------------
+struct PlayerInfo
+{
+    sockaddr_in addr{};
+    char        name[17]   = {};
+    bool        active     = false;
+    uint32_t    score      = 0;
+    float       posX       = 0.f;
+    float       posY       = 0.f;
+    float       velX       = 0.f;
+    float       velY       = 0.f;
+    float       dirCurr    = 0.f;
+    uint8_t     inputBits  = 0;
+    double      lastMsgTime = 0.0;
+    uint16_t    lastSeq    = 0;
 };
 
-// Structure to hold object data on the server
-struct ServerGameObj {
-    uint32_t id;
-    uint8_t type;
-    uint8_t ownerID;
-    Vec2 position;
-    Vec2 velocity;
-    float direction;
-    Vec2 scale;
-    bool isActive;
-
-    // Collision data
-    AABB* boundingBox;
-
-    ServerGameObj() :
-        id(0), type(0), ownerID(0), direction(0.0f), isActive(false), boundingBox(nullptr) {
-    }
+struct AsteroidState
+{
+    bool     active       = false;
+    bool     dying        = false;   // waiting for all ACKs
+    uint16_t id           = 0;
+    float    posX         = 0.f;
+    float    posY         = 0.f;
+    float    velX         = 0.f;
+    float    velY         = 0.f;
+    float    scaleX       = 20.f;
+    float    scaleY       = 20.f;
+    uint8_t  ackBits      = 0;       // one bit per player, set on ACK
+    uint8_t  expectedAckBits = 0;    // which players we expect
+    double   destroyTime  = 0.0;
+    int      scoringPlayer = -1;
+    int      confirmRetries = 0;
+    double   nextRetryTime  = 0.0;
 };
 
-// Structure to hold player data on the server
-struct ServerPlayer {
-    uint8_t id;
-    std::string name;
-    bool isConnected;
-    NetworkEndpoint endpoint;
-    uint32_t score;
-    uint8_t lives;
-    ServerGameObj* ship;
-    std::chrono::steady_clock::time_point lastHeardTime;
-    bool timeoutWarningIssued;  // Add this flag
-
-    ServerPlayer() :
-        id(0), name(""), isConnected(false), score(0), lives(3), ship(nullptr), timeoutWarningIssued(false) {
-    }
+struct BulletState
+{
+    bool     active   = false;
+    uint16_t id       = 0;
+    int      ownerId  = 0;
+    float    posX     = 0.f;
+    float    posY     = 0.f;
+    float    velX     = 0.f;
+    float    velY     = 0.f;
+    float    dirCurr  = 0.f;
 };
 
-// Structure to hold pending destroy events
-struct ServerDestroyEvent {
-    uint32_t objectID;
-    uint32_t sequenceNumber;
-    std::map<uint8_t, bool> playerAcks;
-
-    ServerDestroyEvent() : objectID(0), sequenceNumber(0) {}
+// ---------------------------------------------------------------------------
+// Outbound packet for the send queue
+struct OutPacket
+{
+    sockaddr_in dest;
+    std::vector<uint8_t> data;
 };
 
-// StandaloneServer class
-class StandaloneServer {
+// ---------------------------------------------------------------------------
+class StandaloneServer
+{
 public:
-    StandaloneServer();
+    StandaloneServer(uint16_t port, int minPlayers, int maxPlayers);
     ~StandaloneServer();
 
-    // Initialize the server
-    bool Initialize();
-
-    // Run the server (blocking)
-    void Run();
-
-    // Shutdown the server
-    void Shutdown();
+    void Run();  // blocks until server is stopped
 
 private:
-    // Network communication
-    UDPSocket m_socket;
-    std::map<uint8_t, ServerPlayer> m_players;
-    std::atomic<bool> m_isRunning;
-    std::mutex m_gameStateMutex;  // Protects m_gameObjects and m_players from race conditions
+    // -----------------------------------------------------------------------
+    // Thread functions
+    void ReceiveThreadFunc();
+    void GameLoopFunc();
+    void SendThreadFunc();
 
-    // Game state
-    std::vector<ServerGameObj> m_gameObjects;
-    uint32_t m_nextObjectID;
-    uint32_t m_currentSequence;
-    std::map<uint32_t, ServerDestroyEvent> m_pendingDestroyEvents;
-    float m_gameRestartTimer; // Timer for automatic game restart after win
+    // -----------------------------------------------------------------------
+    // Inbound handlers
+    void HandleConnect(const NetworkMessage& msg, const sockaddr_in& from);
+    void HandleDisconnect(const NetworkMessage& msg, const sockaddr_in& from);
+    void HandleHeartbeat(const NetworkMessage& msg, const sockaddr_in& from);
+    void HandlePlayerInput(const NetworkMessage& msg, const sockaddr_in& from);
+    void HandleAsteroidHit(const NetworkMessage& msg, const sockaddr_in& from);
+    void HandleAsteroidDestroyAck(const NetworkMessage& msg, const sockaddr_in& from);
 
-    // Game settings
-    uint32_t m_randomSeed;
-    std::mt19937 m_rng;
-    bool m_gameStarted;
-    std::chrono::steady_clock::time_point m_gameStartTime;
-
-    // Game loop thread
-    std::thread m_gameLoopThread;
-
-    // Process network messages
-    void OnMessageReceived(const NetworkMessage* message, const NetworkEndpoint& sender);
-
-    // Game loop
-    void GameLoopThreadFunc();
-
-    // Handle different message types
-    void HandleJoinRequest(const JoinRequestMessage* message, const NetworkEndpoint& sender);
-    void HandlePlayerInput(const PlayerInputMessage* message, const NetworkEndpoint& sender);
-    void HandleObjectDestroyAck(const ObjectDestroyAckMessage* message, const NetworkEndpoint& sender);
-    void HandlePing(const PingMessage* message, const NetworkEndpoint& sender);
-    void HandleDisconnect(const DisconnectMessage* message, const NetworkEndpoint& sender);
-
-    // Send game state updates to all players
-    void BroadcastGameState();
-
-    // Initialize the game state
-    void InitializeGame();
-
-    // Update the game state
-    void UpdateGame(float deltaTime);
-
-    // Check for collisions
+    // -----------------------------------------------------------------------
+    // Game-loop helpers
+    void ProcessInboundMessages();
+    void TickShips(float dt);
+    void TickBullets(float dt);
+    void TickAsteroids(float dt);
     void CheckCollisions();
+    void CheckHeartbeatTimeouts();
 
-    // Process input for a player
-    void ProcessPlayerInput(ServerPlayer& player, uint8_t inputFlags, float direction);
+    // -----------------------------------------------------------------------
+    // Asteroid lifecycle
+    void    SpawnInitialAsteroids();
+    uint16_t SpawnAsteroid(float px, float py, float vx, float vy,
+                           float sx, float sy);
+    void    InitiateAsteroidDestroy(uint16_t astIdx, int scoringPlayer);
+    void    CheckPendingAsteroidAcks();
+    void    ConfirmAsteroidDestroy(uint16_t astIdx);
 
-    // Create game objects
-    ServerGameObj* CreateGameObject(uint8_t type, uint8_t ownerID, const Vec2& position, const Vec2& velocity, float direction, const Vec2& scale);
+    // -----------------------------------------------------------------------
+    // Broadcast helpers
+    void BroadcastToAll(const NetworkMessage& msg);
+    void SendTo(const NetworkMessage& msg, int playerIdx);
+    void Enqueue(const NetworkMessage& msg, int playerIdx);    // -> send queue
+    void EnqueueAll(const NetworkMessage& msg);               // -> send queue all
+    void BroadcastShipStates();
+    void BroadcastAsteroidCorrections();
 
-    // Destroy a game object
-    void DestroyGameObject(uint32_t objectID);
+    // -----------------------------------------------------------------------
+    // Score
+    void UpdateScore(int playerIdx, uint32_t addScore);
+    void CheckWinCondition();
+    void SendGameOver(int winnerId);
+    void SaveScore(const char* name, uint32_t score);
 
-    // Convert server object to network object
-    NetworkGameObject ConvertToNetworkObject(const ServerGameObj& obj);
+    // -----------------------------------------------------------------------
+    // Utility
+    uint8_t BuildExpectedAckBits() const;
+    int     FindPlayer(const sockaddr_in& addr) const;
+    double  NowSec()  const;
+    float   RandF(float lo, float hi);
+    float   RandFExcl(float lo, float hi, float exLo, float exHi);
+    float   WrapVal(float v, float lo, float hi) const;
 
-    // Check if all acknowledgments have been received for a destroy event
-    bool AreAllAcksReceived(const ServerDestroyEvent& event);
+    // -----------------------------------------------------------------------
+    // State
+    UDPSocket   _socket;
+    uint16_t    _port;
+    int         _minPlayers;
+    int         _maxPlayers;
 
-    // Check for timeouts
-    void CheckTimeouts();
+    std::atomic<bool>   _running{false};
+    std::atomic<bool>   _gameRunning{false};
 
-    // Find an active player by ID
-    ServerPlayer* FindPlayer(uint8_t playerID);
+    // Players
+    PlayerInfo  _players[MAX_PLAYERS];
+    int         _connectedCount = 0;
 
-    // Find a free player slot
-    uint8_t FindFreePlayerSlot();
+    // Game objects
+    AsteroidState _asteroids[MAX_ASTEROIDS];
+    BulletState   _bullets[MAX_BULLETS];
 
-    // Check if the game should start
-    bool ShouldStartGame();
+    uint16_t    _nextAsteroidId = 0;
+    uint16_t    _nextBulletId   = 0;
+    uint16_t    _serverSeq      = 0;
 
-    // Start the game
-    void StartGame();
+    // Inbound queue (recv thread -> game loop)
+    struct InPacket { NetworkMessage msg; sockaddr_in from; };
+    std::mutex              _inMutex;
+    std::condition_variable _inCV;
+    std::queue<InPacket>    _inboundQueue;
 
-    // Check if game is over
-    bool IsGameOver();
+    // Outbound queue (game loop -> send thread)
+    std::mutex              _outMutex;
+    std::condition_variable _outCV;
+    std::queue<OutPacket>   _outboundQueue;
 
-    // Handle game over
-    void HandleGameOver();
+    std::thread _recvThread;
+    std::thread _sendThread;
+
+    // RNG
+    uint32_t _rngSeed = 0;
+
+    // Tick counter for periodic sends
+    int _tickCount = 0;
 };
-
-#endif // STANDALONE_SERVER_H_

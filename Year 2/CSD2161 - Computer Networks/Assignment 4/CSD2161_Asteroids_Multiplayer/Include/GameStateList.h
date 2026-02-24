@@ -3,7 +3,7 @@
 \file		GameStateList.h
 \author 	Bryan Ang Wei Ze
 \par    	email: bryanweize.ang\@digipen.edu
-\date   	March 29, 2025
+\date   	February 05, 2024
 \brief		This source file contains enumerations for the list of all game states
 
 Copyright (C) 2024 DigiPen Institute of Technology.
@@ -20,12 +20,15 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 enum
 {
-	// list of all game states 
+	// list of all game states
 	GS_ASTEROIDS = 0,
-	
+	GS_MENU,			// mode-select screen
+	GS_LOBBY,			// waiting for multiplayer players to join
+	GS_SCORE_SCREEN,	// end-of-round scoreboard
+
 	// special game state. Do not change
 	GS_RESTART,
-	GS_QUIT, 
+	GS_QUIT,
 	GS_NONE
 };
 

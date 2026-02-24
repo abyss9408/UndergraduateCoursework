@@ -1,122 +1,54 @@
 /******************************************************************************/
 /*!
-\file		UDPSocket.h
-\author 	Bryan Ang Wei Ze
-\par    	email: bryanweize.ang\@digipen.edu
-\date   	March 29, 2025
-\brief		This header file declares the UDPSocket class for network communication.
+\file   UDPSocket.h
+\brief  WinSock2 UDP socket wrapper
+*/
+/******************************************************************************/
+#pragma once
 
-Copyright (C) 2025 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- */
- /******************************************************************************/
-
-#ifndef UDP_SOCKET_H_
-#define UDP_SOCKET_H_
-
-// Prevent winsock.h from being included by windows.h
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
-
-// Include Windows headers first
-#include <Windows.h>
-
-// Then include Winsock2 (not winsock.h)
-#include <WinSock2.h>
+#include <winsock2.h>
 #include <ws2tcpip.h>
+
+#include <cstdint>
 #include <string>
 #include <vector>
-#include <functional>
-#include <thread>
-#include <mutex>
-#include <queue>
-#include <atomic>
-#include "NetworkMessage.h"
 
-#pragma comment(lib, "Ws2_32.lib")
-
-// Represents a network endpoint (IP + port)
-struct NetworkEndpoint {
-    std::string address;
-    unsigned short port;
-
-    // For use as map key
-    bool operator<(const NetworkEndpoint& other) const {
-        if (address != other.address)
-            return address < other.address;
-        return port < other.port;
-    }
-
-    bool operator==(const NetworkEndpoint& other) const {
-        return address == other.address && port == other.port;
-    }
-};
-
-// Callback for received messages
-using MessageCallback = std::function<void(const NetworkMessage*, const NetworkEndpoint&)>;
-
-// UDP Socket class for sending and receiving messages
-class UDPSocket {
+class UDPSocket
+{
 public:
     UDPSocket();
     ~UDPSocket();
 
-    // Initialize the socket
-    bool Initialize();
+    // Disable copy
+    UDPSocket(const UDPSocket&)            = delete;
+    UDPSocket& operator=(const UDPSocket&) = delete;
 
-    // Bind to a specific port
-    bool Bind(unsigned short port);
+    // Bind to a local port (pass empty string or "0.0.0.0" for INADDR_ANY)
+    bool Bind(const std::string& ip, uint16_t port);
 
-    // Set callback for received messages
-    void SetMessageCallback(MessageCallback callback);
+    // Send to a destination specified by string
+    bool SendTo(const std::vector<uint8_t>& data,
+                const std::string& ip, uint16_t port);
 
-    // Start a background thread for receiving messages
-    bool StartReceiving();
+    // Send to a destination specified by sockaddr_in (efficient, no DNS)
+    bool SendTo(const uint8_t* data, size_t len, const sockaddr_in& addr);
 
-    // Stop the receiving thread
-    void StopReceiving();
+    // Receive a datagram; returns bytes received (>0), 0 on timeout/nothing, <0 on error
+    int  RecvFrom(std::vector<uint8_t>& outData, sockaddr_in& fromAddr);
 
-    // Send a message to a specific endpoint
-    bool SendMessage(const NetworkMessage* message, const NetworkEndpoint& endpoint);
+    // Set receive timeout in milliseconds (0 = blocking)
+    void SetRecvTimeout(int timeoutMs);
 
-    // Broadcast a message to the local network
-    bool BroadcastMessage(const NetworkMessage* message, unsigned short port);
+    void Close();
+    bool IsValid() const { return _socket != INVALID_SOCKET; }
 
-    // Get the local address
-    std::string GetLocalAddress() const;
-
-    // Check if the socket is valid
-    bool IsValid() const;
-
-    // Get the local port that the socket is bound to
-    unsigned short GetLocalPort() const;
+    // Must be called once at program start / end
+    static bool InitWinsock();
+    static void ShutdownWinsock();
 
 private:
-    // Socket handle
-    SOCKET m_socket;
-
-    // Callback for received messages
-    MessageCallback m_callback;
-
-    // Thread for receiving messages
-    std::thread m_receiveThread;
-
-    // Flag to control the receive thread
-    std::atomic<bool> m_isReceiving;
-
-    // Queue for received messages
-    std::queue<std::pair<std::vector<uint8_t>, NetworkEndpoint>> m_messageQueue;
-
-    // Mutex for the message queue
-    std::mutex m_queueMutex;
-
-    // Thread function for receiving messages
-    void ReceiveThreadFunc();
-
-    // Process a received message
-    void ProcessReceivedMessage(const std::vector<uint8_t>& buffer, const NetworkEndpoint& sender);
+    SOCKET _socket = INVALID_SOCKET;
 };
-
-#endif // UDP_SOCKET_H_

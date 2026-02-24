@@ -1,40 +1,38 @@
 /******************************************************************************/
 /*!
-\file		GameMode.h
-\author 	Michael Henry Lazaroo
-\par    	email: m.lazaroo\@digipen.edu
-\date   	March 29, 2025
-\brief		This header file declares the abstract GameMode class.
+\file   GameMode.h
+\brief  Abstract interface implemented by SinglePlayerMode and MultiplayerMode
+*/
+/******************************************************************************/
+#pragma once
 
-Copyright (C) 2025 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- */
- /******************************************************************************/
+#include <cstdint>
 
-#ifndef GAME_MODE_H_
-#define GAME_MODE_H_
-
-// Abstract base class for game modes
-class GameMode {
+class IGameMode
+{
 public:
-    GameMode() = default;
-    virtual ~GameMode() = default;
+    virtual ~IGameMode() = default;
 
-    // Initialize the game mode
-    virtual bool Initialize() = 0;
+    // Called once when entering the game / lobby
+    virtual void Init()     = 0;
+    // Called once when leaving the game / lobby
+    virtual void Shutdown() = 0;
 
-    // Update the game mode
-    virtual void Update() = 0;
+    // Called every game frame with the current input bit-mask and frame delta time
+    virtual void onLocalInput(uint8_t inputBits, float dt) = 0;
 
-    // Draw the game mode
-    virtual void Draw() = 0;
+    // Drain the inbound message queue and apply state to the game (called once per frame)
+    virtual void applyNetworkState() = 0;
 
-    // Free resources
-    virtual void Free() = 0;
+    // Client detected bullet-asteroid collision; report to server (no-op in SP)
+    virtual void reportAsteroidHit(uint16_t asteroidId, uint16_t bulletId) = 0;
 
-    // Unload resources
-    virtual void Unload() = 0;
+    // True after MSG_GAME_OVER received (MP) or after SP end conditions met
+    virtual bool isGameOver() const = 0;
+
+    // True when the game has started (always true for SP; true after MSG_GAME_START for MP)
+    virtual bool isGameStarted() const = 0;
+
+    // 0 for SP; server-assigned player index (0-3) for MP
+    virtual int  getLocalPlayerId() const = 0;
 };
-
-#endif // GAME_MODE_H_

@@ -1,9 +1,9 @@
 /******************************************************************************/
 /*!
 \file		Collision.h
-\author 	Low Yue Jun
-\par    	email: yuejun.low\@digipen.edu
-\date   	March 30, 2025
+\author 	Bryan Ang Wei Ze
+\par    	email: bryanweize.ang\@digipen.edu
+\date   	February 05, 2024
 \brief		This header file declares the CollisionIntersection_RectRect
 			function.
 

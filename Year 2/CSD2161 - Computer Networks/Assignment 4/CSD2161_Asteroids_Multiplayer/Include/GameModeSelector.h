@@ -1,45 +1,52 @@
 /******************************************************************************/
 /*!
-\file		GameModeSelector.h
-\author 	Michael Henry Lazaroo
-\par    	email: m.lazaroo\@digipen.edu
-\date   	March 29, 2025
-\brief		This header file declares the GameModeSelector class, which handles
-            the selection between single player and multiplayer modes.
+\file   GameModeSelector.h
+\brief  State functions for GS_MENU, GS_LOBBY, GS_SCORE_SCREEN;
+        also the IGameMode factory.
+*/
+/******************************************************************************/
+#pragma once
 
-Copyright (C) 2025 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- */
- /******************************************************************************/
+#include <cstdint>
 
-#ifndef GAME_MODE_SELECTOR_H_
-#define GAME_MODE_SELECTOR_H_
+class IGameMode;
 
-#include <Windows.h>
-#include <string>
+// ---------------------------------------------------------------------------
+// Factory: creates a SinglePlayerMode or MultiplayerMode instance
+IGameMode* CreateGameMode(bool isMultiplayer);
 
-enum class GameModeType {
-    SINGLE_PLAYER,
-    MULTIPLAYER_CLIENT,
-    MULTIPLAYER_SERVER,
-    QUIT
-};
+// ---------------------------------------------------------------------------
+// GS_MENU state functions
+void GameStateMenuLoad();
+void GameStateMenuInit();
+void GameStateMenuUpdate();
+void GameStateMenuDraw();
+void GameStateMenuFree();
+void GameStateMenuUnload();
 
-class GameModeSelector {
-public:
-    GameModeSelector() = default;
-    ~GameModeSelector() = default;
+// ---------------------------------------------------------------------------
+// GS_LOBBY state functions
+void GameStateLobbyLoad();
+void GameStateLobbyInit();
+void GameStateLobbyUpdate();
+void GameStateLobbyDraw();
+void GameStateLobbyFree();
+void GameStateLobbyUnload();
 
-    // Shows the mode selection dialog and returns the selected mode
-    GameModeType ShowModeSelection();
+// ---------------------------------------------------------------------------
+// GS_SCORE_SCREEN state functions
+void GameStateScoreLoad();
+void GameStateScoreInit();
+void GameStateScoreUpdate();
+void GameStateScoreDraw();
+void GameStateScoreFree();
+void GameStateScoreUnload();
 
-    // Gets server address for multiplayer client mode
-    std::string GetServerAddress();
-
-private:
-    // Helper function to show a simple input dialog
-    std::string ShowInputDialog(const char* prompt, const char* defaultValue);
-};
-
-#endif // GAME_MODE_SELECTOR_H_
+// ---------------------------------------------------------------------------
+// Called by MultiplayerMode when MSG_GAME_OVER is received, so the score
+// screen can display the leaderboard data.
+void SetScoreScreenData(int winnerId,
+                        const uint32_t  scores[4],
+                        int             playerCount,
+                        const char      topNames[5][16],
+                        const uint32_t  topScores[5]);

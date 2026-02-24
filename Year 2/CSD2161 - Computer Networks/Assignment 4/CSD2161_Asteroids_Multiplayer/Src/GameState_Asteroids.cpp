@@ -3,7 +3,7 @@
 \file		GameState_Asteroids.cpp
 \author 	Bryan Ang Wei Ze
 \par    	email: bryanweize.ang\@digipen.edu
-\date   	March 29, 2025
+\date   	February 05, 2024
 \brief		This source file implements the Load, Initialize, Update, Draw, Free
 			and Unload functions of GameState_Asteroids.
 
@@ -11,51 +11,57 @@ Copyright (C) 2024 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
  */
- /******************************************************************************/
+/******************************************************************************/
 
+// NetworkMessage.h must come first: it defines WIN32_LEAN_AND_MEAN and
+// includes <winsock2.h> before main.h can pull in <windows.h> (and winsock.h).
+// It also provides the InputBits enum (INPUT_UP/DOWN/LEFT/RIGHT/SHOOT).
+#include "NetworkMessage.h"
 #include "main.h"
 #include <random>
+#include <cstring>
+#include <cstdint>
 
 /******************************************************************************/
 /*!
 	Defines
 */
 /******************************************************************************/
-const unsigned int	GAME_OBJ_NUM_MAX = 32;			// The total number of different objects (Shapes)
-const unsigned int	GAME_OBJ_INST_NUM_MAX = 2048;			// The total number of different game object instances
+const unsigned int	GAME_OBJ_NUM_MAX		= 32;			// The total number of different objects (Shapes)
+const unsigned int	GAME_OBJ_INST_NUM_MAX	= 2048;			// The total number of different game object instances
 
 
-const unsigned int	SHIP_INITIAL_NUM = 3;			// initial number of ship lives
-const float			SHIP_SCALE_X = 16.0f;		// ship scale x
-const float			SHIP_SCALE_Y = 16.0f;		// ship scale y
-const float			BULLET_SCALE_X = 20.0f;		// bullet scale x
-const float			BULLET_SCALE_Y = 3.0f;			// bullet scale y
-const float			ASTEROID_MIN_SCALE_X = 10.0f;		// asteroid minimum scale x
-const float			ASTEROID_MAX_SCALE_X = 60.0f;		// asteroid maximum scale x
-const float			ASTEROID_MIN_SCALE_Y = 10.0f;		// asteroid minimum scale y
-const float			ASTEROID_MAX_SCALE_Y = 60.0f;		// asteroid maximum scale y
-const float			ASTEROID_MIN_VEL_X = -75.0f;
-const float			ASTEROID_MAX_VEL_X = 75.0f;
-const float			ASTEROID_MIN_VEL_Y = -100.0f;
-const float			ASTEROID_MAX_VEL_Y = 100.0f;
+const unsigned int	SHIP_INITIAL_NUM		= 3;			// initial number of ship lives
+const float			SHIP_SCALE_X			= 16.0f;		// ship scale x
+const float			SHIP_SCALE_Y			= 16.0f;		// ship scale y
+const float			BULLET_SCALE_X			= 20.0f;		// bullet scale x
+const float			BULLET_SCALE_Y			= 3.0f;			// bullet scale y
+const float			ASTEROID_MIN_SCALE_X	= 10.0f;		// asteroid minimum scale x
+const float			ASTEROID_MAX_SCALE_X	= 60.0f;		// asteroid maximum scale x
+const float			ASTEROID_MIN_SCALE_Y	= 10.0f;		// asteroid minimum scale y
+const float			ASTEROID_MAX_SCALE_Y	= 60.0f;		// asteroid maximum scale y
+const float			ASTEROID_MIN_VEL_X		= -75.0f;
+const float			ASTEROID_MAX_VEL_X		= 75.0f;
+const float			ASTEROID_MIN_VEL_Y		= -100.0f;
+const float			ASTEROID_MAX_VEL_Y		= 100.0f;
 
-const float			WALL_SCALE_X = 64.0f;		// wall scale x
-const float			WALL_SCALE_Y = 164.0f;		// wall scale y
+const float			WALL_SCALE_X			= 64.0f;		// wall scale x
+const float			WALL_SCALE_Y			= 164.0f;		// wall scale y
 
-const float			SHIP_ACCEL_FORWARD = 100.0f;		// ship forward acceleration (in m/s^2)
-const float			SHIP_ACCEL_BACKWARD = 100.0f;		// ship backward acceleration (in m/s^2)
-const float			SHIP_ROT_SPEED = (2.0f * PI);	// ship rotation speed (degree/second)
+const float			SHIP_ACCEL_FORWARD		= 100.0f;		// ship forward acceleration (in m/s^2)
+const float			SHIP_ACCEL_BACKWARD		= 100.0f;		// ship backward acceleration (in m/s^2)
+const float			SHIP_ROT_SPEED			= (2.0f * PI);	// ship rotation speed (degree/second)
 
-const float			BULLET_SPEED = 400.0f;		// bullet speed (m/s)
+const float			BULLET_SPEED			= 400.0f;		// bullet speed (m/s)
 
-const float         BOUNDING_RECT_SIZE = 1.0f;         // this is the normalized bounding rectangle (width and height) sizes - AABB collision data
+const float         BOUNDING_RECT_SIZE      = 1.0f;         // this is the normalized bounding rectangle (width and height) sizes - AABB collision data
 
 
 // -----------------------------------------------------------------------------
 enum TYPE
 {
 	// list of game object types
-	TYPE_SHIP = 0,
+	TYPE_SHIP = 0, 
 	TYPE_BULLET,
 	TYPE_WALL,
 	TYPE_ASTEROID,
@@ -67,7 +73,7 @@ enum TYPE
 // -----------------------------------------------------------------------------
 // object flag definition
 
-const unsigned long FLAG_ACTIVE = 0x00000001;
+const unsigned long FLAG_ACTIVE				= 0x00000001;
 
 /******************************************************************************/
 /*!
@@ -75,7 +81,33 @@ const unsigned long FLAG_ACTIVE = 0x00000001;
 */
 /******************************************************************************/
 
+//Game object structure
+struct GameObj
+{
+	unsigned long		type;		// object type
+	AEGfxVertexList *	pMesh;		// This will hold the triangles which will form the shape of the object
+	AEGfxTexture *		pTex;		// This will hold the texture of the object
+};
 
+// ---------------------------------------------------------------------------
+
+//Game object instance structure
+struct GameObjInst
+{
+	GameObj *			pObject;	// pointer to the 'original' shape
+	unsigned long		flag;		// bit flag or-ed together
+	AEVec2				scale;		// scaling value of the object instance
+	AEVec2				posCurr;	// object current position
+
+	AEVec2				posPrev;	// object previous position -> it's the position calculated in the previous loop
+
+	AEVec2				velCurr;	// object current velocity
+	float				dirCurr;	// object current direction
+	AABB				boundingBox;// object bouding box that encapsulates the object
+	AEMtx33				transform;	// object transformation matrix: Each frame, 
+									// calculate the object instance's transformation matrix and save it here
+	float				cooldown;	// cooldown time
+};
 
 /******************************************************************************/
 /*!
@@ -92,24 +124,40 @@ static GameObjInst			sGameObjInstList[GAME_OBJ_INST_NUM_MAX];	// Each element in
 static unsigned long		sGameObjInstNum;							// The number of used game object instances
 
 // pointer to the ship object
-static GameObjInst* spShip;										// Pointer to the "Ship" game object instance
+static GameObjInst *		spShip;										// Pointer to the "Ship" game object instance (SP or local MP ship)
 
 // pointer to the wall object
-static GameObjInst* spWall;										// Pointer to the "Wall" game object instance
+static GameObjInst *		spWall;										// Pointer to the "Wall" game object instance
 
 // number of ship available (lives 0 = game over)
 static long					sShipLives;									// The number of lives left
 
 // the score = number of asteroid destroyed
-static unsigned long		sScore;										// Current score
+static unsigned long		sScore;										// Current score (SP)
 
 static bool onValueChange = true;
 
 static bool gameOver = false;
 
-static AEGfxVertexList* backgroundMesh;									// Background Mesh
+// ---------------------------------------------------------------------------
+// Multiplayer additions
+static GameObjInst*  spShips[4]                         = {};   // one per player slot
 
-static AEGfxTexture* background;									// Background Texture
+// Asteroid ID mapping: serverId (0-255) <-> local slot index
+static int           sAsteroidIdMap[256];                       // serverId -> slot (-1 = unused)
+static uint16_t      sAsteroidServerId[GAME_OBJ_INST_NUM_MAX];  // slot -> serverId
+static bool          sAsteroidDying[GAME_OBJ_INST_NUM_MAX];     // waiting for CONFIRM
+
+// Bullet ID mapping: bulletId (0-511) <-> local slot index
+static int           sBulletIdMap[512];                         // bulletId -> slot (-1 = unused)
+static uint16_t      sBulletServerId[GAME_OBJ_INST_NUM_MAX];    // slot -> bulletId
+
+// Per-player scores for MP display
+static uint32_t      sScores[4]                         = {};
+
+static AEGfxVertexList *	backgroundMesh;									// Background Mesh
+
+static AEGfxTexture *		background;									// Background Texture
 
 static AEMtx33				backgroundScale;
 
@@ -125,9 +173,9 @@ static AEAudioGroup			soundEffect;
 // ---------------------------------------------------------------------------
 
 // functions to create/destroy a game object instance
-GameObjInst* gameObjInstCreate(unsigned long type, AEVec2* scale,
-	AEVec2* pPos, AEVec2* pVel, float dir);
-void				gameObjInstDestroy(GameObjInst* pInst);
+GameObjInst *		gameObjInstCreate (unsigned long type, AEVec2* scale,
+											   AEVec2 * pPos, AEVec2 * pVel, float dir);
+void				gameObjInstDestroy(GameObjInst * pInst);
 
 void				Helper_Wall_Collision();
 
@@ -156,7 +204,7 @@ void GameStateAsteroidsLoad(void)
 	spShip = nullptr;
 
 	// load/create the mesh data (game objects / Shapes)
-	GameObj* pObj;
+	GameObj * pObj;
 
 	// =====================
 	// create the background
@@ -179,14 +227,14 @@ void GameStateAsteroidsLoad(void)
 	// create the ship shape
 	// =====================
 
-	pObj = sGameObjList + sGameObjNum++;
-	pObj->type = TYPE_SHIP;
+	pObj		= sGameObjList + sGameObjNum++;
+	pObj->type	= TYPE_SHIP;
 
 	AEGfxMeshStart();
 	AEGfxTriAdd(
-		-0.5f, 0.5f, 0xFFFF0000, 0.0f, 1.0f,
+		-0.5f,  0.5f, 0xFFFF0000, 0.0f, 1.0f, 
 		-0.5f, -0.5f, 0xFFFF0000, 1.0f, 1.0f,
-		0.5f, 0.0f, 0xFFFFFFFF, 0.5f, 0.0f);
+		 0.5f,  0.0f, 0xFFFFFFFF, 0.5f, 0.0f );  
 
 	pObj->pMesh = AEGfxMeshEnd();
 	pObj->pTex = AEGfxTextureLoad("../Resources/Textures/Ship.png");
@@ -203,12 +251,12 @@ void GameStateAsteroidsLoad(void)
 	AEGfxMeshStart();
 	AEGfxTriAdd(
 		-0.5f, -0.5f, 0xFFFFFF00, 0.0f, 1.0f,
-		0.5f, 0.5f, 0xFFFFFF00, 1.0f, 0.0f,
+		 0.5f, 0.5f, 0xFFFFFF00, 1.0f, 0.0f,
 		-0.5f, 0.5f, 0xFFFFFF00, 0.0f, 0.0f);
 	AEGfxTriAdd(
 		-0.5f, -0.5f, 0xFFFFFF00, 0.0f, 1.0f,
-		0.5f, -0.5f, 0xFFFFFF00, 1.0f, 1.0f,
-		0.5f, 0.5f, 0xFFFFFF00, 1.0f, 0.0f);
+		 0.5f, -0.5f, 0xFFFFFF00, 1.0f, 1.0f,
+		 0.5f, 0.5f, 0xFFFFFF00, 1.0f, 0.0f);
 
 	pObj->pMesh = AEGfxMeshEnd();
 	pObj->pTex = AEGfxTextureLoad("../Resources/Textures/Bullet.png");
@@ -298,59 +346,94 @@ void GameStateAsteroidsLoad(void)
 /******************************************************************************/
 void GameStateAsteroidsInit(void)
 {
-	// create the main ship
-	AEVec2 scale;
-	AEVec2Set(&scale, SHIP_SCALE_X, SHIP_SCALE_Y);
-	spShip = gameObjInstCreate(TYPE_SHIP, &scale, nullptr, nullptr, 0.0f);
-	AE_ASSERT(spShip);
-
 	// scale the background
 	backgroundScale = { 0 };
 	AEMtx33Scale(&backgroundScale, static_cast<float>(AEGfxGetWindowWidth()),
 		static_cast<float>(AEGfxGetWindowHeight()));
 
-	// create the initial 4 asteroids instances using the "gameObjInstCreate" function
-	AEVec2 pos, vel;
+	// Reset ID maps
+	memset(sAsteroidIdMap,   -1, sizeof(sAsteroidIdMap));
+	memset(sAsteroidServerId, 0, sizeof(sAsteroidServerId));
+	memset(sAsteroidDying,    0, sizeof(sAsteroidDying));
+	memset(sBulletIdMap,     -1, sizeof(sBulletIdMap));
+	memset(sBulletServerId,   0, sizeof(sBulletServerId));
+	memset(sScores,           0, sizeof(sScores));
+	memset(spShips,           0, sizeof(spShips));
 
-	//Asteroid 1
-	pos.x = 90.0f;		pos.y = -220.0f;
-	vel.x = -60.0f;		vel.y = -30.0f;
-	//vel.x = .0f;		vel.y = .0f;
-	AEVec2Set(&scale, ASTEROID_MIN_SCALE_X, ASTEROID_MAX_SCALE_Y);
-	gameObjInstCreate(TYPE_ASTEROID, &scale, &pos, &vel, 0.0f);
+	AEVec2 scale;
 
-	//Asteroid 2
-	pos.x = -260.0f;	pos.y = -250.0f;
-	vel.x = 39.0f;		vel.y = -130.0f;
-	//vel.x = .0f;		vel.y = .0f;
-	AEVec2Set(&scale, ASTEROID_MAX_SCALE_X, ASTEROID_MIN_SCALE_Y);
-	gameObjInstCreate(TYPE_ASTEROID, &scale, &pos, &vel, 0.0f);
+	if (!g_isMultiplayer)
+	{
+		// -------------------------------------------------------
+		// Single-player init (unchanged behaviour)
+		// -------------------------------------------------------
+		AEVec2Set(&scale, SHIP_SCALE_X, SHIP_SCALE_Y);
+		spShip = gameObjInstCreate(TYPE_SHIP, &scale, nullptr, nullptr, 0.0f);
+		AE_ASSERT(spShip);
+		spShips[0] = spShip;
 
-	//Asteroid 3
-	pos.x = -260.0f;	pos.y = 100.0f;
-	vel.x = 90.0f;		vel.y = 20.0f;
-	//vel.x = .0f;		vel.y = .0f;
-	AEVec2Set(&scale, ASTEROID_MIN_SCALE_X, ASTEROID_MIN_SCALE_Y);
-	gameObjInstCreate(TYPE_ASTEROID, &scale, &pos, &vel, 0.0f);
+		AEVec2 pos, vel;
+		//Asteroid 1
+		pos.x = 90.0f;		pos.y = -220.0f;
+		vel.x = -60.0f;		vel.y = -30.0f;
+		AEVec2Set(&scale, ASTEROID_MIN_SCALE_X, ASTEROID_MAX_SCALE_Y);
+		gameObjInstCreate(TYPE_ASTEROID, &scale, &pos, &vel, 0.0f);
 
-	//Asteroid 4
-	pos.x = 120.0f;	pos.y = -180.0f;
-	vel.x = -90.0f;		vel.y = 76.0f;
-	//vel.x = .0f;		vel.y = .0f;
-	AEVec2Set(&scale, ASTEROID_MAX_SCALE_X, ASTEROID_MAX_SCALE_Y);
-	gameObjInstCreate(TYPE_ASTEROID, &scale, &pos, &vel, 0.0f);
+		//Asteroid 2
+		pos.x = -260.0f;	pos.y = -250.0f;
+		vel.x = 39.0f;		vel.y = -130.0f;
+		AEVec2Set(&scale, ASTEROID_MAX_SCALE_X, ASTEROID_MIN_SCALE_Y);
+		gameObjInstCreate(TYPE_ASTEROID, &scale, &pos, &vel, 0.0f);
 
-	// create the static wall
-	AEVec2Set(&scale, WALL_SCALE_X, WALL_SCALE_Y);
-	AEVec2 position;
-	AEVec2Set(&position, 300.0f, 150.0f);
-	spWall = gameObjInstCreate(TYPE_WALL, &scale, &position, nullptr, 0.0f);
-	AE_ASSERT(spWall);
+		//Asteroid 3
+		pos.x = -260.0f;	pos.y = 100.0f;
+		vel.x = 90.0f;		vel.y = 20.0f;
+		AEVec2Set(&scale, ASTEROID_MIN_SCALE_X, ASTEROID_MIN_SCALE_Y);
+		gameObjInstCreate(TYPE_ASTEROID, &scale, &pos, &vel, 0.0f);
 
+		//Asteroid 4
+		pos.x = 120.0f;		pos.y = -180.0f;
+		vel.x = -90.0f;		vel.y = 76.0f;
+		AEVec2Set(&scale, ASTEROID_MAX_SCALE_X, ASTEROID_MAX_SCALE_Y);
+		gameObjInstCreate(TYPE_ASTEROID, &scale, &pos, &vel, 0.0f);
 
-	// reset the score and the number of ships
-	sScore = 0;
-	sShipLives = SHIP_INITIAL_NUM;
+		// create the static wall
+		AEVec2Set(&scale, WALL_SCALE_X, WALL_SCALE_Y);
+		AEVec2 position;
+		AEVec2Set(&position, 300.0f, 150.0f);
+		spWall = gameObjInstCreate(TYPE_WALL, &scale, &position, nullptr, 0.0f);
+		AE_ASSERT(spWall);
+
+		sScore     = 0;
+		sShipLives = SHIP_INITIAL_NUM;
+	}
+	else
+	{
+		// -------------------------------------------------------
+		// Multiplayer init – server sends asteroids; create 4 ships
+		// -------------------------------------------------------
+		if (g_networkMode)
+			g_localPlayerId = g_networkMode->getLocalPlayerId();
+
+		AEVec2Set(&scale, SHIP_SCALE_X, SHIP_SCALE_Y);
+		for (int i = 0; i < 4; ++i)
+		{
+			AEVec2 pos;
+			AEVec2Set(&pos, 0.0f, static_cast<float>(i) * 60.f - 90.f);
+			spShips[i] = gameObjInstCreate(TYPE_SHIP, &scale, &pos, nullptr, 0.0f);
+			// Hide remote ships until the server sends their state
+			if (i != g_localPlayerId)
+				spShips[i]->flag &= ~FLAG_ACTIVE;
+		}
+		spShip = spShips[g_localPlayerId];
+
+		spWall     = nullptr;  // no wall in MP
+		sScore     = 0;
+		sShipLives = SHIP_INITIAL_NUM;
+	}
+
+	gameOver      = false;
+	onValueChange = true;
 }
 
 /******************************************************************************/
@@ -377,83 +460,132 @@ void GameStateAsteroidsUpdate(void)
 	// v1 = a*t + v0		//This is done when the UP or DOWN key is pressed 
 	// Pos1 = v1*t + Pos0
 
-	if (!gameOver)
+	if (!g_isMultiplayer)
 	{
-		if (AEInputCheckCurr(AEVK_UP))
+		// =====================================================================
+		// Single-player input (original code)
+		// =====================================================================
+		if (!gameOver)
 		{
-			AEVec2 velNew;
-			velNew.x = cosf(spShip->dirCurr) * SHIP_ACCEL_FORWARD * (float)(AEFrameRateControllerGetFrameTime()) + spShip->velCurr.x;
-			velNew.y = sinf(spShip->dirCurr) * SHIP_ACCEL_FORWARD * (float)(AEFrameRateControllerGetFrameTime()) + spShip->velCurr.y;
+			if (AEInputCheckCurr(AEVK_UP))
+			{
+				AEVec2 velNew;
+				velNew.x = cosf(spShip->dirCurr) * SHIP_ACCEL_FORWARD * (float)(AEFrameRateControllerGetFrameTime()) + spShip->velCurr.x;
+				velNew.y = sinf(spShip->dirCurr) * SHIP_ACCEL_FORWARD * (float)(AEFrameRateControllerGetFrameTime()) + spShip->velCurr.y;
+				spShip->velCurr.x = velNew.x * 0.99f;
+				spShip->velCurr.y = velNew.y * 0.99f;
+				AEAudioPlay(accelerationSound, soundEffect, 0.2f, 1.0f, 0);
+			}
 
-			// Find the velocity according to the acceleration
-			// Limit your speed over here
-			spShip->velCurr.x = velNew.x * 0.99f;
-			spShip->velCurr.y = velNew.y * 0.99f;
+			if (AEInputCheckCurr(AEVK_DOWN))
+			{
+				AEVec2 velNew;
+				velNew.x = -cosf(spShip->dirCurr) * SHIP_ACCEL_FORWARD * (float)(AEFrameRateControllerGetFrameTime()) + spShip->velCurr.x;
+				velNew.y = -sinf(spShip->dirCurr) * SHIP_ACCEL_FORWARD * (float)(AEFrameRateControllerGetFrameTime()) + spShip->velCurr.y;
+				spShip->velCurr.x = velNew.x * 0.99f;
+				spShip->velCurr.y = velNew.y * 0.99f;
+			}
 
-			AEAudioPlay(accelerationSound, soundEffect, 0.2f, 1.0f, 0);
+			if (AEInputCheckCurr(AEVK_LEFT))
+			{
+				spShip->dirCurr += SHIP_ROT_SPEED * (float)(AEFrameRateControllerGetFrameTime());
+				spShip->dirCurr = AEWrap(spShip->dirCurr, -PI, PI);
+			}
+
+			if (AEInputCheckCurr(AEVK_RIGHT))
+			{
+				spShip->dirCurr -= SHIP_ROT_SPEED * (float)(AEFrameRateControllerGetFrameTime());
+				spShip->dirCurr = AEWrap(spShip->dirCurr, -PI, PI);
+			}
+
+			if (AEInputCheckTriggered(AEVK_SPACE))
+			{
+				float bullet_dir{ 0.f };
+				AEVec2 bullet_scale, bullet_vel, bullet_pos;
+				bullet_pos.x = spShip->posCurr.x;
+				bullet_pos.y = spShip->posCurr.y;
+				AEVec2Set(&bullet_scale, BULLET_SCALE_X, BULLET_SCALE_Y);
+
+				bullet_dir = spShip->dirCurr + PI / 20;
+				bullet_vel.x = cosf(bullet_dir) * BULLET_SPEED;
+				bullet_vel.y = sinf(bullet_dir) * BULLET_SPEED;
+				gameObjInstCreate(TYPE_BULLET, &bullet_scale, &bullet_pos, &bullet_vel, bullet_dir);
+
+				bullet_dir = spShip->dirCurr;
+				bullet_vel.x = cosf(bullet_dir) * BULLET_SPEED;
+				bullet_vel.y = sinf(bullet_dir) * BULLET_SPEED;
+				gameObjInstCreate(TYPE_BULLET, &bullet_scale, &bullet_pos, &bullet_vel, bullet_dir);
+
+				bullet_dir = spShip->dirCurr - PI / 20;
+				bullet_vel.x = cosf(bullet_dir) * BULLET_SPEED;
+				bullet_vel.y = sinf(bullet_dir) * BULLET_SPEED;
+				gameObjInstCreate(TYPE_BULLET, &bullet_scale, &bullet_pos, &bullet_vel, bullet_dir);
+
+				AEAudioPlay(bulletSound, soundEffect, 0.8f, 1.0f, 0);
+			}
 		}
 
+		// ESC from SP game → return to menu
+		if (AEInputCheckTriggered(AEVK_ESCAPE))
+			gGameStateNext = GS_MENU;
+	}
+	else
+	{
+		// =====================================================================
+		// Multiplayer input: collect bits, apply client-side prediction, send
+		// =====================================================================
+		g_networkMode->applyNetworkState();
 
-		if (AEInputCheckCurr(AEVK_DOWN))
+		if (!gameOver && spShip)
 		{
-			AEVec2 velNew;
-			velNew.x = -cosf(spShip->dirCurr) * SHIP_ACCEL_FORWARD * (float)(AEFrameRateControllerGetFrameTime()) + spShip->velCurr.x;
-			velNew.y = -sinf(spShip->dirCurr) * SHIP_ACCEL_FORWARD * (float)(AEFrameRateControllerGetFrameTime()) + spShip->velCurr.y;
+			uint8_t inputBits = 0;
+			float   dt        = g_dt;
 
-			// Find the velocity according to the decceleration
-			// Limit your speed over here
-			spShip->velCurr.x = velNew.x * 0.99f;
-			spShip->velCurr.y = velNew.y * 0.99f;
+			if (AEInputCheckCurr(AEVK_UP))         inputBits |= INPUT_UP;
+			if (AEInputCheckCurr(AEVK_DOWN))        inputBits |= INPUT_DOWN;
+			if (AEInputCheckCurr(AEVK_LEFT))        inputBits |= INPUT_LEFT;
+			if (AEInputCheckCurr(AEVK_RIGHT))       inputBits |= INPUT_RIGHT;
+			if (AEInputCheckTriggered(AEVK_SPACE))  inputBits |= INPUT_SHOOT;
+
+			// Client-side prediction for local ship only
+			if (inputBits & INPUT_UP)
+			{
+				spShip->velCurr.x += cosf(spShip->dirCurr) * SHIP_ACCEL_FORWARD * dt;
+				spShip->velCurr.y += sinf(spShip->dirCurr) * SHIP_ACCEL_FORWARD * dt;
+				spShip->velCurr.x *= 0.99f;
+				spShip->velCurr.y *= 0.99f;
+				AEAudioPlay(accelerationSound, soundEffect, 0.2f, 1.0f, 0);
+			}
+			if (inputBits & INPUT_DOWN)
+			{
+				spShip->velCurr.x -= cosf(spShip->dirCurr) * SHIP_ACCEL_FORWARD * dt;
+				spShip->velCurr.y -= sinf(spShip->dirCurr) * SHIP_ACCEL_FORWARD * dt;
+				spShip->velCurr.x *= 0.99f;
+				spShip->velCurr.y *= 0.99f;
+			}
+			if (inputBits & INPUT_LEFT)
+				spShip->dirCurr += SHIP_ROT_SPEED * dt;
+			if (inputBits & INPUT_RIGHT)
+				spShip->dirCurr -= SHIP_ROT_SPEED * dt;
+
+			g_networkMode->onLocalInput(inputBits, dt);
 		}
 
-		if (AEInputCheckCurr(AEVK_LEFT))
+		// ESC from MP game → disconnect and return to menu
+		if (AEInputCheckTriggered(AEVK_ESCAPE))
 		{
-			spShip->dirCurr += SHIP_ROT_SPEED * (float)(AEFrameRateControllerGetFrameTime());
-			spShip->dirCurr = AEWrap(spShip->dirCurr, -PI, PI);
-		}
-
-		if (AEInputCheckCurr(AEVK_RIGHT))
-		{
-			spShip->dirCurr -= SHIP_ROT_SPEED * (float)(AEFrameRateControllerGetFrameTime());
-			spShip->dirCurr = AEWrap(spShip->dirCurr, -PI, PI);
-		}
-
-		// Shoot 3 bullets if space is triggered (Create a new object instance)
-		if (AEInputCheckTriggered(AEVK_SPACE))
-		{
-			// Get the bullet's direction according to the ship's direction
-			// Set the velocity
-			// Create an instance, based on BULLET_SCALE_X and BULLET_SCALE_Y
-			float bullet_dir{ 0.f };
-			AEVec2 bullet_scale, bullet_vel, bullet_pos;
-
-			bullet_pos.x = spShip->posCurr.x;
-			bullet_pos.y = spShip->posCurr.y;
-			AEVec2Set(&bullet_scale, BULLET_SCALE_X, BULLET_SCALE_Y);
-
-			// bullet 1
-			bullet_dir = spShip->dirCurr + PI / 20;
-			bullet_vel.x = cosf(bullet_dir) * BULLET_SPEED;
-			bullet_vel.y = sinf(bullet_dir) * BULLET_SPEED;
-			gameObjInstCreate(TYPE_BULLET, &bullet_scale, &bullet_pos, &bullet_vel, bullet_dir);
-
-			// bullet 2
-			bullet_dir = spShip->dirCurr;
-			bullet_vel.x = cosf(bullet_dir) * BULLET_SPEED;
-			bullet_vel.y = sinf(bullet_dir) * BULLET_SPEED;
-			gameObjInstCreate(TYPE_BULLET, &bullet_scale, &bullet_pos, &bullet_vel, bullet_dir);
-
-			// bullet 3
-			bullet_dir = spShip->dirCurr - PI / 20;
-			bullet_vel.x = cosf(bullet_dir) * BULLET_SPEED;
-			bullet_vel.y = sinf(bullet_dir) * BULLET_SPEED;
-			gameObjInstCreate(TYPE_BULLET, &bullet_scale, &bullet_pos, &bullet_vel, bullet_dir);
-
-			AEAudioPlay(bulletSound, soundEffect, 0.8f, 1.0f, 0);
+			if (g_networkMode)
+			{
+				g_networkMode->Shutdown();
+				delete g_networkMode;
+				g_networkMode   = nullptr;
+				g_isMultiplayer = false;
+			}
+			gGameStateNext = GS_MENU;
 		}
 	}
-
-
+	
+	
 
 
 
@@ -513,9 +645,10 @@ void GameStateAsteroidsUpdate(void)
 
 	// ======================================================================
 	// check for dynamic-static collisions (one case only: Ship vs Wall)
-	// [DO NOT UPDATE THIS PARAGRAPH'S CODE]
+	// Wall only exists in single-player mode
 	// ======================================================================
-	Helper_Wall_Collision();
+	if (!g_isMultiplayer && spWall)
+		Helper_Wall_Collision();
 
 
 
@@ -544,8 +677,11 @@ void GameStateAsteroidsUpdate(void)
 					Update game behavior accordingly
 					Update "Object instances array"
 	*/
-	if (!gameOver)
+	if (!gameOver && !g_isMultiplayer)
 	{
+		// =====================================================================
+		// Single-player dynamic-dynamic collisions
+		// =====================================================================
 		for (unsigned long i = 0; i < GAME_OBJ_INST_NUM_MAX; i++)
 		{
 			GameObjInst* pInst = sGameObjInstList + i;
@@ -563,105 +699,127 @@ void GameStateAsteroidsUpdate(void)
 					if (pInst2->pObject->type == TYPE_SHIP)
 					{
 						float first_time = 0.f;
-						// asteroid-ship collision
 						if (CollisionIntersection_RectRect(pInst->boundingBox, pInst->velCurr, pInst2->boundingBox, pInst2->velCurr, first_time))
 						{
 							AEVec2 explosionScale{ 50.0f,50.0f };
 							AEVec2 explosionVel{ 0.0f,0.0f };
 							gameObjInstCreate(TYPE_EXPLOSION, &explosionScale, &pInst->posCurr, &explosionVel, 0.0f);
-
-							// destroy the asteroid
 							gameObjInstDestroy(pInst);
-
 							AEAudioPlay(explosion, soundEffect, 1.0f, 1.0f, 0);
 
-							// reset the ship
 							pInst2->posCurr.x = 0.f;
 							pInst2->posCurr.y = 0.f;
 							pInst2->velCurr.x = 0.f;
 							pInst2->velCurr.y = 0.f;
-							pInst2->dirCurr = 0.f;
+							pInst2->dirCurr   = 0.f;
 
-							// update the ship lives
 							--sShipLives;
 							onValueChange = true;
 
-							// create a new asteroid
-							AEVec2 new_asteroid_scale;
-							AEVec2 new_asteroid_pos;
-							AEVec2 new_asteroid_vel;
-
+							AEVec2 new_asteroid_scale, new_asteroid_pos, new_asteroid_vel;
 							new_asteroid_scale.x = ASTEROID_MIN_SCALE_X + static_cast<float>(rand()) /
 								(static_cast<float>(RAND_MAX / (ASTEROID_MAX_SCALE_X - ASTEROID_MIN_SCALE_X)));
 							new_asteroid_scale.y = ASTEROID_MIN_SCALE_Y + static_cast<float>(rand()) /
 								(static_cast<float>(RAND_MAX / (ASTEROID_MAX_SCALE_Y - ASTEROID_MIN_SCALE_Y)));
-
 							new_asteroid_pos.x = Generate_Random_float(AEGfxGetWinMinX() * 2, AEGfxGetWinMaxX() * 2,
 								AEGfxGetWinMinX(), AEGfxGetWinMaxX());
 							new_asteroid_pos.y = Generate_Random_float(AEGfxGetWinMinY() * 2, AEGfxGetWinMaxY() * 2,
 								AEGfxGetWinMinY(), AEGfxGetWinMaxY());
-
 							new_asteroid_vel.x = ASTEROID_MIN_VEL_X + static_cast<float>(rand()) /
 								(static_cast<float>(RAND_MAX / (ASTEROID_MAX_VEL_X - ASTEROID_MIN_VEL_X)));
 							new_asteroid_vel.y = ASTEROID_MIN_VEL_Y + static_cast<float>(rand()) /
 								(static_cast<float>(RAND_MAX / (ASTEROID_MAX_VEL_Y - ASTEROID_MIN_VEL_Y)));
-
 							gameObjInstCreate(TYPE_ASTEROID, &new_asteroid_scale, &new_asteroid_pos, &new_asteroid_vel, 0.0f);
 						}
 					}
 					else if (pInst2->pObject->type == TYPE_BULLET)
 					{
 						float first_time = 0.f;
-						// asteroid-bullet collision
 						if (CollisionIntersection_RectRect(pInst->boundingBox, pInst->velCurr, pInst2->boundingBox, pInst2->velCurr, first_time))
 						{
 							AEVec2 explosionScale{ 50.0f,50.0f };
 							AEVec2 explosionVel{ 0.0f,0.0f };
 							gameObjInstCreate(TYPE_EXPLOSION, &explosionScale, &pInst->posCurr, &explosionVel, 0.0f);
-
-							// destroy asteroid and bullet
 							gameObjInstDestroy(pInst);
 							gameObjInstDestroy(pInst2);
-
 							AEAudioPlay(explosion, soundEffect, 1.0f, 1.0f, 0);
 
-							// add 100 score
 							sScore += 100;
 							onValueChange = true;
 
-							// create 1 or 2 new asteroids
 							int number_of_asteroids = 1 + (rand() % 2);
 							for (int k = 0; k < number_of_asteroids; k++)
 							{
-								AEVec2 new_asteroid_scale;
-								AEVec2 new_asteroid_pos;
-								AEVec2 new_asteroid_vel;
-
+								AEVec2 new_asteroid_scale, new_asteroid_pos, new_asteroid_vel;
 								new_asteroid_scale.x = ASTEROID_MIN_SCALE_X + static_cast<float>(rand()) /
 									(static_cast<float>(RAND_MAX / (ASTEROID_MAX_SCALE_X - ASTEROID_MIN_SCALE_X)));
 								new_asteroid_scale.y = ASTEROID_MIN_SCALE_Y + static_cast<float>(rand()) /
 									(static_cast<float>(RAND_MAX / (ASTEROID_MAX_SCALE_Y - ASTEROID_MIN_SCALE_Y)));
-
 								new_asteroid_pos.x = Generate_Random_float(AEGfxGetWinMinX() * 2, AEGfxGetWinMaxX() * 2,
 									AEGfxGetWinMinX(), AEGfxGetWinMaxX());
 								new_asteroid_pos.y = Generate_Random_float(AEGfxGetWinMinY() * 2, AEGfxGetWinMaxY() * 2,
 									AEGfxGetWinMinY(), AEGfxGetWinMaxY());
-
 								new_asteroid_vel.x = ASTEROID_MIN_VEL_X + static_cast<float>(rand()) /
 									(static_cast<float>(RAND_MAX / (ASTEROID_MAX_VEL_X - ASTEROID_MIN_VEL_X)));
 								new_asteroid_vel.y = ASTEROID_MIN_VEL_Y + static_cast<float>(rand()) /
 									(static_cast<float>(RAND_MAX / (ASTEROID_MAX_VEL_Y - ASTEROID_MIN_VEL_Y)));
-
 								gameObjInstCreate(TYPE_ASTEROID, &new_asteroid_scale, &new_asteroid_pos, &new_asteroid_vel, 0.0f);
 							}
 						}
-
 					}
 				}
 			}
 		}
 	}
+	else if (!gameOver && g_isMultiplayer)
+	{
+		// =====================================================================
+		// Multiplayer: client-side bullet-asteroid detection → report to server
+		// =====================================================================
+		for (unsigned long i = 0; i < GAME_OBJ_INST_NUM_MAX; i++)
+		{
+			GameObjInst* pAst = sGameObjInstList + i;
+			if (!(pAst->flag & FLAG_ACTIVE) ||
+				pAst->pObject->type != TYPE_ASTEROID ||
+				sAsteroidDying[i])   // already reported
+				continue;
 
+			for (unsigned long j = 0; j < GAME_OBJ_INST_NUM_MAX; j++)
+			{
+				GameObjInst* pBul = sGameObjInstList + j;
+				if (!(pBul->flag & FLAG_ACTIVE) ||
+					pBul->pObject->type != TYPE_BULLET)
+					continue;
+
+				float t = 0.f;
+				if (CollisionIntersection_RectRect(pAst->boundingBox, pAst->velCurr,
+				                                   pBul->boundingBox, pBul->velCurr, t))
+				{
+					uint16_t astId = sAsteroidServerId[i];
+					uint16_t bulId = sBulletServerId[j];
+
+					// Mark locally dying to prevent duplicate reports
+					sAsteroidDying[i] = true;
+
+					// Destroy bullet locally (server will confirm)
+					gameObjInstDestroy(pBul);
+
+					// Report to server
+					if (g_networkMode)
+						g_networkMode->reportAsteroidHit(astId, bulId);
+
+					// Play explosion sound for immediate feedback
+					AEVec2 explosionScale{ 50.0f,50.0f };
+					AEVec2 explosionVel{ 0.0f,0.0f };
+					gameObjInstCreate(TYPE_EXPLOSION, &explosionScale, &pAst->posCurr, &explosionVel, 0.0f);
+					AEAudioPlay(explosion, soundEffect, 1.0f, 1.0f, 0);
+
+					break;
+				}
+			}
+		}
+	}
+	
 
 
 
@@ -677,35 +835,35 @@ void GameStateAsteroidsUpdate(void)
 	// ===================================================================
 	for (unsigned long i = 0; i < GAME_OBJ_INST_NUM_MAX; i++)
 	{
-		GameObjInst* pInst = sGameObjInstList + i;
+		GameObjInst * pInst = sGameObjInstList + i;
 
 		// skip non-active object
 		if ((pInst->flag & FLAG_ACTIVE) == 0)
 			continue;
-
+		
 		// check if the object is a ship
 		if (pInst->pObject->type == TYPE_SHIP)
 		{
 			// Wrap the ship from one end of the screen to the other
-			pInst->posCurr.x = AEWrap(pInst->posCurr.x, AEGfxGetWinMinX() - SHIP_SCALE_X,
-				AEGfxGetWinMaxX() + SHIP_SCALE_X);
+			pInst->posCurr.x = AEWrap(pInst->posCurr.x, AEGfxGetWinMinX() - SHIP_SCALE_X, 
+														AEGfxGetWinMaxX() + SHIP_SCALE_X);
 			pInst->posCurr.y = AEWrap(pInst->posCurr.y, AEGfxGetWinMinY() - SHIP_SCALE_Y,
-				AEGfxGetWinMaxY() + SHIP_SCALE_Y);
+														AEGfxGetWinMaxY() + SHIP_SCALE_Y);
 		}
 
 		// Wrap asteroids here
 		if (pInst->pObject->type == TYPE_ASTEROID)
 		{
 			pInst->posCurr.x = AEWrap(pInst->posCurr.x, AEGfxGetWinMinX() - pInst->scale.x,
-				AEGfxGetWinMaxX() + pInst->scale.x);
+														AEGfxGetWinMaxX() + pInst->scale.x);
 			pInst->posCurr.y = AEWrap(pInst->posCurr.y, AEGfxGetWinMinY() - pInst->scale.y,
-				AEGfxGetWinMaxY() + pInst->scale.y);
+														AEGfxGetWinMaxY() + pInst->scale.y);
 		}
 
 		// Remove bullets that go out of bounds
 		if (pInst->pObject->type == TYPE_BULLET)
 		{
-			if (pInst->posCurr.x < AEGfxGetWinMinX() || pInst->posCurr.x > AEGfxGetWinMaxX() ||
+			if (pInst->posCurr.x < AEGfxGetWinMinX() || pInst->posCurr.x > AEGfxGetWinMaxX() || 
 				pInst->posCurr.y < AEGfxGetWinMinY() || pInst->posCurr.y > AEGfxGetWinMaxY())
 			{
 				gameObjInstDestroy(pInst);
@@ -725,7 +883,7 @@ void GameStateAsteroidsUpdate(void)
 
 
 
-
+	
 
 	// =====================================================================
 	// calculate the matrix for all objects
@@ -733,7 +891,7 @@ void GameStateAsteroidsUpdate(void)
 
 	for (unsigned long i = 0; i < GAME_OBJ_INST_NUM_MAX; i++)
 	{
-		GameObjInst* pInst = sGameObjInstList + i;
+		GameObjInst * pInst = sGameObjInstList + i;
 		AEMtx33		 trans{ 0 }, rot{ 0 }, scale{ 0 };
 
 		UNREFERENCED_PARAMETER(trans);
@@ -761,13 +919,13 @@ void GameStateAsteroidsUpdate(void)
 
 /******************************************************************************/
 /*!
-
+	
 */
 /******************************************************************************/
 void GameStateAsteroidsDraw(void)
 {
 	char strBuffer[1024];
-
+	
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxTextureSet(background, 0.0f, 0.0f);
 
@@ -784,12 +942,12 @@ void GameStateAsteroidsDraw(void)
 	// draw all object instances in the list
 	for (unsigned long i = 0; i < GAME_OBJ_INST_NUM_MAX; i++)
 	{
-		GameObjInst* pInst = sGameObjInstList + i;
+		GameObjInst * pInst = sGameObjInstList + i;
 
 		// skip non-active object
 		if ((pInst->flag & FLAG_ACTIVE) == 0)
 			continue;
-
+		
 		// Set the current object instance's transform matrix using "AEGfxSetTransform"
 		// Draw the shape used by the current object instance using "AEGfxMeshDraw"
 		AEGfxTextureSet(pInst->pObject->pTex, 0.0f, 0.0f);
@@ -797,31 +955,46 @@ void GameStateAsteroidsDraw(void)
 		AEGfxMeshDraw(pInst->pObject->pMesh, AE_GFX_MDM_TRIANGLES);
 	}
 
-	//You can replace this condition/variable by your own data.
-	//The idea is to display any of these variables/strings whenever a change in their value happens
-	if (onValueChange)
+	if(onValueChange)
 	{
-		sprintf_s(strBuffer, "Score: %d", sScore);
-		//AEGfxPrint(10, 10, (u32)-1, strBuffer);
-		printf("%s \n", strBuffer);
-
-		sprintf_s(strBuffer, "Ship Left: %d", sShipLives >= 0 ? sShipLives : 0);
-		//AEGfxPrint(600, 10, (u32)-1, strBuffer);
-		printf("%s \n", strBuffer);
-
-		// display the game over message
-		if (sShipLives < 0)
+		if (!g_isMultiplayer)
 		{
-			//AEGfxPrint(280, 260, 0xFFFFFFFF, "       GAME OVER       ");
-			printf("       GAME OVER       \n");
-			gameOver = true;
+			// Single-player display
+			sprintf_s(strBuffer, "Score: %d", sScore);
+			printf("%s \n", strBuffer);
+
+			sprintf_s(strBuffer, "Ship Left: %d", sShipLives >= 0 ? sShipLives : 0);
+			printf("%s \n", strBuffer);
+
+			if (sShipLives < 0)
+			{
+				printf("       GAME OVER       \n");
+				gameOver = true;
+				gGameStateNext = GS_SCORE_SCREEN;
+			}
+
+			if (sScore >= 10000)
+			{
+				printf("       YOU ROCK       \n");
+				gameOver = true;
+				gGameStateNext = GS_SCORE_SCREEN;
+			}
 		}
-
-		// display win message
-		if (sScore >= 10000)
+		else
 		{
-			printf("       YOU ROCK       \n");
-			gameOver = true;
+			// Multiplayer display: show all players' scores
+			for (int i = 0; i < 4; ++i)
+			{
+				if (i == g_localPlayerId)
+					printf("You (P%d): %u pts\n", i + 1, sScores[i]);
+				else
+					printf("P%d: %u pts\n", i + 1, sScores[i]);
+			}
+
+			if (gameOver)
+			{
+				gGameStateNext = GS_SCORE_SCREEN;
+			}
 		}
 
 		onValueChange = false;
@@ -830,7 +1003,7 @@ void GameStateAsteroidsDraw(void)
 
 /******************************************************************************/
 /*!
-
+	
 */
 /******************************************************************************/
 void GameStateAsteroidsFree(void)
@@ -846,7 +1019,7 @@ void GameStateAsteroidsFree(void)
 
 /******************************************************************************/
 /*!
-
+	
 */
 /******************************************************************************/
 void GameStateAsteroidsUnload(void)
@@ -872,35 +1045,35 @@ void GameStateAsteroidsUnload(void)
 
 /******************************************************************************/
 /*!
-
+	
 */
 /******************************************************************************/
-GameObjInst* gameObjInstCreate(unsigned long type,
-	AEVec2* scale,
-	AEVec2* pPos,
-	AEVec2* pVel,
-	float dir)
+GameObjInst * gameObjInstCreate(unsigned long type, 
+							   AEVec2 * scale,
+							   AEVec2 * pPos, 
+							   AEVec2 * pVel, 
+							   float dir)
 {
 	AEVec2 zero;
 	AEVec2Zero(&zero);
 
 	AE_ASSERT_PARM(type < sGameObjNum);
-
+	
 	// loop through the object instance list to find a non-used object instance
 	for (unsigned long i = 0; i < GAME_OBJ_INST_NUM_MAX; i++)
 	{
-		GameObjInst* pInst = sGameObjInstList + i;
+		GameObjInst * pInst = sGameObjInstList + i;
 
 		// check if current instance is not used
 		if (pInst->flag == 0)
 		{
 			// it is not used => use it to create the new instance
-			pInst->pObject = sGameObjList + type;
-			pInst->flag = FLAG_ACTIVE;
-			pInst->scale = *scale;
-			pInst->posCurr = pPos ? *pPos : zero;
-			pInst->velCurr = pVel ? *pVel : zero;
-			pInst->dirCurr = dir;
+			pInst->pObject	= sGameObjList + type;
+			pInst->flag		= FLAG_ACTIVE;
+			pInst->scale	= *scale;
+			pInst->posCurr	= pPos ? *pPos : zero;
+			pInst->velCurr	= pVel ? *pVel : zero;
+			pInst->dirCurr	= dir;
 			pInst->cooldown = 1.0f;
 			// return the newly created instance
 			return pInst;
@@ -913,10 +1086,10 @@ GameObjInst* gameObjInstCreate(unsigned long type,
 
 /******************************************************************************/
 /*!
-
+	
 */
 /******************************************************************************/
-void gameObjInstDestroy(GameObjInst* pInst)
+void gameObjInstDestroy(GameObjInst * pInst)
 {
 	// if instance is destroyed before, just return
 	if (pInst->flag == 0)
@@ -930,7 +1103,7 @@ void gameObjInstDestroy(GameObjInst* pInst)
 
 /******************************************************************************/
 /*!
-	check for collision between Ship and Wall and apply physics response on the Ship
+    check for collision between Ship and Wall and apply physics response on the Ship
 		-- Apply collision response only on the "Ship" as we consider the "Wall" object is always stationary
 		-- We'll check collision only when the ship is moving towards the wall!
 	[DO NOT UPDATE THIS PARAGRAPH'S CODE]
@@ -938,6 +1111,8 @@ void gameObjInstDestroy(GameObjInst* pInst)
 /******************************************************************************/
 void Helper_Wall_Collision()
 {
+	if (!spShip || !spWall) return;
+
 	//calculate the vectors between the previous position of the ship and the boundary of wall
 	AEVec2 vec1;
 	vec1.x = spShip->posPrev.x - spWall->boundingBox.min.x;
@@ -986,7 +1161,175 @@ void Helper_Wall_Collision()
 			spShip->velCurr.y = 0.0f;
 		}
 	}
+	
+}
 
+/******************************************************************************/
+/*!
+	Multiplayer helper functions – called by MultiplayerMode when network
+	messages arrive.  All operate on the shared sGameObjInstList.
+*/
+/******************************************************************************/
+
+// Locate a slot index from a server asteroid ID; returns -1 if not found
+static int FindAsteroidSlot(uint16_t serverId)
+{
+	if (serverId < 256)
+		return sAsteroidIdMap[serverId];
+	return -1;
+}
+
+// Locate a slot index from a server bullet ID; returns -1 if not found
+static int FindBulletSlot(uint16_t bulletId)
+{
+	if (bulletId < 512)
+		return sBulletIdMap[bulletId];
+	return -1;
+}
+
+void MP_ApplyShipState(int playerId, float posX, float posY,
+                       float velX, float velY, float dir)
+{
+	if (playerId < 0 || playerId >= 4 || !spShips[playerId])
+		return;
+
+	GameObjInst* ship = spShips[playerId];
+
+	// Re-activate remote ships if they were hidden
+	ship->flag |= FLAG_ACTIVE;
+
+	if (playerId == g_localPlayerId)
+	{
+		// For local ship: apply server correction (snap to server position)
+		ship->posCurr = { posX, posY };
+		ship->velCurr = { velX, velY };
+		ship->dirCurr = dir;
+	}
+	else
+	{
+		// Remote ships: directly use server state
+		ship->posCurr = { posX, posY };
+		ship->velCurr = { velX, velY };
+		ship->dirCurr = dir;
+	}
+}
+
+void MP_SpawnAsteroid(uint16_t serverId, float px, float py,
+                      float vx, float vy, float sx, float sy)
+{
+	// Guard: game objects not yet loaded
+	if (sGameObjNum == 0) return;
+	// Already known: treat the re-broadcast as a position correction
+	if (serverId < 256 && sAsteroidIdMap[serverId] >= 0)
+	{
+		MP_CorrectAsteroid(serverId, px, py, vx, vy);
+		return;
+	}
+
+	AEVec2 scale{ sx, sy }, pos{ px, py }, vel{ vx, vy };
+	GameObjInst* inst = gameObjInstCreate(TYPE_ASTEROID, &scale, &pos, &vel, 0.0f);
+	if (!inst) return;
+
+	// Find slot index
+	for (unsigned long i = 0; i < GAME_OBJ_INST_NUM_MAX; ++i)
+	{
+		if (sGameObjInstList + i == inst)
+		{
+			sAsteroidServerId[i] = serverId;
+			sAsteroidDying[i]    = false;
+			if (serverId < 256)
+				sAsteroidIdMap[serverId] = static_cast<int>(i);
+			break;
+		}
+	}
+}
+
+void MP_CorrectAsteroid(uint16_t serverId, float px, float py,
+                        float vx, float vy)
+{
+	int slot = FindAsteroidSlot(serverId);
+	if (slot < 0) return;
+	GameObjInst* inst = sGameObjInstList + slot;
+	if (!(inst->flag & FLAG_ACTIVE)) return;
+	inst->posCurr = { px, py };
+	inst->velCurr = { vx, vy };
+}
+
+void MP_MarkAsteroidDying(uint16_t serverId)
+{
+	int slot = FindAsteroidSlot(serverId);
+	if (slot < 0) return;
+	sAsteroidDying[slot] = true;
+	// Explosion visual
+	GameObjInst* inst = sGameObjInstList + slot;
+	if (inst->flag & FLAG_ACTIVE)
+	{
+		AEVec2 es{ 50.f, 50.f }, ev{ 0.f, 0.f };
+		gameObjInstCreate(TYPE_EXPLOSION, &es, &inst->posCurr, &ev, 0.f);
+		AEAudioPlay(explosion, soundEffect, 1.0f, 1.0f, 0);
+	}
+}
+
+void MP_DestroyAsteroid(uint16_t serverId)
+{
+	int slot = FindAsteroidSlot(serverId);
+	if (slot < 0) return;
+
+	gameObjInstDestroy(sGameObjInstList + slot);
+	sAsteroidDying[slot] = false;
+	if (serverId < 256)
+		sAsteroidIdMap[serverId] = -1;
+	sAsteroidServerId[slot] = 0;
+}
+
+void MP_SpawnBullet(uint16_t bulletId, int /*ownerId*/,
+                    float px, float py, float vx, float vy, float dir)
+{
+	// Guard: game objects not yet loaded
+	if (sGameObjNum == 0) return;
+	// Don't spawn if already tracked
+	if (bulletId < 512 && sBulletIdMap[bulletId] >= 0)
+		return;
+
+	AEVec2 scale{ BULLET_SCALE_X, BULLET_SCALE_Y }, pos{ px, py }, vel{ vx, vy };
+	GameObjInst* inst = gameObjInstCreate(TYPE_BULLET, &scale, &pos, &vel, dir);
+	if (!inst) return;
+
+	for (unsigned long i = 0; i < GAME_OBJ_INST_NUM_MAX; ++i)
+	{
+		if (sGameObjInstList + i == inst)
+		{
+			sBulletServerId[i] = bulletId;
+			if (bulletId < 512)
+				sBulletIdMap[bulletId] = static_cast<int>(i);
+			break;
+		}
+	}
+}
+
+void MP_DestroyBullet(uint16_t bulletId)
+{
+	int slot = FindBulletSlot(bulletId);
+	if (slot < 0) return;
+
+	gameObjInstDestroy(sGameObjInstList + slot);
+	if (bulletId < 512)
+		sBulletIdMap[bulletId] = -1;
+	sBulletServerId[slot] = 0;
+}
+
+void MP_UpdateScore(int playerId, uint32_t newScore)
+{
+	if (playerId < 0 || playerId >= 4) return;
+	sScores[playerId] = newScore;
+	onValueChange = true;
+}
+
+void MP_SetGameOver(int /*winnerId*/)
+{
+	gameOver      = true;
+	onValueChange = true;
+	// State transition to GS_SCORE_SCREEN happens in Draw()
 }
 
 /******************************************************************************/

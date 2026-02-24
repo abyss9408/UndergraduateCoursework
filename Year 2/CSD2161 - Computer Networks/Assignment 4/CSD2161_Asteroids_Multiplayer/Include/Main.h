@@ -3,7 +3,7 @@
 \file		Main.h
 \author 	Bryan Ang Wei Ze
 \par    	email: bryanweize.ang\@digipen.edu
-\date   	March 29, 2025
+\date   	February 05, 2024
 \brief		This header file declares globals and includes
 
 Copyright (C) 2024 DigiPen Institute of Technology.
@@ -21,7 +21,12 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 
 extern float	g_dt;
 extern double	g_appTime;
-extern signed char g_font;
+
+// Multiplayer globals
+class IGameMode;
+extern bool       g_isMultiplayer;
+extern int        g_localPlayerId;
+extern IGameMode* g_networkMode;
 
 // ---------------------------------------------------------------------------
 // includes
@@ -32,6 +37,8 @@ extern signed char g_font;
 #include "GameStateMgr.h"
 #include "GameState_Asteroids.h"
 #include "Collision.h"
+#include "GameMode.h"
+#include "GameModeSelector.h"
 
 #include <iostream>
 #endif

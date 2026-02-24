@@ -3,7 +3,7 @@
 \file		GameStateMgr.h
 \author 	Bryan Ang Wei Ze
 \par    	email: bryanweize.ang\@digipen.edu
-\date   	March 29, 2025
+\date   	February 05, 2024
 \brief		This header file declares the Initialize and Update functions of the
 			Game State Manager.
 

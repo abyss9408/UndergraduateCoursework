@@ -1,9 +1,9 @@
 /******************************************************************************/
 /*!
 \file		Collision.cpp
-\author 	Low Yue Jun
-\par    	email: yuejun.low\@digipen.edu
-\date   	March 30, 2025
+\author 	Bryan Ang Wei Ze
+\par    	email: bryanweize.ang\@digipen.edu
+\date   	February 05, 2024
 \brief		This source file implements the CollisionIntersection_RectRect
 			function.
 
@@ -33,11 +33,11 @@ static bool StaticCollisionIntersection_RectRect(const AABB& a, const AABB& b)
 	Dynamic collision check between two rectangles
 	*/
 	/**************************************************************************/
-bool CollisionIntersection_RectRect(const AABB& aabb1,          //Input
-	const AEVec2& vel1,         //Input 
-	const AABB& aabb2,          //Input 
-	const AEVec2& vel2,         //Input
-	float& firstTimeOfCollision) //Output: the calculated value of tFirst, below, must be returned here
+bool CollisionIntersection_RectRect(const AABB & aabb1,          //Input
+									const AEVec2 & vel1,         //Input 
+									const AABB & aabb2,          //Input 
+									const AEVec2 & vel2,         //Input
+									float& firstTimeOfCollision) //Output: the calculated value of tFirst, below, must be returned here
 {
 	UNREFERENCED_PARAMETER(aabb1);
 	UNREFERENCED_PARAMETER(vel1);
@@ -45,12 +45,12 @@ bool CollisionIntersection_RectRect(const AABB& aabb1,          //Input
 	UNREFERENCED_PARAMETER(vel2);
 	UNREFERENCED_PARAMETER(firstTimeOfCollision);
 
-
+	
 	/*
 	Implement the collision intersection over here.
 
-	The steps are:
-	Step 1: Check for static collision detection between rectangles (static: before moving).
+	The steps are:	
+	Step 1: Check for static collision detection between rectangles (static: before moving). 
 				If the check returns no overlap, you continue with the dynamic collision test
 					with the following next steps 2 to 5 (dynamic: with velocities).
 				Otherwise you return collision is true, and you stop.
@@ -76,12 +76,12 @@ bool CollisionIntersection_RectRect(const AABB& aabb1,          //Input
 	Step 5: Return true: the rectangles intersect
 
 	*/
-	if (StaticCollisionIntersection_RectRect(aabb1, aabb2))
+	if (StaticCollisionIntersection_RectRect(aabb1,aabb2))
 	{
 		firstTimeOfCollision = 0.0f;
 		return true;
 	}
-
+	
 	AEVec2 vRel;
 	float tLast;
 	vRel.x = vel2.x - vel1.x;

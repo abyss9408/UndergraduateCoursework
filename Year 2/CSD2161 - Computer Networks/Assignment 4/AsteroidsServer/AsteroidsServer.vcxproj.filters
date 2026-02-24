@@ -15,27 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="StandaloneServer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerMain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UDPSocket.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NetworkMessage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="NetworkMessage.h">
+    <ClInclude Include="taskqueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UDPSocket.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StandaloneServer.h">
+    <ClInclude Include="taskqueue.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

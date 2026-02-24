@@ -1,97 +1,243 @@
 /******************************************************************************/
 /*!
-\file		GameModeSelector.cpp
-\author 	Michael Henry Lazaroo
-\par    	email: m.lazaroo\@digipen.edu
-\date   	March 29, 2025
-\brief		This source file implements the GameModeSelector class, which handles
-            the selection between single player and multiplayer modes.
-
-Copyright (C) 2025 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- */
- /******************************************************************************/
-
+\file   GameModeSelector.cpp
+\brief  Menu, Lobby and Score-screen state implementations; IGameMode factory
+*/
+/******************************************************************************/
+// MultiplayerMode.h must come first: it defines WIN32_LEAN_AND_MEAN and
+// includes <winsock2.h> before main.h can pull in <windows.h> (and winsock.h).
+#include "MultiplayerMode.h"
+#include "main.h"
 #include "GameModeSelector.h"
+#include "SinglePlayerMode.h"
 #include "ConfigReader.h"
-#include <commdlg.h>
-#include <iostream>
 
-GameModeType GameModeSelector::ShowModeSelection() {
-    int result = MessageBoxA(NULL,
-        "Select game mode:\n\n"
-        "YES - Single Player\n"
-        "NO - Multiplayer Client\n"
-        "CANCEL - Multiplayer Server",
-        "Spaceships Game Mode Selection",
-        MB_YESNOCANCEL | MB_ICONQUESTION);
+#include <cstring>
+#include <cstdio>
 
-    switch (result) {
-    case IDYES:
-        return GameModeType::SINGLE_PLAYER;
-    case IDNO:
-        return GameModeType::MULTIPLAYER_CLIENT;
-    case IDCANCEL:
-        return GameModeType::MULTIPLAYER_SERVER;
-    default:
-        return GameModeType::QUIT;
+// ============================================================================
+// Score-screen persistent data (set by SetScoreScreenData)
+// ============================================================================
+static int      ss_winnerId     = -1;
+static int      ss_playerCount  = 1;
+static uint32_t ss_scores[4]    = {};
+static char     ss_topNames[5][17] = {};
+static uint32_t ss_topScores[5] = {};
+
+void SetScoreScreenData(int winnerId,
+                        const uint32_t  scores[4],
+                        int             playerCount,
+                        const char      topNames[5][16],
+                        const uint32_t  topScores[5])
+{
+    ss_winnerId    = winnerId;
+    ss_playerCount = playerCount;
+    for (int i = 0; i < 4; ++i)
+        ss_scores[i] = scores[i];
+    for (int i = 0; i < 5; ++i)
+    {
+        memcpy(ss_topNames[i], topNames[i], 16);
+        ss_topNames[i][16] = '\0';
+        ss_topScores[i] = topScores[i];
     }
 }
 
-std::string GameModeSelector::GetServerAddress() {
-    // First try to read from config file
-    ConfigReader config;
-    const std::string configFilename = "network.cfg";
-    std::string serverAddress = "127.0.0.1"; // Default fallback address
+// ============================================================================
+// IGameMode factory
+// ============================================================================
+IGameMode* CreateGameMode(bool isMultiplayer)
+{
+    if (!isMultiplayer)
+        return new SinglePlayerMode();
 
-    if (config.LoadFromFile(configFilename)) {
-        // Config file exists, try to read server address
-        std::string configAddress = config.GetString("ServerAddress", "");
-        if (!configAddress.empty()) {
-            // Found valid server address in config
-            std::cout << "Using server address from config file: " << configAddress << std::endl;
-            return configAddress;
-        }
-    }
-
-    // Config file doesn't exist or doesn't have server address
-    // Ask user for server address
-    std::string userAddress = ShowInputDialog("Enter server IP address:", serverAddress.c_str());
-
-    // Save the user's choice to config file for next time
-    config.SetString("ServerAddress", userAddress);
-    if (config.SaveToFile(configFilename)) {
-        std::cout << "Saved server address to config file" << std::endl;
-    }
-    else {
-        std::cout << "Failed to save server address to config file" << std::endl;
-    }
-
-    return userAddress;
+    NetworkConfig cfg = ConfigReader::Load();
+    return new MultiplayerMode(cfg);
 }
 
-std::string GameModeSelector::ShowInputDialog(const char* prompt, const char* defaultValue) {
-    char buffer[256] = { 0 };
-    strncpy_s(buffer, defaultValue, sizeof(buffer) - 1);
+// ============================================================================
+// GS_MENU
+// ============================================================================
+void GameStateMenuLoad()   {}
+void GameStateMenuUnload() {}
+void GameStateMenuFree()   {}
 
-    OPENFILENAMEA ofn = { 0 };
-    ofn.lStructSize = sizeof(OPENFILENAMEA);
-    ofn.hwndOwner = NULL;
-    ofn.lpstrFile = buffer;
-    ofn.nMaxFile = sizeof(buffer);
-    ofn.lpstrTitle = prompt;
-    ofn.Flags = OFN_HIDEREADONLY | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST | OFN_ENABLEHOOK | OFN_ENABLESIZING;
+void GameStateMenuInit()
+{
+    printf("=== ASTEROIDS MULTIPLAYER ===\n");
+    printf("  1. Single Player\n");
+    printf("  2. Multiplayer\n");
+    printf("  ESC. Quit\n");
+}
 
-    // Abuse GetSaveFileName as an input dialog (hack but works for simple cases)
-    if (GetSaveFileNameA(&ofn)) {
-        // Extract just the filename part as the input
-        char* lastSlash = strrchr(buffer, '\\');
-        if (lastSlash) {
-            return std::string(lastSlash + 1);
+void GameStateMenuUpdate()
+{
+    if (AEInputCheckTriggered(AEVK_1))
+    {
+        // Single-player path
+        g_isMultiplayer = false;
+        if (g_networkMode)
+        {
+            g_networkMode->Shutdown();
+            delete g_networkMode;
+            g_networkMode = nullptr;
         }
-        return std::string(buffer);
+        gGameStateNext = GS_ASTEROIDS;
+    }
+    else if (AEInputCheckTriggered(AEVK_2))
+    {
+        // Multiplayer path – lobby will create the network mode
+        gGameStateNext = GS_LOBBY;
+    }
+    else if (AEInputCheckTriggered(AEVK_ESCAPE))
+    {
+        gGameStateNext = GS_QUIT;
+    }
+}
+
+void GameStateMenuDraw()
+{
+    // Text is already printed to console in Init; nothing to draw on-screen
+    // (A production version would render text via AEGfxPrint)
+}
+
+// ============================================================================
+// GS_LOBBY
+// ============================================================================
+void GameStateLobbyLoad()   {}
+void GameStateLobbyUnload() {}
+
+void GameStateLobbyInit()
+{
+    g_isMultiplayer = true;
+
+    // Clean up any previous network mode
+    if (g_networkMode)
+    {
+        g_networkMode->Shutdown();
+        delete g_networkMode;
+        g_networkMode = nullptr;
     }
 
-    return std::string(defaultValue);
+    g_networkMode = CreateGameMode(true);
+    g_networkMode->Init();   // sends MSG_CONNECT_REQUEST
+
+    printf("[Lobby] Connecting to server...\n");
+}
+
+void GameStateLobbyUpdate()
+{
+    if (!g_networkMode)
+    {
+        gGameStateNext = GS_MENU;
+        return;
+    }
+
+    // Poll for server messages
+    g_networkMode->applyNetworkState();
+
+    // Transition to game when server says start
+    if (g_networkMode->isGameStarted())
+    {
+        g_localPlayerId = g_networkMode->getLocalPlayerId();
+        gGameStateNext  = GS_ASTEROIDS;
+        return;
+    }
+
+    // Connection timed out
+    if (!static_cast<MultiplayerMode*>(g_networkMode)->isConnected()
+        && /* give 5 s to connect */ true)
+    {
+        // stay in lobby and keep trying
+    }
+
+    // ESC cancels and returns to menu
+    if (AEInputCheckTriggered(AEVK_ESCAPE))
+    {
+        g_networkMode->Shutdown();
+        delete g_networkMode;
+        g_networkMode   = nullptr;
+        g_isMultiplayer = false;
+        gGameStateNext  = GS_MENU;
+    }
+}
+
+void GameStateLobbyDraw()
+{
+    // Status is printed in Init; nothing to render on screen per-frame
+}
+
+void GameStateLobbyFree()
+{
+    // If transitioning away from lobby but NOT to the game, destroy network mode
+    if (gGameStateNext != GS_ASTEROIDS)
+    {
+        if (g_networkMode)
+        {
+            g_networkMode->Shutdown();
+            delete g_networkMode;
+            g_networkMode   = nullptr;
+            g_isMultiplayer = false;
+        }
+    }
+}
+
+// ============================================================================
+// GS_SCORE_SCREEN
+// ============================================================================
+void GameStateScoreLoad()   {}
+void GameStateScoreUnload() {}
+
+void GameStateScoreInit()
+{
+    printf("\n=== ROUND OVER ===\n");
+    if (ss_winnerId >= 0)
+        printf("Winner: Player %d (%s)\n", ss_winnerId + 1,
+               ss_topNames[0][0] ? "" : "");
+
+    printf("Scores:\n");
+    for (int i = 0; i < ss_playerCount; ++i)
+        printf("  Player %d: %u pts\n", i + 1, ss_scores[i]);
+
+    printf("\n--- Top 5 Leaderboard ---\n");
+    for (int i = 0; i < 5; ++i)
+    {
+        if (ss_topScores[i] == 0) break;
+        printf("  %d. %-16s %u\n", i + 1, ss_topNames[i], ss_topScores[i]);
+    }
+    printf("\nPress any key to return to menu.\n");
+}
+
+void GameStateScoreUpdate()
+{
+    // Return to menu on Enter, Space or ESC
+    if (AEInputCheckTriggered(AEVK_RETURN) ||
+        AEInputCheckTriggered(AEVK_SPACE)  ||
+        AEInputCheckTriggered(AEVK_ESCAPE))
+    {
+        gGameStateNext = GS_MENU;
+    }
+}
+
+void GameStateScoreDraw()
+{
+    // Text already printed in Init; nothing extra to draw
+}
+
+void GameStateScoreFree()
+{
+    // Clean up network mode when returning to menu
+    if (g_networkMode)
+    {
+        g_networkMode->Shutdown();
+        delete g_networkMode;
+        g_networkMode   = nullptr;
+        g_isMultiplayer = false;
+    }
+
+    // Reset score data
+    ss_winnerId    = -1;
+    ss_playerCount = 1;
+    memset(ss_scores,    0, sizeof(ss_scores));
+    memset(ss_topNames,  0, sizeof(ss_topNames));
+    memset(ss_topScores, 0, sizeof(ss_topScores));
 }

@@ -1,108 +1,64 @@
 /******************************************************************************/
 /*!
-\file		ConfigReader.h
-\author 	Michael Henry Lazaroo
-\par    	email: m.lazaroo\@digipen.edu
-\date   	March 30, 2025
-\brief		This header file declares a simple configuration file reader class.
+\file   ConfigReader.h
+\brief  Parses network.cfg into a NetworkConfig struct
+*/
+/******************************************************************************/
+#pragma once
 
-Copyright (C) 2025 DigiPen Institute of Technology.
-Reproduction or disclosure of this file or its contents without the
-prior written consent of DigiPen Institute of Technology is prohibited.
- */
- /******************************************************************************/
-
-#ifndef CONFIG_READER_H_
-#define CONFIG_READER_H_
-
+#include <cstdint>
 #include <string>
-#include <map>
 #include <fstream>
-#include <iostream>
 
-class ConfigReader {
-public:
-    // Load configuration from a file
-    bool LoadFromFile(const std::string& filename) {
-        std::ifstream file(filename);
-        if (!file.is_open()) {
-            return false;
-        }
-
-        m_values.clear();
-        std::string line;
-
-        while (std::getline(file, line)) {
-            // Skip empty lines and comments
-            if (line.empty() || line[0] == '#') {
-                continue;
-            }
-
-            // Find the equal sign
-            size_t equalPos = line.find('=');
-            if (equalPos != std::string::npos) {
-                std::string key = line.substr(0, equalPos);
-                std::string value = line.substr(equalPos + 1);
-
-                // Trim whitespace
-                key.erase(0, key.find_first_not_of(" \t"));
-                key.erase(key.find_last_not_of(" \t") + 1);
-                value.erase(0, value.find_first_not_of(" \t"));
-                value.erase(value.find_last_not_of(" \t") + 1);
-
-                m_values[key] = value;
-            }
-        }
-
-        file.close();
-        return true;
-    }
-
-    // Get a string value from the configuration
-    std::string GetString(const std::string& key, const std::string& defaultValue) const {
-        auto it = m_values.find(key);
-        if (it != m_values.end()) {
-            return it->second;
-        }
-        return defaultValue;
-    }
-
-    // Get an integer value from the configuration
-    int GetInt(const std::string& key, int defaultValue) const {
-        auto it = m_values.find(key);
-        if (it != m_values.end()) {
-            try {
-                return std::stoi(it->second);
-            }
-            catch (const std::exception& e) {
-                std::cerr << "Error converting value to int: " << e.what() << std::endl;
-            }
-        }
-        return defaultValue;
-    }
-
-    // Set a string value in the configuration
-    void SetString(const std::string& key, const std::string& value) {
-        m_values[key] = value;
-    }
-
-    // Save configuration to a file
-    bool SaveToFile(const std::string& filename) const {
-        std::ofstream file(filename);
-        if (!file.is_open()) {
-            return false;
-        }
-
-        for (const auto& pair : m_values) {
-            file << pair.first << " = " << pair.second << std::endl;
-        }
-
-        file.close();
-        return true;
-    }
-
-private:
-    std::map<std::string, std::string> m_values;
+struct NetworkConfig
+{
+    std::string serverIp   = "127.0.0.1";
+    uint16_t    serverPort = 9999;
+    std::string playerName = "Player1";
+    int         minPlayers = 2;
+    int         maxPlayers = 4;
 };
 
-#endif // CONFIG_READER_H_
+class ConfigReader
+{
+public:
+    static NetworkConfig Load(const std::string& filename = "network.cfg")
+    {
+        NetworkConfig cfg;
+        std::ifstream file(filename);
+        if (!file.is_open())
+            return cfg;
+
+        std::string line;
+        while (std::getline(file, line))
+        {
+            if (line.empty() || line[0] == '#')
+                continue;
+
+            auto pos = line.find('=');
+            if (pos == std::string::npos)
+                continue;
+
+            std::string key = line.substr(0, pos);
+            std::string val = line.substr(pos + 1);
+
+            // Trim whitespace
+            auto trim = [](std::string& s)
+            {
+                const std::string ws = " \t\r\n";
+                size_t start = s.find_first_not_of(ws);
+                size_t end   = s.find_last_not_of(ws);
+                s = (start == std::string::npos) ? "" : s.substr(start, end - start + 1);
+            };
+            trim(key);
+            trim(val);
+
+            if      (key == "server_ip")   cfg.serverIp   = val;
+            else if (key == "server_port") cfg.serverPort = static_cast<uint16_t>(std::stoi(val));
+            else if (key == "player_name") cfg.playerName = val;
+            else if (key == "min_players") cfg.minPlayers = std::stoi(val);
+            else if (key == "max_players") cfg.maxPlayers = std::stoi(val);
+        }
+        return cfg;
+    }
+};

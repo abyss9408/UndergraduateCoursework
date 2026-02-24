@@ -3,7 +3,7 @@
 \file		GameStateMgr.cpp
 \author 	Bryan Ang Wei Ze
 \par    	email: bryanweize.ang\@digipen.edu
-\date   	March 29, 2025
+\date   	February 05, 2024
 \brief		This source file implements the Initialize and Update functions of the
 			Game State Manager.
 
@@ -25,12 +25,12 @@ unsigned int	gGameStatePrev;
 unsigned int	gGameStateNext;
 
 // pointer to functions for game state life cycles functions
-void (*GameStateLoad)() = 0;
-void (*GameStateInit)() = 0;
-void (*GameStateUpdate)() = 0;
-void (*GameStateDraw)() = 0;
-void (*GameStateFree)() = 0;
-void (*GameStateUnload)() = 0;
+void (*GameStateLoad)()		= 0;
+void (*GameStateInit)()		= 0;
+void (*GameStateUpdate)()	= 0;
+void (*GameStateDraw)()		= 0;
+void (*GameStateFree)()		= 0;
+void (*GameStateUnload)()	= 0;
 
 /******************************************************************************/
 /*!
@@ -43,9 +43,9 @@ void GameStateMgrInit(unsigned int gameStateInit)
 	gGameStateInit = gameStateInit;
 
 	// reset the current, previoud and next game
-	gGameStateCurr =
-		gGameStatePrev =
-		gGameStateNext = gGameStateInit;
+	gGameStateCurr = 
+	gGameStatePrev = 
+	gGameStateNext = gGameStateInit;
 
 	// call the update to set the function pointers
 	GameStateMgrUpdate();
@@ -64,13 +64,41 @@ void GameStateMgrUpdate()
 	switch (gGameStateCurr)
 	{
 	case GS_ASTEROIDS:
-		GameStateLoad = GameStateAsteroidsLoad;
-		GameStateInit = GameStateAsteroidsInit;
+		GameStateLoad   = GameStateAsteroidsLoad;
+		GameStateInit   = GameStateAsteroidsInit;
 		GameStateUpdate = GameStateAsteroidsUpdate;
-		GameStateDraw = GameStateAsteroidsDraw;
-		GameStateFree = GameStateAsteroidsFree;
+		GameStateDraw   = GameStateAsteroidsDraw;
+		GameStateFree   = GameStateAsteroidsFree;
 		GameStateUnload = GameStateAsteroidsUnload;
 		break;
+
+	case GS_MENU:
+		GameStateLoad   = GameStateMenuLoad;
+		GameStateInit   = GameStateMenuInit;
+		GameStateUpdate = GameStateMenuUpdate;
+		GameStateDraw   = GameStateMenuDraw;
+		GameStateFree   = GameStateMenuFree;
+		GameStateUnload = GameStateMenuUnload;
+		break;
+
+	case GS_LOBBY:
+		GameStateLoad   = GameStateLobbyLoad;
+		GameStateInit   = GameStateLobbyInit;
+		GameStateUpdate = GameStateLobbyUpdate;
+		GameStateDraw   = GameStateLobbyDraw;
+		GameStateFree   = GameStateLobbyFree;
+		GameStateUnload = GameStateLobbyUnload;
+		break;
+
+	case GS_SCORE_SCREEN:
+		GameStateLoad   = GameStateScoreLoad;
+		GameStateInit   = GameStateScoreInit;
+		GameStateUpdate = GameStateScoreUpdate;
+		GameStateDraw   = GameStateScoreDraw;
+		GameStateFree   = GameStateScoreFree;
+		GameStateUnload = GameStateScoreUnload;
+		break;
+
 	default:
 		AE_FATAL_ERROR("invalid state!!");
 	}
