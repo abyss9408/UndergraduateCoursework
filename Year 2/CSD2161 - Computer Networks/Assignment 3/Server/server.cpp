@@ -38,7 +38,124 @@ prior written consent of DigiPen Institute of Technology is prohibited.
 #include <iomanip>
 #include <algorithm>
 #include "taskqueue.h"
-#include "../config.h"
+
+// -----------------------------------------------------------------------
+// Protocol constants (wire format — must match between client and server)
+// -----------------------------------------------------------------------
+#define WINSOCK_VERSION    2
+#define WINSOCK_SUBVERSION 2
+#define MAX_STR_LEN        1000
+#define RETURN_CODE_1      1
+#define RETURN_CODE_2      2
+#define RETURN_CODE_3      3
+#define RETURN_CODE_4      4
+
+constexpr uint8_t UNKNOWN        = 0x0;
+constexpr uint8_t REQ_QUIT       = 0x1;
+constexpr uint8_t REQ_DOWNLOAD   = 0x2;
+constexpr uint8_t RSP_DOWNLOAD   = 0x3;
+constexpr uint8_t REQ_LISTFILES  = 0x4;
+constexpr uint8_t RSP_LISTFILES  = 0x5;
+constexpr uint8_t CMD_TEST       = 0x20;
+constexpr uint8_t DOWNLOAD_ERROR = 0x30;
+
+constexpr uint8_t  UDP_DATA        = 0x0;
+constexpr uint8_t  UDP_ACK         = 0x1;
+constexpr uint32_t UDP_HEADER_SIZE = 13;
+
+// -----------------------------------------------------------------------
+// Runtime-tunable parameters — defaults; overridden by LoadConfig()
+// -----------------------------------------------------------------------
+uint32_t PROTOCOL_TYPE               = 1;
+uint32_t MAX_PACKET_SIZE             = 1472;
+uint32_t DATA_PACKET_SIZE            = 1459;  // 1472 - 13; recalculated after load
+uint32_t TCP_BUFFER_SIZE             = 4096;
+uint32_t FILE_BUFFER_SIZE            = 4096;
+uint32_t WINDOW_SIZE                 = 256;
+uint32_t ACK_TIMEOUT_MS              = 250;
+uint32_t MAX_RETRIES                 = 5;
+uint32_t MAX_CLIENTS                 = 10;
+uint32_t THREAD_POOL_SIZE            = 10;
+uint32_t MAX_SESSION_IDLE_MS         = 30000;
+uint32_t SESSION_MONITOR_INTERVAL_MS = 5000;
+uint32_t PROGRESS_UPDATE_PERCENT     = 5;
+uint32_t MAX_FILE_SIZE               = 200u * 1024u * 1024u;
+uint32_t MAX_FILES                   = 256;
+
+// Reads config.cfg from the executable's directory, falling back to the
+// current working directory. Call once at startup before using config values.
+bool LoadConfig(const std::string& path = "")
+{
+    std::string actualPath = path;
+    if (actualPath.empty())
+    {
+        char exePath[MAX_PATH] = {};
+        GetModuleFileNameA(nullptr, exePath, MAX_PATH);
+        std::string exeDir(exePath);
+        size_t pos = exeDir.find_last_of("/\\");
+        actualPath = (pos != std::string::npos ? exeDir.substr(0, pos + 1) : "") + "config.cfg";
+    }
+
+    std::ifstream cfgFile(actualPath);
+    if (!cfgFile.is_open())
+    {
+        cfgFile.open("config.cfg");
+        if (cfgFile.is_open())
+            actualPath = "config.cfg";
+    }
+
+    if (!cfgFile.is_open())
+    {
+        std::cout << "[Config] config.cfg not found, using built-in defaults.\n";
+        return false;
+    }
+
+    auto trim = [](const std::string& s) -> std::string {
+        const char* ws = " \t\r\n";
+        size_t start = s.find_first_not_of(ws);
+        if (start == std::string::npos) return {};
+        size_t end = s.find_last_not_of(ws);
+        return s.substr(start, end - start + 1);
+    };
+
+    std::string line;
+    while (std::getline(cfgFile, line))
+    {
+        size_t commentPos = line.find('#');
+        if (commentPos != std::string::npos)
+            line = line.substr(0, commentPos);
+
+        size_t eqPos = line.find('=');
+        if (eqPos == std::string::npos) continue;
+
+        std::string key    = trim(line.substr(0, eqPos));
+        std::string valStr = trim(line.substr(eqPos + 1));
+        if (key.empty() || valStr.empty()) continue;
+
+        uint32_t value = 0;
+        try { value = static_cast<uint32_t>(std::stoul(valStr)); }
+        catch (...) { continue; }
+
+        if      (key == "PROTOCOL_TYPE")               PROTOCOL_TYPE = value;
+        else if (key == "MAX_PACKET_SIZE")             MAX_PACKET_SIZE = value;
+        else if (key == "TCP_BUFFER_SIZE")             TCP_BUFFER_SIZE = value;
+        else if (key == "FILE_BUFFER_SIZE")            FILE_BUFFER_SIZE = value;
+        else if (key == "WINDOW_SIZE")                 WINDOW_SIZE = value;
+        else if (key == "ACK_TIMEOUT_MS")              ACK_TIMEOUT_MS = value;
+        else if (key == "MAX_RETRIES")                 MAX_RETRIES = value;
+        else if (key == "MAX_CLIENTS")                 MAX_CLIENTS = value;
+        else if (key == "THREAD_POOL_SIZE")            THREAD_POOL_SIZE = value;
+        else if (key == "MAX_SESSION_IDLE_MS")         MAX_SESSION_IDLE_MS = value;
+        else if (key == "SESSION_MONITOR_INTERVAL_MS") SESSION_MONITOR_INTERVAL_MS = value;
+        else if (key == "PROGRESS_UPDATE_PERCENT")     PROGRESS_UPDATE_PERCENT = value;
+        else if (key == "MAX_FILE_SIZE")               MAX_FILE_SIZE = value;
+        else if (key == "MAX_FILES")                   MAX_FILES = value;
+    }
+
+    DATA_PACKET_SIZE = MAX_PACKET_SIZE - UDP_HEADER_SIZE;
+    std::cout << "[Config] Loaded configuration from '" << actualPath << "'.\n";
+    return true;
+}
 
 // Structure to store client information
 struct ClientInfo {
@@ -599,7 +716,7 @@ void ProcessAckPacket(const std::vector<char>& buffer, int bytesReceived) {
 
 // Process client requests
 bool ProcessClient(SOCKET clientSocket) {
-    constexpr size_t BUFFER_SIZE = TCP_BUFFER_SIZE;
+    const size_t BUFFER_SIZE = TCP_BUFFER_SIZE;
     char buffer[BUFFER_SIZE];
     bool stay = true;
 
@@ -692,7 +809,7 @@ void SessionMonitorThread() {
     LogMessage("Session monitor thread started");
 
     while (g_serverRunning) {
-        std::this_thread::sleep_for(std::chrono::seconds(5));
+        std::this_thread::sleep_for(std::chrono::milliseconds(SESSION_MONITOR_INTERVAL_MS));
 
         std::vector<uint32_t> sessionsToRemove;
 
@@ -819,6 +936,8 @@ void DisconnectServer() {
 }
 
 int main() {
+    LoadConfig();
+
     // Get TCP Port Number
     std::string tcpPortStr;
     std::cout << "Server TCP port Number: ";
