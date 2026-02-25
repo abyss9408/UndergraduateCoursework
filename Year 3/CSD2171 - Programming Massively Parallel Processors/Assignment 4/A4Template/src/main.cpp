@@ -9,7 +9,7 @@ constexpr int TOT_ITERS = 10;
 int main(int argc, char* argv[]) {
     int n = 1000000;  // default: 1 million elements
     int version = 1;
-    int baseline = 0;//change to  -1 for CPU;
+    int baseline = -1;//change to  -1 for CPU;
 
     if (argc != 2) {
         printf("Usage: a4.exe <number-of-elements-to-sort>\n");
