@@ -5,3 +5,6 @@ Write sumSimd to take in 1) as 1st parameter an array of 64 bit signed integers 
 Write a function pdtSimd that takes in the same parameters and has the same return type but that returns the product of the integers in the array.
 
 Use the following driver code - main.cpp and you may need to compile with the following compiler switch: -msse4
+
+You may refer to the following -
+https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html
