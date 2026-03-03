@@ -556,13 +556,6 @@ StudentCode::SplitCandidate StudentCode::FindBestSplit(const std::vector<int>& t
         int NR = static_cast<int>(triangleIndices.size()); // Number of triangles on right
         int NP = 0;  // Number of triangles in the plane
 
-        // Remove initial planar triangles from NR
-        if (!groups.empty())
-        {
-            NR -= groups[0].numPlanar;
-            NP = groups[0].numPlanar;
-        }
-
         for (size_t i = 0; i < groups.size(); ++i)
         {
             const EventGroup& group = groups[i];
@@ -606,21 +599,6 @@ bool StudentCode::ShouldTerminate(const std::vector<int>& triangleIndices, const
 
     // SAH termination: only split if it reduces cost
     if (bestSplit.cost >= leafCost) return true;
-
-    // Additional check: don't split if it doesn't significantly reduce triangle count
-    // This helps prevent excessive duplication
-    std::vector<int> leftTriangles, rightTriangles;
-    SplitTriangles(triangleIndices, bestSplit.axis, bestSplit.position, leftTriangles, rightTriangles);
-
-    // If split doesn't reduce triangle count meaningfully, terminate
-    float reductionRatio = static_cast<float>(leftTriangles.size() + rightTriangles.size()) /
-        static_cast<float>(triangleIndices.size());
-
-    if (reductionRatio > 1.5f)
-    {
-        // Too much duplication
-        return true;
-    }
 
     return false;
 }
