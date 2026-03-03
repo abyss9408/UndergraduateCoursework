@@ -50,8 +50,8 @@ max_players=4          # Server rejects connections beyond this
 
 ### 3. Run
 
-1. Launch `AsteroidsServerD.exe` (or the Release build) on the host machine.
-2. Launch `CSD2161_Asteroids_MultiplierD.exe` on each player's machine.
+1. Launch `AsteroidsServer.exe` on the host machine.
+2. Launch `CSD2161_Asteroids_Multiplayer.exe` on each player's machine.
 3. Press **2** at the main menu to join the lobby.
 4. The game starts automatically once `min_players` have connected.
 
