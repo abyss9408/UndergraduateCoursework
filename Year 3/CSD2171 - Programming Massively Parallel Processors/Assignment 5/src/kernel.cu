@@ -1,4 +1,19 @@
-﻿#include <iostream>
+﻿/* Start Header *****************************************************************/
+/*!
+    \file kernel.cu
+
+    \author Bryan Ang Wei Ze, bryanweize.ang, 2301397
+
+    \par bryanweize.ang\@digipen.edu
+
+    \date March 5, 2026
+
+    \brief Copyright (C) 2026 DigiPen Institute of Technology.
+
+    Reproduction or disclosure of this file or its contents without the prior written consent of DigiPen Institute of Technology is prohibited.
+*/
+/* End Header *******************************************************************/
+#include <iostream>
 #include <vector>
 #include <algorithm>
 #include <random>
@@ -23,9 +38,29 @@
 //         Must be a positive integer. For best performance, n should be
 //         a multiple of the block size and warp size (32)./
 
-__global__ void reduceSumKernel(const int* in, int* out, const int n) 
+__global__ void reduceSumKernel(const int* in, int* out, const int n)
 {
+    extern __shared__ int sdata[];
 
+    int tid = threadIdx.x;
+    int gid = blockIdx.x * blockDim.x + tid;
+
+    // Load: pad out-of-bounds threads with 0
+    sdata[tid] = (gid < n) ? in[gid] : 0;
+    __syncthreads();
+
+    // Reduction: stride halves each step
+    for (int stride = blockDim.x / 2; stride > 0; stride >>= 1)
+    {
+        if (tid < stride)
+            sdata[tid] += sdata[tid + stride];
+        __syncthreads();
+    }
+
+    // Thread 0 of each block writes its partial sum
+    // atomicAdd accumulates all blocks into out[0]
+    if (tid == 0)
+        atomicAdd(&out[0], sdata[0]);
 }
 
 // CUDA Kernel : Count non-zeros per row
@@ -39,7 +74,21 @@ __global__ void countNonzerosPerRow(const int* coo_rows,
     int nnz,
     int num_rows)
 {
+    // Calculate global thread ID
+    int thread_id = blockIdx.x * blockDim.x + threadIdx.x;
+    int sride = blockDim.x * gridDim.x;
 
+    // Iterate through all NNZ, processing in strides for coalesced access
+    for (int i = thread_id; i < nnz; i += sride)
+    {
+        int row = coo_rows[i];
+
+        if (row >= 0 && row < num_rows)
+        {
+            // Atomically increment the count for the corresponding row
+            atomicAdd(&row_counts[row], 1);
+        }
+    }
 }
 
 // CUDA Kernel : Scan Phase 1: Block-level exclusive scan with proper boundary handling
@@ -49,7 +98,61 @@ __global__ void countNonzerosPerRow(const int* coo_rows,
 // \param n Total number of elements to scan in the global array. /
 __global__ void blockExclusiveScanPhase1(int* data, int* block_sums, int n)
 {
+    extern __shared__ int s[];
 
+    int tid = threadIdx.x;
+    int gid = blockIdx.x * blockDim.x + tid;
+
+    // Load from global memory into shared memory
+    // If this thread's global index is within bounds, load the real value.
+    // Otherwise load 0 (padding so the math still works on non-power-of-2 sizes).
+    s[tid] = (gid < n) ? data[gid] : 0;
+    __syncthreads();
+
+    // Up-sweep (reduction phase)
+    // stride doubles each iteration: 1, 2, 4, 8, ...
+    // At each stride, thread at position (stride*2 - 1) accumulates from (stride - 1).
+    for (int stride = 1; stride < blockDim.x; stride *= 2)
+    {
+        // Which threads are active this round?
+        // Only threads whose index satisfies: (tid+1) is a multiple of (2*stride)
+        int index = (tid + 1) * 2 * stride - 1;
+        if (index < blockDim.x)
+        {
+            s[index] += s[index - stride];
+        }
+        __syncthreads();
+    }
+
+    // Save block sum BEFORE zeroing
+    // The last element of shared memory now holds the TOTAL sum of this block.
+    if (tid == 0)
+    {
+        block_sums[blockIdx.x] = s[blockDim.x - 1];
+        s[blockDim.x - 1] = 0;   // set to 0 to start the down-sweep
+    }
+    __syncthreads();
+
+    // Down-sweep phase
+    // stride halves each iteration: blockDim.x/2, blockDim.x/4, ..., 1
+    for (int stride = blockDim.x / 2; stride >= 1; stride /= 2)
+    {
+        int index = (tid + 1) * 2 * stride - 1;
+        if (index < blockDim.x)
+        {
+            int left = index - stride;
+            int temp = s[left];
+            s[left] = s[index];        // left child gets parent's value
+            s[index] += temp;          // right child gets parent + left child
+        }
+        __syncthreads();
+    }
+
+    // Write result back to global memory
+    if (gid < n)
+    {
+        data[gid] = s[tid];
+    }
 }
 
 // CUDA Kernel : Scan Phase 2: Scan the block sums
@@ -58,7 +161,47 @@ __global__ void blockExclusiveScanPhase1(int* data, int* block_sums, int n)
 // \param num_blocks Number of blocks generated in Phase 1. /
 __global__ void scanBlockSums(int* block_sums, int num_blocks)
 {
+    extern __shared__ int s[];
+    int tid = threadIdx.x;
 
+    // Load: each thread loads one block_sum value (or 0 if out of range)
+    s[tid] = (tid < num_blocks) ? block_sums[tid] : 0;
+    __syncthreads();
+
+    // Up-sweep
+    for (int stride = 1; stride < blockDim.x; stride *= 2)
+    {
+        int index = (tid + 1) * 2 * stride - 1;
+        if (index < blockDim.x)
+        {
+            s[index] += s[index - stride];
+        }
+        __syncthreads();
+    }
+
+    // Zero the last element → begin down-sweep
+    if (tid == 0) s[blockDim.x - 1] = 0;
+    __syncthreads();
+
+    // Down-sweep
+    for (int stride = blockDim.x / 2; stride >= 1; stride /= 2)
+    {
+        int index = (tid + 1) * 2 * stride - 1;
+        if (index < blockDim.x)
+        {
+            int left = index - stride;
+            int temp = s[left];
+            s[left] = s[index];
+            s[index] += temp;
+        }
+        __syncthreads();
+    }
+
+    // Write back
+    if (tid < num_blocks)
+    {
+        block_sums[tid] = s[tid];
+    }
 }
 
 // CUDA Kernel : Scan Phase 3: Add scanned block sums to each block
@@ -68,7 +211,14 @@ __global__ void scanBlockSums(int* block_sums, int num_blocks)
 // \param n Total number of elements in the data array. /
 __global__ void addBlockSumsPhase3(int* data, const int* block_sums, int n)
 {
+    int gid = blockIdx.x * blockDim.x + threadIdx.x;
 
+    // Block 0 has offset 0 — adding 0 changes nothing, so we can skip it
+    // but the code below handles it correctly either way.
+    if (gid < n && blockIdx.x > 0)
+    {
+        data[gid] += block_sums[blockIdx.x];
+    }
 }
 
 // Wrapper function for multi-block exclusive scan
@@ -77,7 +227,42 @@ __global__ void addBlockSumsPhase3(int* data, const int* block_sums, int n)
 // \param n Number of elements in the array. /
 void exclusiveScanMultiBlock(int* d_data, int n)
 {
+    const int BLOCK_SIZE = 256;
+    int num_blocks = (n + BLOCK_SIZE - 1) / BLOCK_SIZE;
 
+    // Phase 1
+    // Each block scans its own chunk; block totals go into d_block_sums.
+    int* d_block_sums;
+    cudaMalloc(&d_block_sums, num_blocks * sizeof(int));
+    cudaMemset(d_block_sums, 0, num_blocks * sizeof(int));
+
+    size_t shared_bytes = BLOCK_SIZE * sizeof(int);
+    blockExclusiveScanPhase1 << <num_blocks, BLOCK_SIZE, shared_bytes >> > (
+        d_data, d_block_sums, n
+        );
+    cudaDeviceSynchronize();
+
+    // Phase 2
+    // Scan the block_sums array.
+    // If num_blocks > BLOCK_SIZE we would need to recurse — for typical matrices
+    // (up to ~2.5 million rows with BLOCK_SIZE=256) num_blocks stays well under 256.
+    // Round up to next power of 2 so the Blelloch kernel works correctly.
+    int scan_size = 1;
+    while (scan_size < num_blocks) scan_size *= 2;
+
+    scanBlockSums << <1, scan_size, scan_size * sizeof(int) >> > (
+        d_block_sums, num_blocks
+        );
+    cudaDeviceSynchronize();
+
+    // Phase 3
+    // Add each block's global offset to its local results.
+    addBlockSumsPhase3 << <num_blocks, BLOCK_SIZE >> > (
+        d_data, d_block_sums, n
+        );
+    cudaDeviceSynchronize();
+
+    cudaFree(d_block_sums);
 }
 
 // CUDA Kernel : Scatter COO data into CSR format
@@ -99,7 +284,25 @@ __global__ void scatterCOOtoCSR(const int* coo_rows,
     int nnz,
     int num_rows)
 {
+    // Each thread handles one COO element
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
 
+    // Stride loop: handles cases where nnz > total number of threads launched
+    for (; i < nnz; i += blockDim.x * gridDim.x)
+    {
+        int row = coo_rows[i];
+
+        // Bounds check: skip if row index is invalid
+        if (row < 0 || row >= num_rows) continue;
+
+        // atomicAdd returns the OLD value (current slot), then increments by 1.
+        // This gives this thread a unique destination slot for its element.
+        int pos = atomicAdd(&csr_row_ptr[row], 1);
+
+        // Write the COO element into its CSR destination
+        csr_col_ind[pos] = coo_cols[i];
+        csr_vals[pos] = coo_vals[i];
+    }
 }
 
 // CUDA Kernel : Fix row pointers after scattering
@@ -111,7 +314,15 @@ __global__ void fixRowPointers(int* csr_row_ptr,
     const int* row_counts,
     int num_rows)
 {
+    int row = blockIdx.x * blockDim.x + threadIdx.x;
 
+    if (row < num_rows)
+    {
+        // After scatter: ptr[row] = original_start + row_counts[row]
+        // We want:       ptr[row] = original_start
+        // So:            ptr[row] -= row_counts[row]
+        csr_row_ptr[row] -= row_counts[row];
+    }
 }
 
 // CUDA Kernel : Sort columns within each row (odd-even sort / bitonic sort for GPU efficiency)
@@ -127,7 +338,34 @@ __global__ void sortRows(const int* csr_row_ptr,
     const int* row_counts,
     int num_rows)
 {
+    // One THREAD handles one row (vs. old design: one BLOCK per row)
+    // This lets us use the standard row_grid_size launch with no shared memory.
+    int row = blockIdx.x * blockDim.x + threadIdx.x;
+    if (row >= num_rows) return;
 
+    int start = csr_row_ptr[row];
+    int count = row_counts[row];
+
+    if (count <= 1) return;  // 0 or 1 elements: already sorted
+
+    // Insertion sort on this row's slice of global memory.
+    // Sparse rows are short (typically single-digit element counts),
+    // so O(count^2) serial work per thread is negligible in practice.
+    for (int i = 1; i < count; i++)
+    {
+        int   key_col = csr_col_ind[start + i];
+        float key_val = csr_vals[start + i];
+
+        int j = i - 1;
+        while (j >= 0 && csr_col_ind[start + j] > key_col)
+        {
+            csr_col_ind[start + j + 1] = csr_col_ind[start + j];
+            csr_vals[start + j + 1] = csr_vals[start + j];
+            j--;
+        }
+        csr_col_ind[start + j + 1] = key_col;
+        csr_vals[start + j + 1] = key_val;
+    }
 }
 
 
