@@ -244,13 +244,8 @@ void exclusiveScanMultiBlock(int* d_data, int n)
 
     // Phase 2
     // Scan the block_sums array.
-    // If num_blocks > BLOCK_SIZE we would need to recurse — for typical matrices
-    // (up to ~2.5 million rows with BLOCK_SIZE=256) num_blocks stays well under 256.
-    // Round up to next power of 2 so the Blelloch kernel works correctly.
-    int scan_size = 1;
-    while (scan_size < num_blocks) scan_size *= 2;
-
-    scanBlockSums << <1, scan_size, scan_size * sizeof(int) >> > (
+    // Always use BLOCK_SIZE (256) threads for consistency and optimal performance
+    scanBlockSums << <1, BLOCK_SIZE, BLOCK_SIZE * sizeof(int) >> > (
         d_block_sums, num_blocks
         );
     cudaDeviceSynchronize();
@@ -326,11 +321,11 @@ __global__ void fixRowPointers(int* csr_row_ptr,
 }
 
 // CUDA Kernel : Sort columns within each row (odd-even sort / bitonic sort for GPU efficiency)
-// /! \brief Sorts column indices within each CSR row using odd-even sort or a bitonic sorting network. 
-// \param csr_row_ptr Device pointer to the row pointers defining row boundaries. 
-// \param csr_col_ind Device pointer to CSR column indices to be sorted in-place. 
-// \param csr_vals Device pointer to CSR values to be swapped alongside indices. 
-// \param row_counts Device pointer to the number of elements in each row. 
+// /! \brief Sorts column indices within each CSR row using odd-even sort or a bitonic sorting network.
+// \param csr_row_ptr Device pointer to the row pointers defining row boundaries.
+// \param csr_col_ind Device pointer to CSR column indices to be sorted in-place.
+// \param csr_vals Device pointer to CSR values to be swapped alongside indices.
+// \param row_counts Device pointer to the number of elements in each row.
 // \param num_rows Total number of rows in the matrix. /
 __global__ void sortRows(const int* csr_row_ptr,
     int* csr_col_ind,
@@ -338,33 +333,107 @@ __global__ void sortRows(const int* csr_row_ptr,
     const int* row_counts,
     int num_rows)
 {
-    // One THREAD handles one row (vs. old design: one BLOCK per row)
-    // This lets us use the standard row_grid_size launch with no shared memory.
-    int row = blockIdx.x * blockDim.x + threadIdx.x;
+    // Static shared memory allocation: ~6.14 KB per block
+    __shared__ int s_cols[768];
+    __shared__ float s_vals[768];
+
+    const int row = blockIdx.x;
+    const int tid = threadIdx.x;
+
     if (row >= num_rows) return;
 
-    int start = csr_row_ptr[row];
-    int count = row_counts[row];
+    const int start = csr_row_ptr[row];
+    const int count = row_counts[row];   // or csr_row_ptr[row+1] - csr_row_ptr[row]
 
-    if (count <= 1) return;  // 0 or 1 elements: already sorted
+    if (count <= 1) return;
 
-    // Insertion sort on this row's slice of global memory.
-    // Sparse rows are short (typically single-digit element counts),
-    // so O(count^2) serial work per thread is negligible in practice.
-    for (int i = 1; i < count; i++)
+    // Guard against overflow of the static shared-memory buffers.
+    if (count > 768) return;
+
+    // Load row into shared memory
+    for (int i = tid; i < count; i += blockDim.x)
     {
-        int   key_col = csr_col_ind[start + i];
-        float key_val = csr_vals[start + i];
+        s_cols[i] = csr_col_ind[start + i];
+        s_vals[i] = csr_vals[start + i];
+    }
+    __syncthreads();
 
-        int j = i - 1;
-        while (j >= 0 && csr_col_ind[start + j] > key_col)
+    // Bitonic sort requires power-of-two length, so pad with sentinel keys.
+    int n2 = 1;
+    while (n2 < count) n2 <<= 1;
+
+    // Since count <= 768, n2 can be as large as 1024.
+    // With static shared memory sized to 768, bitonic padding beyond 768 is not possible.
+    // So we fall back to odd-even sort when count is not already a power of 2 and n2 > 768.
+    const bool canUseBitonic = (n2 <= 768);
+
+    if (canUseBitonic)
+    {
+        // Pad inactive entries with +INF so they move to the end in ascending sort.
+        for (int i = tid + count; i < n2; i += blockDim.x)
         {
-            csr_col_ind[start + j + 1] = csr_col_ind[start + j];
-            csr_vals[start + j + 1] = csr_vals[start + j];
-            j--;
+            s_cols[i] = INT_MAX;
+            s_vals[i] = 0.0f;
         }
-        csr_col_ind[start + j + 1] = key_col;
-        csr_vals[start + j + 1] = key_val;
+        __syncthreads();
+
+        // Bitonic sort network, ascending final order
+        for (int k = 2; k <= n2; k <<= 1)
+        {
+            for (int j = k >> 1; j > 0; j >>= 1)
+            {
+                for (int i = tid; i < n2; i += blockDim.x)
+                {
+                    int ixj = i ^ j;
+                    if (ixj > i)
+                    {
+                        bool ascending = ((i & k) == 0);
+
+                        int   col_i = s_cols[i];
+                        int   col_j = s_cols[ixj];
+                        float val_i = s_vals[i];
+                        float val_j = s_vals[ixj];
+
+                        bool doSwap = ascending ? (col_i > col_j) : (col_i < col_j);
+                        if (doSwap)
+                        {
+                            s_cols[i] = col_j;
+                            s_vals[i] = val_j;
+                            s_cols[ixj] = col_i;
+                            s_vals[ixj] = val_i;
+                        }
+                    }
+                }
+                __syncthreads();
+            }
+        }
+    }
+    else {
+        // Fallback: odd-even transposition sort, works for any count <= 768.
+        for (int pass = 0; pass < count; ++pass)
+        {
+            int phase = pass & 1;  // 0 = even pairs, 1 = odd pairs
+
+            for (int i = phase + 2 * tid; i + 1 < count; i += 2 * blockDim.x)
+            {
+                if (s_cols[i] > s_cols[i + 1]) {
+                    int   tc = s_cols[i];
+                    float tv = s_vals[i];
+                    s_cols[i] = s_cols[i + 1];
+                    s_vals[i] = s_vals[i + 1];
+                    s_cols[i + 1] = tc;
+                    s_vals[i + 1] = tv;
+                }
+            }
+            __syncthreads();
+        }
+    }
+
+    // Store sorted row back
+    for (int i = tid; i < count; i += blockDim.x)
+    {
+        csr_col_ind[start + i] = s_cols[i];
+        csr_vals[start + i] = s_vals[i];
     }
 }
 
