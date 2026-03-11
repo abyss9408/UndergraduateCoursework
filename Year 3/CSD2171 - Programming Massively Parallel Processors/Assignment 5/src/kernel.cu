@@ -53,14 +53,18 @@ __global__ void reduceSumKernel(const int* in, int* out, const int n)
     for (int stride = blockDim.x / 2; stride > 0; stride >>= 1)
     {
         if (tid < stride)
+        {
             sdata[tid] += sdata[tid + stride];
+        }
         __syncthreads();
     }
 
     // Thread 0 of each block writes its partial sum
     // atomicAdd accumulates all blocks into out[0]
     if (tid == 0)
+    {
         atomicAdd(&out[0], sdata[0]);
+    }
 }
 
 // CUDA Kernel : Count non-zeros per row
@@ -333,7 +337,7 @@ __global__ void sortRows(const int* csr_row_ptr,
     const int* row_counts,
     int num_rows)
 {
-    // Static shared memory allocation: ~6.14 KB per block
+    // Static shared memory allocation
     __shared__ int s_cols[768];
     __shared__ float s_vals[768];
 
@@ -343,7 +347,7 @@ __global__ void sortRows(const int* csr_row_ptr,
     if (row >= num_rows) return;
 
     const int start = csr_row_ptr[row];
-    const int count = row_counts[row];   // or csr_row_ptr[row+1] - csr_row_ptr[row]
+    const int count = row_counts[row];
 
     if (count <= 1) return;
 
@@ -360,7 +364,10 @@ __global__ void sortRows(const int* csr_row_ptr,
 
     // Bitonic sort requires power-of-two length, so pad with sentinel keys.
     int n2 = 1;
-    while (n2 < count) n2 <<= 1;
+    while (n2 < count)
+    {
+        n2 <<= 1;
+    }
 
     // Since count <= 768, n2 can be as large as 1024.
     // With static shared memory sized to 768, bitonic padding beyond 768 is not possible.
@@ -389,8 +396,8 @@ __global__ void sortRows(const int* csr_row_ptr,
                     {
                         bool ascending = ((i & k) == 0);
 
-                        int   col_i = s_cols[i];
-                        int   col_j = s_cols[ixj];
+                        int col_i = s_cols[i];
+                        int col_j = s_cols[ixj];
                         float val_i = s_vals[i];
                         float val_j = s_vals[ixj];
 
@@ -416,7 +423,8 @@ __global__ void sortRows(const int* csr_row_ptr,
 
             for (int i = phase + 2 * tid; i + 1 < count; i += 2 * blockDim.x)
             {
-                if (s_cols[i] > s_cols[i + 1]) {
+                if (s_cols[i] > s_cols[i + 1])
+                {
                     int   tc = s_cols[i];
                     float tv = s_vals[i];
                     s_cols[i] = s_cols[i + 1];
@@ -443,7 +451,8 @@ __global__ void sortRows(const int* csr_row_ptr,
 // \param coo_matrix The input SparseMatrixCOO structure on the host. 
 // \return A SparseMatrixCSR structure containing the converted matrix data. 
 // \note Handles all device memory management and kernel dispatching. /
-SparseMatrixCSR  COOtoCSRConverter::convert(const SparseMatrixCOO& coo_matrix) {
+SparseMatrixCSR  COOtoCSRConverter::convert(const SparseMatrixCOO& coo_matrix)
+{
     int nnz = coo_matrix.nnz;
     int num_rows = coo_matrix.num_rows;
     int num_cols = coo_matrix.num_cols;
@@ -493,7 +502,8 @@ SparseMatrixCSR  COOtoCSRConverter::convert(const SparseMatrixCOO& coo_matrix) {
     CUDA_CHECK(cudaMemcpy(&h_total_nnz, d_total_nnz, sizeof(int), cudaMemcpyDeviceToHost));
 
     int total_nnz = h_total_nnz;
-    if (validate_scan) {
+    if (validate_scan)
+    {
         std::vector<int> h_row_counts(num_rows);
         CUDA_CHECK(cudaMemcpy(h_row_counts.data(), d_row_counts, num_rows * sizeof(int), cudaMemcpyDeviceToHost));
         validatePrefixScan(d_csr_row_ptr, num_rows, h_row_counts);
@@ -550,32 +560,38 @@ SparseMatrixCSR  COOtoCSRConverter::convert(const SparseMatrixCOO& coo_matrix) {
     return csr_matrix;
 }
 
-void COOtoCSRConverter::validatePrefixScan(int* d_csr_row_ptr, int num_rows, const std::vector<int>& row_counts) {
+void COOtoCSRConverter::validatePrefixScan(int* d_csr_row_ptr, int num_rows, const std::vector<int>& row_counts)
+{
     std::vector<int> h_row_ptr(num_rows + 1);
     CUDA_CHECK(cudaMemcpy(h_row_ptr.data(), d_csr_row_ptr, (num_rows + 1) * sizeof(int), cudaMemcpyDeviceToHost));
 
     bool scan_valid = true;
-    for (int i = 0; i < num_rows; i++) {
-        if (h_row_ptr[i + 1] < h_row_ptr[i]) {
+    for (int i = 0; i < num_rows; ++i)
+    {
+        if (h_row_ptr[i + 1] < h_row_ptr[i])
+        {
             std::cout << "Warning: Scan invalid at index " << i
                 << ": " << h_row_ptr[i] << " > " << h_row_ptr[i + 1] << std::endl;
             scan_valid = false;
         }
     }
 
-    if (!scan_valid) {
+    if (!scan_valid)
+    {
         std::cout << "Scan validation failed! Using fallback host scan..." << std::endl;
 
         // Compute prefix sum on host
         h_row_ptr[0] = 0;
-        for (int i = 0; i < num_rows; i++) {
+        for (int i = 0; i < num_rows; ++i)
+        {
             h_row_ptr[i + 1] = h_row_ptr[i] + row_counts[i];
         }
 
         // Copy back to device
         CUDA_CHECK(cudaMemcpy(d_csr_row_ptr, h_row_ptr.data(), (num_rows + 1) * sizeof(int), cudaMemcpyHostToDevice));
     }
-    else {
+    else
+    {
         std::cout << "Scan validation passed!" << std::endl;
     }
 }

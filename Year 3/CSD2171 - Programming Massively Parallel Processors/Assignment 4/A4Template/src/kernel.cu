@@ -1,4 +1,19 @@
-﻿#include <cuda_runtime.h>
+﻿/* Start Header *****************************************************************/
+/*!
+    \file kernel.cu
+
+    \author Bryan Ang Wei Ze, bryanweize.ang, 2301397
+
+    \par bryanweize.ang\@digipen.edu
+
+    \date March 1, 2026
+
+    \brief Copyright (C) 2026 DigiPen Institute of Technology.
+
+    Reproduction or disclosure of this file or its contents without the prior written consent of DigiPen Institute of Technology is prohibited.
+*/
+/* End Header *******************************************************************/
+#include <cuda_runtime.h>
 #include <helper_cuda.h>
 #include "helper.h"
 
@@ -37,9 +52,11 @@ __global__ void compute_histogram(
     // Each thread processes COARSE_FACTOR elements (thread coarsening).
     // RADIX=16 bins occupy 16 distinct shared-memory banks → zero bank conflicts.
     int base_idx = bid * SECTION_SIZE * COARSE_FACTOR + tid;
-    for (int i = 0; i < COARSE_FACTOR; i++) {
-        int idx = base_idx + i * SECTION_SIZE;
-        if (idx < (int)n) {
+    for (int i = 0; i < COARSE_FACTOR; ++i)
+    {
+        unsigned int idx = base_idx + i * SECTION_SIZE;
+        if (idx < n)
+        {
             unsigned int digit = (d_in[idx] >> shift) & (RADIX - 1);
             atomicAdd(&s_hist[digit], 1);
         }
@@ -48,7 +65,9 @@ __global__ void compute_histogram(
 
     // Write to global memory in digit-major layout: d_hist[digit * num_blocks + block]
     if (tid < RADIX)
+    {
         d_block_hist[tid * gridDim.x + bid] = s_hist[tid];
+    }
 }
 
 // Step 2: GPU Global Prefix Sum 
@@ -80,8 +99,10 @@ __global__ void compute_global_offsets(unsigned int* d_hist,
     // Compute prefix sum for this digit across all blocks (digit-major layout)
     // This gives us the starting offset for each block's contribution to this digit
     unsigned int sum = 0;
-    for (int block = 0; block < num_blocks; block++) {
+    for (int block = 0; block < num_blocks; block++)
+    {
         unsigned int count = d_hist[digit * num_blocks + block];
+
         // Store exclusive prefix sum (offset before adding this block's count)
         d_block_offsets[digit * num_blocks + block] = sum;
         sum += count;
@@ -93,9 +114,11 @@ __global__ void compute_global_offsets(unsigned int* d_hist,
     __syncthreads();
 
     // Compute exclusive prefix sum across digits to get starting position for each digit
-    if (digit == 0) {
+    if (digit == 0)
+    {
         unsigned int offset = 0;
-        for (int d = 0; d < RADIX; d++) {
+        for (int d = 0; d < RADIX; ++d)
+        {
             d_digit_offsets[d] = offset;
             offset += s_digit_totals[d];
         }
@@ -135,29 +158,34 @@ __global__ void scatter(unsigned int* d_out,
     __shared__ unsigned int s_digits[SECTION_SIZE * COARSE_FACTOR];  // 8 KB
     __shared__ unsigned int s_warp_prefix[NUM_WARPS * RADIX];        // 1 KB
 
-    int tid  = threadIdx.x;
-    int bid  = blockIdx.x;
+    int tid = threadIdx.x;
+    int bid = blockIdx.x;
     int lane = tid % 32;
     int warp = tid / 32;
 
-    int base_idx   = bid * SECTION_SIZE * COARSE_FACTOR;
+    int base_idx = bid * SECTION_SIZE * COARSE_FACTOR;
     int block_size = min(SECTION_SIZE * COARSE_FACTOR, (int)n - base_idx);
     int total_groups = (block_size + 31) / 32;
 
     // ----------------------------------------------------------------
     // Load + Init  (Sync 1)
     // ----------------------------------------------------------------
-    for (int i = 0; i < COARSE_FACTOR; i++) {
-        int local_idx  = tid + i * SECTION_SIZE;
+    for (int i = 0; i < COARSE_FACTOR; ++i)
+    {
+        int local_idx = tid + i * SECTION_SIZE;
         int global_idx = base_idx + local_idx;
-        if (local_idx < block_size) {
+        if (local_idx < block_size)
+        {
             unsigned int val = d_in[global_idx];
             s_values[local_idx] = val;
             s_digits[local_idx] = (val >> shift) & (RADIX - 1);
         }
     }
+
     if (tid < NUM_WARPS * RADIX)
+    {
         s_warp_prefix[tid] = 0;
+    }
     __syncthreads();  // Sync 1: load and zero-init both visible
 
     // ----------------------------------------------------------------
@@ -167,17 +195,22 @@ __global__ void scatter(unsigned int* d_out,
     // in input order, so the inter-warp prefix sum in Phase 2 is correct.
     // ----------------------------------------------------------------
     int g_start = warp * COARSE_FACTOR;
-    int g_end   = min(g_start + COARSE_FACTOR, total_groups);
+    int g_end = min(g_start + COARSE_FACTOR, total_groups);
 
-    for (int g = g_start; g < g_end; g++) {
-        int  pos    = g * 32 + lane;
+    for (int g = g_start; g < g_end; ++g)
+    {
+        int  pos = g * 32 + lane;
         bool active = (pos < block_size);
         unsigned int digit = active ? s_digits[pos] : 0xFFFFFFFFu;
 
-        for (unsigned int d = 0; d < RADIX; d++) {
+        for (unsigned int d = 0; d < RADIX; ++d)
+        {
             unsigned int ballot = __ballot_sync(0xFFFFFFFFu, active && (digit == d));
+
             if (lane == 0)
+            {
                 s_warp_prefix[warp * RADIX + d] += __popc(ballot);
+            }
         }
     }
     __syncthreads();  // Sync 2: all warp counts visible for inter-warp scan
@@ -186,9 +219,11 @@ __global__ void scatter(unsigned int* d_out,
     // Phase 2: RADIX threads compute inter-warp exclusive prefix sums.
     // Overwrites s_warp_prefix[w][d] from "count" to "offset".
     // ----------------------------------------------------------------
-    if (tid < RADIX) {
+    if (tid < RADIX)
+    {
         unsigned int running = 0;
-        for (int w = 0; w < NUM_WARPS; w++) {
+        for (int w = 0; w < NUM_WARPS; ++w)
+        {
             unsigned int cnt = s_warp_prefix[w * RADIX + tid];
             s_warp_prefix[w * RADIX + tid] = running;
             running += cnt;
@@ -204,26 +239,32 @@ __global__ void scatter(unsigned int* d_out,
     // ----------------------------------------------------------------
     unsigned int intra_count[RADIX] = {};  // registers; lane 0 maintains, others broadcast
 
-    for (int g = g_start; g < g_end; g++) {
-        int  pos    = g * 32 + lane;
+    for (int g = g_start; g < g_end; ++g)
+    {
+        int  pos = g * 32 + lane;
         bool active = (pos < block_size);
         unsigned int digit = active ? s_digits[pos] : 0xFFFFFFFFu;
 
-        for (unsigned int d = 0; d < RADIX; d++) {
+        for (unsigned int d = 0; d < RADIX; ++d)
+        {
             unsigned int ballot = __ballot_sync(0xFFFFFFFFu, active && (digit == d));
             unsigned int rank_in_group = __popc(ballot & ((1u << lane) - 1u));
             // Broadcast lane 0's running count to all lanes in the warp.
             unsigned int base = __shfl_sync(0xFFFFFFFFu, intra_count[d], 0);
 
-            if (active && digit == d) {
+            if (active && digit == d)
+            {
                 unsigned int out_pos = d_digit_offsets[d]
-                                     + d_block_offsets[d * gridDim.x + bid]
-                                     + s_warp_prefix[warp * RADIX + d]
-                                     + base + rank_in_group;
+                    + d_block_offsets[d * gridDim.x + bid]
+                    + s_warp_prefix[warp * RADIX + d]
+                    + base + rank_in_group;
                 d_out[out_pos] = s_values[pos];
             }
+
             if (lane == 0)
+            {
                 intra_count[d] += __popc(ballot);
+            }
         }
     }
 }
