@@ -1,0 +1,40 @@
+package com.example.tinycell
+
+import android.app.Application
+import android.util.Log
+import com.example.tinycell.di.AppContainer
+import com.google.firebase.FirebaseApp
+
+private const val TAG = "MarketplaceApp"
+
+/**
+ * Custom Application class for TinyCell.
+ * [SECURITY UPDATED]: Reverted App Check client initialization to avoid attestation errors.
+ */
+class MarketplaceApp : Application() {
+
+    private var _container: AppContainer? = null
+    val container: AppContainer get() = _container ?: throw IllegalStateException("AppContainer not initialized")
+
+    override fun onCreate() {
+        super.onCreate()
+        Log.d(TAG, "onCreate: Starting application...")
+        
+        try {
+            // 1. Initialize Firebase
+            FirebaseApp.initializeApp(this)
+            Log.d(TAG, "onCreate: Firebase initialized successfully")
+
+            // 2. Initialize Dependency Container
+            _container = AppContainer(this)
+            Log.d(TAG, "onCreate: AppContainer initialized successfully")
+            
+            // 3. Trigger Startup Sync
+            container.initializeData()
+            Log.d(TAG, "onCreate: initializeData() triggered")
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "onCreate: Critical failure during initialization", e)
+        }
+    }
+}

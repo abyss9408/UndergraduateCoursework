@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Users Collection
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null; // Relaxed for Admin Switch
+    }
+
+    // 2. Listings Collection
+    match /listings/{listingId} {
+      allow read: if true; 
+      allow create: if request.auth != null;
+      // Relaxed: allow any auth user to update (needed for Accept Offer / Sold status when switching users)
+      allow update: if request.auth != null; 
+      allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+
+    // 3. Offers Collection (Formal Offer System)
+    // DEV-ONLY: Relaxed rules to allow Admin Switch testing on single device
+    match /offers/{offerId} {
+      allow read, create, update: if request.auth != null;
+      allow delete: if false; // Offers are archived, not deleted
+    }
+
+    // 4. Chat Rooms & Messages
+    match /chat_rooms/{roomId} {
+      allow read, create, update: if request.auth != null;
+    }
+
+    match /chat_messages/{messageId} {
+      allow read, create, update: if request.auth != null;
+    }
+
+    // 5. Favourites Collection
+    match /favourites/{favId} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
